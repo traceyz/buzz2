@@ -1,0 +1,13 @@
+    %table
+      %tr
+        %th Image
+        %th Category
+        %th New
+        %th Total
+    - categories.each do |cat|
+      %tr
+        %td= cat[:name]
+        %td= cat[:new_count]
+        %td= cat[:total_count]
+      
+      

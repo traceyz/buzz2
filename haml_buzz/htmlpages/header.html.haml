@@ -1,0 +1,33 @@
+!!! XML
+!!!
+%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
+  %head
+    %title Buzz Home Page
+
+  %body
+    %table
+      %tr
+        %td Bose Customer Reviews from These Web Forums
+        %td Buzz Report
+      %tr
+        %td Amazon
+        %td Target
+        %td CNET
+      %tr
+        %td Apple
+        %td FutureShop
+        %td BestBuy
+        %td Reevoo
+    %table
+      %tr
+        %th Image
+        %th Category
+        %th New
+        %th Total
+    - categories.each do |cat|
+      %tr
+        %td Blank
+        %td= cat[:name]
+        %td= cat[:new_count]
+        %td= cat[:total_count]
+                

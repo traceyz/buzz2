@@ -1,0 +1,11 @@
+div#buzz-top {
+	width: 150px;
+	float: left;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+div#nav {
+	width: 150px;
+	float: left;
+}

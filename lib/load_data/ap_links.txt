@@ -1,0 +1,15 @@
+H6811VC/A/bose-bluetooth-headset-series-2-right-ear,Bluetooth Headset Series 2
+H9851VC/A/bose-soundlink-bluetooth-mobile-speaker-iinylon-edition,SoundLink Bluetooth
+H5987VC/A/bose-quietcomfort-15-acoustic-noise-cancelling-headphones-with-remote-and-mic,QC 15
+H9608VC/A/bose-sie2i-sport-headphones,SIE2
+HA847VC/A/bose-sounddock-series-iii-digital-music-system,SoundDock III
+TK200VC/A,Companion 2
+H2771VC/A/bose-mie2i-mobile-headset,MIE2
+TS836VC/A/bose-sounddock-series-ii-digital-music-system,SoundDock
+H8795VC/A/bose-quietcomfort-3-acoustic-noise-cancelling-headphones,QC 3
+H6251VC/A/bose-companion-20-multimedia-speaker-system,Companion 20
+TP573VC/A/bose-sounddock-portable,SoundDock Portable
+H5988VC/A/bose-ae2i-mobile-headset-with-remote-and-mic,AE2
+H6785ZM/A/bose-oe2i-audio-headphones,OE2
+H9762VC/A/bose-soundlink-air-digital-music-system,SoundLink Air
+TV461VC/A,SoundDock

@@ -1,0 +1,3 @@
+class FutureShopReview < Review
+
+end

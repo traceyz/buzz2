@@ -1,0 +1,3 @@
+class TargetReview < Review
+
+end

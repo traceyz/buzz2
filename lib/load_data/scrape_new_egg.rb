@@ -1,0 +1,3 @@
+module ScrapeNewEgg
+
+end

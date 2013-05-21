@@ -1,0 +1,3 @@
+class RevooReview < Review
+
+end

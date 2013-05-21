@@ -1,0 +1,3 @@
+class BestBuyReview < Review
+
+end

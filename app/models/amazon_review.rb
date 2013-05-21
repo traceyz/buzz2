@@ -1,0 +1,3 @@
+class AmazonReview < Review
+
+end

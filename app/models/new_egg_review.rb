@@ -1,0 +1,3 @@
+class NewEggReview < Review
+
+end

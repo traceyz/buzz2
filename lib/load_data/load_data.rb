@@ -1,5 +1,21 @@
 module LoadData
 
+  def load_forums
+    data = [
+      %w(Amazon am_links.txt),
+      %w(Apple ap_links.txt),
+      %w(BestBuy bb_links.txt),
+      %w(Revoo bbuk_links.txt),
+      %w(Cnet cnet_links.txt),
+      %w(FutureShop fs_links.txt),
+      %w(NewEgg ne_links.txt)
+    ]
+    data.each do |forum_name, file_name|
+      load_forum(forum_name, file_name)
+    end
+    nil
+  end
+
 # use this to load the links => products
 # recognize that since we aren't using forum product names,
 # within a  forum,  there may be multiple links for a product
@@ -9,100 +25,20 @@ module LoadData
     IO.readlines(path)
   end
 
-  def load_amazon
-    forum = Forum.find_by_name("Amazon")
-    data = read_file("am_links.txt")
-    data.each do |datum|
-      link, forum_name, product_name = datum.chomp.split(",")
-      next if product_name.eql?("UNCERTAIN")
-      product = Product.find_by_name(product_name.strip)
-      raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
-    end
-    nil
-  end
-
-  def load_apple
-    forum = Forum.find_by_name("Apple")
-    data = read_file("ap_links.txt")
+  def load_forum(forum_name, file_name)
+    forum = Forum.find_by_name(forum_name)
+    data = read_file(file_name)
     data.each do |datum|
       link, product_name = datum.chomp.split(",")
       next if product_name.eql?("UNCERTAIN")
+      puts "PRODUCT NAME #{product_name}"
       product = Product.find_by_name(product_name.strip)
       raise "NO PRODUCT FOR #{product_name}" unless product
       build_link(forum, product, link.strip)
     end
+    puts "complete links load for #{forum_name}"
     nil
   end
-
-  def load_best_buy
-    forum = Forum.find_by_name("BestBuy")
-    data = read_file("bb_links.txt")
-    data.each do |datum|
-      next unless datum
-      link, product_name = datum.chomp.split(",")
-      next if product_name.eql?("UNCERTAIN")
-      product = Product.find_by_name(product_name.strip)
-      raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
-    end
-    nil
-  end
-
-  def load_bbuk
-    forum = Forum.find_by_name("Revoo")
-    data = read_file("bbuk_links.txt")
-    data.each do |datum|
-      next unless datum
-      link, product_name = datum.chomp.split(",")
-      next if product_name.eql?("UNCERTAIN")
-      product = Product.find_by_name(product_name.strip)
-      raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
-    end
-    nil
-  end
-
-  def load_cnet
-    forum = Forum.find_by_name("Cnet")
-    data = read_file("cnet_links.txt")
-    data.each do |datum|
-      next unless datum
-      link, product_name = datum.chomp.split(",")
-      next if product_name.eql?("UNCERTAIN")
-      product = Product.find_by_name(product_name.strip)
-      raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
-    end
-    nil
-  end
-
-  def load_fs
-    forum = Forum.find_by_name("FutureShop")
-    data = read_file("fs_links.txt")
-    data.each do |datum|
-      link, product_name = datum.chomp.split(",")
-      next if product_name.eql?("UNCERTAIN")
-      product = Product.find_by_name(product_name.strip)
-      raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
-    end
-    nil
-  end
-
-  def load_ne
-    forum = Forum.find_by_name("NewEgg")
-    data = read_file("ne_links.txt")
-    data.each do |datum|
-      link, product_name = datum.chomp.split(",")
-      next if product_name.eql?("UNCERTAIN")
-      product = Product.find_by_name(product_name.strip)
-      raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
-    end
-    nil
-  end
-
 
   def build_link(forum, product, link)
     p_l = forum.product_links.where(:product_id => product.id).first ||
@@ -113,6 +49,5 @@ module LoadData
     link_url.update_attributes!(:current => true)
     nil
   end
-
 
 end

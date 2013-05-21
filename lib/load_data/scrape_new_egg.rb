@@ -18,10 +18,10 @@ module ScrapeNewEgg
       date = review.css('th.reviewer ul li')[1].content.scan(/\d+\/\d+\/\d+/)[0]
       args[:review_date] = Utils.build_date3(date)
       postdate = review.at_css('h3')
-      args[:headline] = postdate.content.split('/5').last
+      args[:headline] = CGI.unescape(postdate.content.split('/5').last)
       args[:rating] = postdate.at_css('img.eggs')[:alt].scan(/^\d/)[0]
       comments = review.css('div.details p')
-      args[:body] = comments.collect{|c| c.content.gsub(/<em\>/,"").gsub(/<\/em>/,"")}.join(" ")
+      args[:body] = CGI.unescape(comments.collect{|c| c.content.gsub(/<em\>/,"").gsub(/<\/em>/,"")}.join(" "))
       reviews << NewEggReview.new(args)
       raise "Invalid" unless reviews[-1].valid?
     end

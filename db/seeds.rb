@@ -9,7 +9,7 @@
 [
   %w(Amazon http://www.amazon.com/ am_logo.png),
   %w(Apple http://store.apple.com/us/reviews/ ap_logo.png),
-  %w(BestBuy tbd tbd),
+  %w(BestBuy http://www.bestbuy.com/site/ bb_logo.png),
   %w(Cnet tbd tbd),
   %w(FutureShop tbd tbd),
   %w(NewEgg tbd tbd),

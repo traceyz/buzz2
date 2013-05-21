@@ -1,6 +1,14 @@
 module LoadData
 
-  def load_forums
+  def load_products
+    data = [
+        ["Lifestyle DVD-based Systems",
+        ["LS 12", "LS 18", "LS 28", "LS 30", "LS 35", "LS 38", "LS 48"]
+      ]
+    ]
+  end
+
+  def load_forum_links
     data = [
       %w(Amazon am_links.txt),
       %w(Apple ap_links.txt),

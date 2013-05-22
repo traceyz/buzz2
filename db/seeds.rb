@@ -10,11 +10,11 @@
   %w(Amazon http://www.amazon.com/ am_logo.png),
   %w(Apple http://store.apple.com/us/reviews/ ap_logo.png),
   %w(BestBuy http://www.bestbuy.com/site/ bb_logo.png),
-  %w(Cnet tbd tbd),
-  %w(FutureShop tbd tbd),
-  %w(NewEgg tbd tbd),
-  %w(Revoo tbd tbd),
-  %w(Target tbd tbd)
+  %w(Cnet http://reviews.cnet.com/ cnet_logo.png),
+  %w(FutureShop tbd fs_logo.png),
+  %w(NewEgg tbd ne_logo.png),
+  %w(Revoo tbd revoo_logo.png),
+  %w(Target tbd target_logo.png)
 ].each do |data|
   name, root, image = data
   Forum.create!(:name => name, :root => root, :image => image)

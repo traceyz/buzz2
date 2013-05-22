@@ -64,4 +64,12 @@ module Utils
     $1
   end
 
+  # takes an array of objects
+  # concatenates their .to_s
+  # makes a hex digest of the result
+  def Utils.unique_key(hash)
+    str = hash.values.each_with_object(""){ |elt, s| s << elt.to_s }
+    Digest::MD5.hexdigest(str)
+  end
+
 end

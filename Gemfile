@@ -7,7 +7,7 @@ gem 'rails', "~> 3.2.13"
 
 gem 'sqlite3'
 
-#gem 'pg', "~> 0.11"
+gem 'pg', "~> 0.11"
 gem 'silent-postgres'
 gem 'nokogiri'
 gem 'htmlentities'

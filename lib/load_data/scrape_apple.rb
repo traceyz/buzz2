@@ -1,6 +1,7 @@
 module ScrapeApple
 
   require 'load_data/utils'
+  require 'open-uri'
 
   def reviews_from_page(doc, product)
     forum = Forum.find_by_name("Apple")
@@ -31,6 +32,20 @@ module ScrapeApple
       reviews << ap_review
     end
     reviews
+  end
+
+  def build_reviews
+    forum = Forum.find_by_name("Apple")
+    forum.product_links.each do |product_link|
+      product = product_link.product
+      product_link.link_urls.each do |link_url|
+        path = forum.root + link_url.link
+        doc = Nokogiri::HTML(open(path))
+        reviews = reviews_from_page(doc, product)
+        puts reviews.length
+      end
+    end
+    nil
   end
 
   def exercise

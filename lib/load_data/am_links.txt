@@ -56,7 +56,7 @@ Bose-AWRC-1P-Wave-Radio/product-reviews/B003ACKERO,Amazon.com: Customer Reviews:
 Bose-Acoustic-Wave-Music-System/product-reviews/B0009I9AY0,Amazon.com: Customer Reviews: Bose Acoustic Wave Music System - Micro system - radio / CD - graphite gray,AWMS
 Bose-Acoustic-Wave-Music-System/product-reviews/B000J0072M,Amazon.com: Customer Reviews: Bose Acoustic Wave Music System II - Platinum White,AWMS
 Bose-Acoustic-Wave-Music-System/product-reviews/B000J01HXU,Amazon.com: Customer Reviews: Bose Acoustic Wave Music System II - Graphite Gray,AWMS
-Bose-Acoustimass-7-Theater-Speaker-System/product-reviews/B003ACLEOG,Amazon.com: Customer Reviews: Bose Acoustimass-7 Home Theater Speaker System, Black,AM 7
+Bose-Acoustimass-7-Theater-Speaker-System/product-reviews/B003ACLEOG,Amazon.com: Customer Reviews: Bose Acoustimass-7 Home Theater Speaker System Black,AM 7
 Bose-Acoustimass-Direct-Reflecting-Speaker/product-reviews/B008ITLRYS,Amazon.com: Customer Reviews: Bose Acoustimass Direct/Reflecting Speaker Black,Acoustimass DirectReflecting Speaker
 Bose-Acoustimass-Direct-Reflecting-Speaker/product-reviews/B008ITMTTK,Amazon.com: Customer Reviews: Bose Acoustimass Direct/Reflecting Speaker White,Acoustimass DirectReflecting Speaker
 Bose-Acoustimass-Entertainment-Speaker-System/product-reviews/B000069E21,Amazon.com: Customer Reviews: Bose Acoustimass 5 Home Entertainment Speaker System (White),AM 5
@@ -84,9 +84,9 @@ Bose-Companion-multimedia-speaker-Graphite/product-reviews/B000HZBR64,Amazon.com
 Bose-Direct-Reflecting-Speaker-System/product-reviews/B00006HO4Y,Amazon.com: Customer Reviews: Bose® 201® Direct/Reflecting® Speaker System,201
 Bose-Direct-Reflecting-Speaker-System/product-reviews/B0006B5V6G,Amazon.com: Customer Reviews: Bose 901 Direct/Reflecting Speaker System - Walnut,901
 Bose-Direct-Reflecting-Speaker-System/product-reviews/B0006B5V6Q,Amazon.com: Customer Reviews: Bose 901 Direct/Reflecting Speaker System - Black Ash,901
-Bose-Environmental-Speakers-elegant-speakers/product-reviews/B0001H9TGI,Amazon.com: Customer Reviews: Bose 151 SE Environmental Speakers, elegant outdoor speakers - White,151
-Bose-Environmental-Speakers-premium-speakers/product-reviews/B00006I53C,Amazon.com: Customer Reviews: Bose 251 Environmental Speakers, premium outdoor speakers - Black,251
-Bose-Environmental-Speakers-premium-speakers/product-reviews/B00006I53D,Amazon.com: Customer Reviews: Bose 251 Environmental Speakers, premium outdoor speakers - White,251
+Bose-Environmental-Speakers-elegant-speakers/product-reviews/B0001H9TGI,Amazon.com: Customer Reviews: Bose 151 SE Environmental Speakers elegant outdoor speakers - White,151
+Bose-Environmental-Speakers-premium-speakers/product-reviews/B00006I53C,Amazon.com: Customer Reviews: Bose 251 Environmental Speakers premium outdoor speakers - Black,251
+Bose-Environmental-Speakers-premium-speakers/product-reviews/B00006I53D,Amazon.com: Customer Reviews: Bose 251 Environmental Speakers premium outdoor speakers - White,251
 Bose-Flush-Mounted-Marine-Speakers-Arctic/product-reviews/B0000AY3IS,Amazon.com: Customer Reviews: Bose 131 Flush-Mounted Marine Speakers (Arctic White) - 1 Pair,131
 Bose-In-Ear-Headphones-Old-Version/product-reviews/B000XA8766,Amazon.com: Customer Reviews: Bose In-Ear Headphones (Old Version),Bose In-ear
 Bose-LIFESTYLE-48-Entertainment-System/product-reviews/B000UQURGG,Amazon.com: Customer Reviews: Bose (43478) LIFESTYLE 48 Home Entertainment System - Series IV - (Black),LS 48
@@ -107,7 +107,7 @@ Bose-OE2i-Audio-Headphones-Black/product-reviews/B005KJJKVG,Amazon.com: Customer
 Bose-OE2i-Audio-Headphones-White/product-reviews/B005KJJOEY,Amazon.com: Customer Reviews: Bose OE2i Audio Headphones - White,OE2
 Bose-On-Ear-Headphones-Old-Version/product-reviews/B002LK2QJK,Amazon.com: Customer Reviews: Bose On-Ear Headphones(Old Version),Bose On-ear
 Bose-Outdoor-Environmental-Speakers-Black/product-reviews/B0001H9TGS,Amazon.com: Customer Reviews: Bose 151 SE Outdoor Environmental Speakers (Black),151
-Bose-Outdoor-Expansion-Wireless-Lifestyle/product-reviews/B005BNH16C,Amazon.com: Customer Reviews: Bose 251 (Black) Outdoor Expansion Wireless Package for Lifestyle V35, V25 & 235,251
+Bose-Outdoor-Expansion-Wireless-Lifestyle/product-reviews/B005BNH16C,Amazon.com: Customer Reviews: Bose 251 (Black) Outdoor Expansion Wireless Package for Lifestyle V35 V25 & 235,251
 Bose-PackLite-Extended-Bass-Package/product-reviews/B0058OVARA,Amazon.com: Customer Reviews: Bose PackLite Extended Bass Package,UNCERTAIN
 Bose-Premium-Hortz-Speaker-Black/product-reviews/B008AW8FAC,Amazon.com: Customer Reviews: Bose Premium Jewel Cube Hortz./Center Speaker -Black-,Jewel Cube Speakers
 Bose-Premium-Hortz-center-Speaker/product-reviews/B00BWWI4OE,Amazon.com: Customer Reviews: Bose Premium Jewel Cube Hortz./center Speaker (White),Jewel Cube Speakers

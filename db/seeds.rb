@@ -11,9 +11,9 @@
   %w(Apple http://store.apple.com/us/reviews/ ap_logo.png),
   %w(BestBuy http://www.bestbuy.com/site/ bb_logo.png),
   %w(Cnet http://reviews.cnet.com/ cnet_logo.png),
-  %w(FutureShop tbd fs_logo.png),
-  %w(NewEgg tbd ne_logo.png),
-  %w(Revoo tbd revoo_logo.png),
+  %w(FutureShop http://www.futureshop.ca/en-CA/product/ fs_logo.png),
+  %w(NewEgg http://www.newegg.com/Product/ ne_logo.png),
+  %w(Reevoo http://www.reevoo.com/p/ reevoo_logo.png),
   %w(Target tbd target_logo.png)
 ].each do |data|
   name, root, image = data

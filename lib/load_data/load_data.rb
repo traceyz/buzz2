@@ -55,14 +55,12 @@ module LoadData
     nil
   end
 
-
-
   def load_forum_links
     data = [
       %w(Amazon am_links.txt),
       %w(Apple ap_links.txt),
       %w(BestBuy bb_links.txt),
-      %w(Revoo bbuk_links.txt),
+      %w(Reevoo bbuk_links.txt),
       %w(Cnet cnet_links.txt),
       %w(FutureShop fs_links.txt),
       %w(NewEgg ne_links.txt)
@@ -75,20 +73,20 @@ module LoadData
 
   def add_titles_to_links
     input = [
-      %w(Amazon am_links2.txt),
-      %w(Apple ap_links2.txt),
-      %w(BestBuy bb_links2.txt),
-      %w(Reevoo bbuk_links2.txt),
-      %w(Cnet cnet_links2.txt),
+      # %w(Amazon am_links2.txt),
+      # %w(Apple ap_links2.txt),
+      # %w(BestBuy bb_links2.txt),
+      # %w(Reevoo bbuk_links2.txt),
+      # %w(Cnet cnet_links2.txt),
       %w(FutureShop fs_links2.txt),
       %w(NewEgg ne_links2.txt)
     ]
     output =  [
-      %w(Amazon am_links.txt),
-      %w(Apple ap_links.txt),
-      %w(BestBuy bb_links.txt),
-      %w(Reevoo bbuk_links.txt),
-      %w(Cnet cnet_links.txt),
+      # %w(Amazon am_links.txt),
+      # %w(Apple ap_links.txt),
+      # %w(BestBuy bb_links.txt),
+      # %w(Reevoo bbuk_links.txt),
+      # %w(Cnet cnet_links.txt),
       %w(FutureShop fs_links.txt),
       %w(NewEgg ne_links.txt)
     ]
@@ -109,7 +107,7 @@ module LoadData
           puts e.message
           next
         end
-        title = doc.css('title').text
+        title = doc.css('title').text.strip.gsub(",",'') # some titles have commas - bad for later split
         out_file.puts "#{link},#{CGI.unescapeHTML(title)},#{product_name}"
       end
       out_file.close
@@ -130,21 +128,21 @@ module LoadData
     raise "#{forum.name} product links already exist" if forum.product_links.first
     data = read_file(file_name)
     data.each do |datum|
-      link, product_name = datum.chomp.split(",")
+      link, title, product_name = datum.chomp.split(",")
       next if product_name.eql?("UNCERTAIN")
       puts "PRODUCT NAME #{product_name}"
       product = Product.find_by_name(product_name.strip)
       raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, link.strip)
+      build_link(forum, product, title.strip, link.strip)
     end
     puts "complete links load for #{forum_name}"
     nil
   end
 
-  def build_link(forum, product, link)
-    puts "PRODUCT ID IS #{product.id}"
+  def build_link(forum, product, title, link)
+    #puts "PRODUCT ID IS #{product.id}"
     product_link = forum.product_links.create!(:product_id => product.id, :active => true)
-    product_link.link_urls.create!(:link => link, :current => true)
+    product_link.link_urls.create!(:link => link, :title => title, :current => true)
     nil
   end
 

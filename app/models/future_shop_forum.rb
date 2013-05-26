@@ -1,0 +1,3 @@
+class FutureShopForum < Forum
+
+end

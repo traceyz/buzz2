@@ -1,0 +1,3 @@
+class BestBuyForum < Forum
+
+end

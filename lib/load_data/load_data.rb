@@ -53,9 +53,11 @@ module LoadData
     nil
   end
 
+
+
   def load_forum_links
     data = [
-      %w(Amazon am_links.txt),
+      %w(Amazon am_links.txt)
       %w(Apple ap_links.txt),
       %w(BestBuy bb_links.txt),
       %w(Revoo bbuk_links.txt),
@@ -80,6 +82,7 @@ module LoadData
 
   def load_forum(forum_name, file_name)
     forum = Forum.find_by_name(forum_name)
+    raise "#{forum.name} product links already exist" if forum.product_links.first
     data = read_file(file_name)
     data.each do |datum|
       link, product_name = datum.chomp.split(",")
@@ -94,12 +97,9 @@ module LoadData
   end
 
   def build_link(forum, product, link)
-    p_l = forum.product_links.where(:product_id => product.id).first ||
-             forum.product_links.new(:product_id => product.id)
-    p_l.update_attributes!(:active => true)
-    link_url = p_l.link_urls.where(:link => link).first ||
-                    p_l.link_urls.new(:link => link)
-    link_url.update_attributes!(:current => true)
+    puts "PRODUCT ID IS #{product.id}"
+    product_link = forum.product_links.create!(:product_id => product.id, :active => true)
+    product_link.link_urls.create!(:link => link, :current => true)
     nil
   end
 

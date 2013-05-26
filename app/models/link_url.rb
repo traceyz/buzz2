@@ -1,9 +1,11 @@
 class LinkUrl < ActiveRecord::Base
 
   belongs_to :product_link
+  has_many :reviews
 
-  validates :link, :current, presence: true
+  validates :link, presence: true, uniqueness: true
+  validates :current, :title, presence: true
 
-  attr_accessible :link, :current
+  attr_accessible :link, :current, :title
 
 end

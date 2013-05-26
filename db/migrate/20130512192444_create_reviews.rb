@@ -9,7 +9,7 @@ class CreateReviews < ActiveRecord::Migration
       t.string :headline
       t.string :body
       t.string :unique_key, null: false
-      t.references :product_link
+      t.references :link_url, null: false
 
       t.timestamps
     end

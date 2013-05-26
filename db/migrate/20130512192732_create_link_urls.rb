@@ -2,6 +2,7 @@ class CreateLinkUrls < ActiveRecord::Migration
   def change
     create_table :link_urls do |t|
       t.string :link, null: false
+      t.string :title, null: false
       t.boolean :current, default: false
       t.references :product_link
       t.timestamps

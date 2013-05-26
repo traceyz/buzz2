@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(:version => 20130522195129) do
     t.string   "name",       :null => false
     t.string   "image",      :null => false
     t.string   "root",       :null => false
+    t.string   "tail"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -44,8 +45,8 @@ ActiveRecord::Schema.define(:version => 20130522195129) do
 
   create_table "product_links", :force => true do |t|
     t.boolean  "active",     :default => false
-    t.integer  "forum_id"
-    t.integer  "product_id"
+    t.integer  "forum_id",                      :null => false
+    t.integer  "product_id",                    :null => false
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
   end
@@ -73,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20130522195129) do
     t.string   "headline"
     t.string   "body"
     t.string   "unique_key",      :null => false
-    t.integer  "product_link_id"
+    t.integer  "product_link_id", :null => false
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end

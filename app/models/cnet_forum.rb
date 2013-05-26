@@ -1,0 +1,3 @@
+class CnetForum < Forum
+
+end

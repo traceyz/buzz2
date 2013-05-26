@@ -4,6 +4,7 @@ class CreateForums < ActiveRecord::Migration
       t.string :name, null: false
       t.string :image, null: false
       t.string :root, null: false
+      t.string :tail
       t.timestamps
     end
 

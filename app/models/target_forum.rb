@@ -1,0 +1,3 @@
+class TargetForum < Forum
+
+end

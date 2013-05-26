@@ -1,6 +1,6 @@
 class Review < ActiveRecord::Base
 
-  belongs_to :product
+  belongs_to :link_url
 
   validates :author, presence: true
   validates :rating, numericality: { only_integer: true }

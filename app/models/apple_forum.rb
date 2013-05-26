@@ -1,0 +1,3 @@
+class AppleForum < Forum
+
+end

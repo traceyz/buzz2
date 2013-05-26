@@ -4,6 +4,6 @@ class Forum < ActiveRecord::Base
 
   validates :name, :image, :root, presence: true
 
-  attr_accessible :name, :image, :root
+  attr_accessible :name, :image, :root, :tail, :id
 
 end

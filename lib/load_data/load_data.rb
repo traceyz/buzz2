@@ -1,5 +1,7 @@
 module LoadData
 
+  require 'open-uri'
+
   def load_products
     [
       ["Lifestyle DVD-based Systems",
@@ -57,7 +59,7 @@ module LoadData
 
   def load_forum_links
     data = [
-      %w(Amazon am_links.txt)
+      %w(Amazon am_links.txt),
       %w(Apple ap_links.txt),
       %w(BestBuy bb_links.txt),
       %w(Revoo bbuk_links.txt),
@@ -69,6 +71,44 @@ module LoadData
       load_forum(forum_name, file_name)
     end
     nil
+  end
+
+  def add_titles_to_links
+    input = [
+      %w(Amazon am_links2.txt),
+      %w(Apple ap_links2.txt),
+      %w(BestBuy bb_links2.txt),
+      #%w(Revoo bbuk_links2.txt),
+      %w(Cnet cnet_links2.txt),
+      %w(FutureShop fs_links2.txt),
+      %w(NewEgg ne_links2.txt)
+    ]
+    output =  [
+      %w(Amazon am_links.txt),
+      %w(Apple ap_links.txt),
+      %w(BestBuy bb_links.txt),
+      #%w(Revoo bbuk_links.txt),
+      %w(Cnet cnet_links.txt),
+      %w(FutureShop fs_links.txt),
+      %w(NewEgg ne_links.txt)
+    ]
+    input.each_with_index do |line, idx|
+      forum_name, file_name = line
+      forum = Forum.find_by_name(forum_name)
+      out_name = output[idx][1]
+      out_path = "#{Rails.root}/lib/load_data/#{out_name}"
+      out_file = File.open(out_path, 'w')
+      read_file(file_name).each do |datum|
+        link, product_name = datum.chomp.split(",")
+        tail = forum.tail || ""
+        url = forum.root + link + tail
+        puts url
+        doc = Nokogiri::HTML(open(url))
+        title = doc.css('title').text
+        out_file.puts "#{link},#{title},#{product_name}"
+      end
+      out_file.close
+    end
   end
 
 # use this to load the links => products

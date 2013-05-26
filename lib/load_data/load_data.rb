@@ -78,7 +78,7 @@ module LoadData
       %w(Amazon am_links2.txt),
       %w(Apple ap_links2.txt),
       %w(BestBuy bb_links2.txt),
-      #%w(Revoo bbuk_links2.txt),
+      %w(Reevoo bbuk_links2.txt),
       %w(Cnet cnet_links2.txt),
       %w(FutureShop fs_links2.txt),
       %w(NewEgg ne_links2.txt)
@@ -87,7 +87,7 @@ module LoadData
       %w(Amazon am_links.txt),
       %w(Apple ap_links.txt),
       %w(BestBuy bb_links.txt),
-      #%w(Revoo bbuk_links.txt),
+      %w(Reevoo bbuk_links.txt),
       %w(Cnet cnet_links.txt),
       %w(FutureShop fs_links.txt),
       %w(NewEgg ne_links.txt)
@@ -103,9 +103,14 @@ module LoadData
         tail = forum.tail || ""
         url = forum.root + link + tail
         puts url
-        doc = Nokogiri::HTML(open(url))
+        begin
+          doc = Nokogiri::HTML(open(url))
+        rescue => e
+          puts e.message
+          next
+        end
         title = doc.css('title').text
-        out_file.puts "#{link},#{title},#{product_name}"
+        out_file.puts "#{link},#{CGI.unescapeHTML(title)},#{product_name}"
       end
       out_file.close
     end

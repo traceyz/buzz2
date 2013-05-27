@@ -37,7 +37,9 @@ class Scraper < ActiveRecord::Base
       key = check_unique(review)
       next unless key
       args = {:unique_key => key, :link_url_id => link_url.id}
-      args.update(unescape(args_from_review(review)))
+      add_args = args_from_review(review)
+      next unless add_args
+      args.update(unescape(add_args))
       the_review = Object.const_get(klass).new(args)
       unless the_review.valid?
         puts "INVALID"

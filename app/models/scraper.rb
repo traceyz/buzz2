@@ -17,6 +17,39 @@ class Scraper < ActiveRecord::Base
     "Dec" => 12
   }
 
+  def Scraper.get_reviews(forum)
+    klass = "#{forum.name}Review"
+    forum.product_links.each do |product_link|
+      product_link.link_urls.each do |link_url|
+        url = forum.root + link_url.link + forum.tail
+        doc = Nokogiri::HTML(open(url))
+        reviews_from_page(doc,link_url,klass)
+        onward_link = next_link(doc)
+        puts onward_link ? onward_link : "NO NEXT LINK"
+      end
+    end
+    nil
+  end
+
+  def Scraper.reviews_from_page(doc,link_url,klass)
+    reviews = []
+    page_reviews(doc).each do |review|
+      key = check_unique(review)
+      next unless key
+      args = {:unique_key => key, :link_url_id => link_url.id}
+      args.update(unescape(args_from_review(review)))
+      the_review = Object.const_get(klass).new(args)
+      unless the_review.valid?
+        puts "INVALID"
+        puts the_review.inspect
+        next
+      end
+      the_review.save!
+      reviews << the_review
+    end
+    reviews
+  end
+
   def Scraper.unescape(args)
     [:headline, :body, :author, :location].each do |k|
       args[k] = CGI.unescapeHTML(args[k])

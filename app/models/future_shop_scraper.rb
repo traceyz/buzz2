@@ -1,0 +1,3 @@
+class FutureShopScraper < Scraper
+
+end

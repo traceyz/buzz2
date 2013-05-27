@@ -1,0 +1,3 @@
+class TargetScraper < Scraper
+
+end

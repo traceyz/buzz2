@@ -1,7 +1,11 @@
-class AmazonForum < Forum
+class AmazonScraper < Scraper
 
   require 'open-uri'
   require 'load_data/utils'
+
+  cattr_accessor :name, :root, :tail, :image
+
+  @@name = "Amazon"
 
   def self.get_reviews
     forum = Forum.find_by_name("Amazon")

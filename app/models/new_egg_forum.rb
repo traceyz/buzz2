@@ -1,3 +1,0 @@
-class NewGeggForum < Forum
-
-end

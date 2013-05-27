@@ -1,0 +1,3 @@
+class NewEggScraper < Scraper
+
+end

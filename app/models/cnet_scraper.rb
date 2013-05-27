@@ -1,0 +1,3 @@
+class CnetScraper < Scraper
+
+end

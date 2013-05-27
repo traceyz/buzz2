@@ -1,0 +1,3 @@
+class ReevooScraper < Scraper
+
+end

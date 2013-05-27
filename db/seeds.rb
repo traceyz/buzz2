@@ -23,6 +23,8 @@ end
 Forum.find_by_name("Amazon").update_attributes!(
   :tail => "/ref=cm_cr_pr_top_link_1?ie=UTF8&showViewpoints=0&sortBy=bySubmissionDateDescending")
 
+Forum.find_by_name("Cnet").update+_attributes!(:tail => "?tag=srt;date&uoShowOnly=full&ord=creationDate%20desc")
+
 [
   "Lifestyle DVD-based Systems",
   "Lifestyle Component-based Systems",

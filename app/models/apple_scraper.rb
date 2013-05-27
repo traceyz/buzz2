@@ -1,0 +1,3 @@
+class AppleScraper < Scraper
+
+end

@@ -17,13 +17,16 @@
   %w(Target tbd target_logo.png)
 ].each do |data|
   name, root, image = data
-  Forum.create!(:name => name, :root => root, :image => image)
+  Forum.create!(:name => name, :root => root, :image => image, :tail => "")
 end
 
 Forum.find_by_name("Amazon").update_attributes!(
   :tail => "/ref=cm_cr_pr_top_link_1?ie=UTF8&showViewpoints=0&sortBy=bySubmissionDateDescending")
 
-Forum.find_by_name("Cnet").update+_attributes!(:tail => "?tag=srt;date&uoShowOnly=full&ord=creationDate%20desc")
+Forum.find_by_name("Cnet").update_attributes!(
+  :tail => "?tag=srt;date&uoShowOnly=full&ord=creationDate%20desc")
+
+Forum.find_by_name("BestBuy").update_attributes!(:tail => "#tabbed-customerreviews")
 
 [
   "Lifestyle DVD-based Systems",

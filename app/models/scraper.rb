@@ -33,14 +33,18 @@ class Scraper < ActiveRecord::Base
 
   def Scraper.reviews_from_page(doc,link_url,klass)
     reviews = []
+    review_class = Object.const_get(klass)
     page_reviews(doc).each do |review|
-      key = check_unique(review)
+      key = get_unique_key(review)
       next unless key
+      if review_class.where(:unique_key => key).first
+        puts "Review already exists"; next
+      end
       args = {:unique_key => key, :link_url_id => link_url.id}
       add_args = args_from_review(review)
       next unless add_args
       args.update(unescape(add_args))
-      the_review = Object.const_get(klass).new(args)
+      the_review = review_class.new(args)
       unless the_review.valid?
         puts "INVALID"
         puts the_review.inspect

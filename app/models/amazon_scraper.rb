@@ -1,5 +1,13 @@
 class AmazonScraper < Scraper
 
+  def self.harvest_reviews
+    get_reviews(Forum.find_by_name("Amazon"))
+  end
+
+  def self.page_reviews(doc)
+    doc.css("table#productReviews tr td >  div")
+  end
+
   def self.next_link(doc)
     begin
       doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
@@ -8,22 +16,12 @@ class AmazonScraper < Scraper
     end
   end
 
-  def self.page_reviews(doc)
-    doc.css("table#productReviews tr td >  div")
-  end
-
-  def self.check_unique(review)
-    key = nil
+  def self.get_unique_key(review)
     begin
-      key = review.css("a[name]")[0][:name].split(".")[0]
+      review.css("a[name]")[0][:name].split(".")[0]
     rescue
       puts "NO UNIQUE KEY"
     end
-    if key && AmazonReview.where(:unique_key => key).first
-        puts "Review already exists"
-        key = nil
-    end
-    key
   end
 
   def self.args_from_review(review)
@@ -34,7 +32,7 @@ class AmazonScraper < Scraper
       puts "DATE FAILS"
       return nil
     end
-    args[:review_date] = Scraper.build_date(date)
+    args[:review_date] = build_date(date)
     args[:rating] = review.at_css(".swSprite").content.scan(/^\d/)[0].to_i
     puts "\tRATING #{args[:rating]}"
     body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")

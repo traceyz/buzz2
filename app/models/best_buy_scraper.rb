@@ -1,5 +1,9 @@
 class BestBuyScraper < Scraper
 
+  require 'open-uri'
+  require 'json'
+
+  # this gets reviews from the first page
   def self.eval_reviews
     forum = Forum.find_by_name("BestBuy")
     forum.product_links.each do |product_link|
@@ -38,8 +42,38 @@ class BestBuyScraper < Scraper
     nil
   end
 
+  def self.parse_bb
+    file = File.read("#{Rails.root}/lib/load_data/parse_bb.txt")
+    json = JSON.parse(File.read("#{Rails.root}/lib/load_data/parse_bb.txt"))
+    doc = Nokogiri::HTML(json['BVRRSourceID'])
+    doc.css('div.BVRRContentReview').each do |review|
+      puts "REVIEW"
+    end
+
+
+  end
+
   def self.harvest_reviews
-    get_reviews(Forum.find_by_name("BestBuy"))
+    root = 'http://bestbuy.ugc.bazaarvoice.com/3545w/'
+    tail = '/reviews.djs?format=embeddedhtml&page=1&scrollToTop=true%20HTTP/1.1'
+    forum = Forum.find_by_name("BestBuy")
+    forum.product_links.each do |product_link|
+      product_link.link_urls.each do |link_url|
+        link_url.link =~ /skuId=(\d+)&id/
+        next unless $1
+        url = root + $1 + tail
+        p = open(url)
+        data = p.read
+        data =~ /var materials=({.+}),\s*initializers=/m
+        json = JSON.parse($1)
+        doc = Nokogiri::HTML(json['BVRRSourceID'])
+        doc.css('div.BVRRContentReview').each do |review|
+          puts "REVIEW"
+          puts review.attr("id").split("_")[1]
+        end
+      end
+    end
+    nil
   end
 
   def self.page_reviews(doc)

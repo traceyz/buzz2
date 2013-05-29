@@ -1,7 +1,11 @@
 class AmazonScraper < Scraper
 
+  def self.forum
+    Forum.find_by_name("Amazon")
+  end
+
   def self.harvest_reviews
-    get_reviews(Forum.find_by_name("Amazon"))
+    get_reviews(forum)
   end
 
   def self.page_reviews(doc)
@@ -48,7 +52,7 @@ class AmazonScraper < Scraper
 
   def self.exercise
     product = Product.find_by_name("QC 15")
-    link_url = Forum.find_by_name("Amazon") \
+    link_url = forum \
       .product_links.where(:product_id => product.id).first.link_urls.first
     path = "#{Rails.root}/exercise_files/amazon.html"
     doc = Nokogiri::HTML(open(path))

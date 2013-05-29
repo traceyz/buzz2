@@ -21,7 +21,7 @@ class Scraper < ActiveRecord::Base
     klass = "#{forum.name}Review"
     forum.product_links.each do |product_link|
       product_link.link_urls.each do |link_url|
-        url = forum.root + link_url.link + forum.tail
+        url = doc_from_url(link_url, forum)
         doc = Nokogiri::HTML(open(url))
         reviews_from_page(doc,link_url,klass)
         onward_link = next_link(doc)
@@ -31,8 +31,15 @@ class Scraper < ActiveRecord::Base
     nil
   end
 
+  def self.url_from_link(link_url)
+    "#{link_url.forum.root}#{link_url.link}#{link_url.forum.tail}"
+  end
+
+  def self.doc_from_url(url)
+    doc = Nokogiri::HTML(open(url))
+  end
+
   def Scraper.reviews_from_page(doc,link_url,klass)
-    reviews = []
     review_class = Object.const_get(klass)
     page_reviews(doc).each do |review|
       key = get_unique_key(review)
@@ -51,10 +58,10 @@ class Scraper < ActiveRecord::Base
         next
       end
       the_review.save!
-      reviews << the_review
     end
-    reviews
   end
+
+  def Scraper.reviews_from_doc
 
   def Scraper.unescape(args)
     [:headline, :body, :author, :location].each do |k|

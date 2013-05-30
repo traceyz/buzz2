@@ -2,21 +2,6 @@ class Scraper < ActiveRecord::Base
 
   require 'open-uri'
 
-  MONTHS = {
-    "Jan" => 1,
-    "Feb" => 2,
-    "Mar" => 3,
-    "Apr" => 4,
-    "May" => 5,
-    "Jun" => 6,
-    "Jul" => 7,
-    "Aug" => 8,
-    "Sep" => 9,
-    "Oct" => 10,
-    "Nov" => 11,
-    "Dec" => 12
-  }
-
   def Scraper.get_reviews(forum)
     klass = "#{forum.name}Review"
     forum.product_links.each do |product_link|
@@ -61,7 +46,7 @@ class Scraper < ActiveRecord::Base
         puts args.inspect
       end
     end
-    nil
+    nil # will return the next link when we get that working
   end
 
   def Scraper.unescape(args)
@@ -98,6 +83,8 @@ class Scraper < ActiveRecord::Base
     Date.civil(yr,mo,d)
   end
 
+  MONTHS = Hash[
+    %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec).zip(Array(1..12))]
 # Oct 20, 2011 or October 20, 2011
   def Scraper.build_date(str)
     yr = year(str)

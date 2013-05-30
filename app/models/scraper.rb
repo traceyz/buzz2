@@ -21,11 +21,16 @@ class Scraper < ActiveRecord::Base
     klass = "#{forum.name}Review"
     forum.product_links.each do |product_link|
       product_link.link_urls.each do |link_url|
-        url = doc_from_url(link_url, forum)
-        doc = Nokogiri::HTML(open(url))
-        reviews_from_page(doc,link_url,klass)
-        onward_link = next_link(doc)
-        puts onward_link ? onward_link : "NO NEXT LINK"
+        url = url_from_link(link_url)
+        while true
+          doc = doc_from_url(url)
+          onward_link = build_reviews_from_doc(doc,link_url,klass)
+          if onward_link
+            url = url_from_link(onward_link)
+          else
+            break
+          end
+        end
       end
     end
     nil
@@ -39,33 +44,30 @@ class Scraper < ActiveRecord::Base
     doc = Nokogiri::HTML(open(url))
   end
 
-  def Scraper.reviews_from_page(doc,link_url,klass)
+  def Scraper.build_reviews_from_doc(doc,link_url,klass)
     review_class = Object.const_get(klass)
     page_reviews(doc).each do |review|
-      key = get_unique_key(review)
-      next unless key
+      next unless (key = get_unique_key(review))
       if review_class.where(:unique_key => key).first
         puts "Review already exists"; next
       end
       args = {:unique_key => key, :link_url_id => link_url.id}
-      add_args = args_from_review(review)
-      next unless add_args
+      next unless (add_args = args_from_review(review))
       args.update(unescape(add_args))
-      the_review = review_class.new(args)
-      unless the_review.valid?
-        puts "INVALID"
-        puts the_review.inspect
-        next
+      begin
+        the_review = review_class.create!(args)
+      rescue => e
+        puts e.message
+        puts args.inspect
       end
-      the_review.save!
     end
+    nil
   end
 
-  def Scraper.reviews_from_doc
-
   def Scraper.unescape(args)
+    coder = HTMLEntities.new
     [:headline, :body, :author, :location].each do |k|
-      args[k] = CGI.unescapeHTML(args[k])
+      args[k] = coder.decode(args[k])
     end
     args
   end

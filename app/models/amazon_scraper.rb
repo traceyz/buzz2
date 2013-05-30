@@ -36,18 +36,18 @@ class AmazonScraper < Scraper
       puts "DATE FAILS"
       return nil
     end
-    args[:review_date] = build_date(date)
-    args[:rating] = review.at_css(".swSprite").content.scan(/^\d/)[0].to_i
-    puts "\tRATING #{args[:rating]}"
     body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
     body.gsub!(/<[^b][^>]+>/m,"")
     body ||= "EMPTY"
-    args[:body] = body.gsub(/<[^>]+>/,"").strip!
-    args[:headline] = text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY"
-    args[:author] = text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY"
-    str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : "NA"
-    args[:location] = str.gsub(/[()]/,"")
-    args
+    location = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : "NA"
+    {
+      :review_date => build_date(date),
+      :rating => review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
+      :body => body.gsub(/<[^>]+>/,"").strip!,
+      :headline => text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
+      :author => text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
+      :location => location.gsub(/[()]/,"")
+    }
   end
 
   def self.exercise

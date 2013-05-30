@@ -7,7 +7,8 @@ class Scraper < ActiveRecord::Base
     forum.product_links.each do |product_link|
       product_link.link_urls.each do |link_url|
         url = url_from_link(link_url)
-        while true
+        cycle = 0 # check for run-away
+        while true && cycle < 100
           doc = doc_from_url(url)
           onward_link = build_reviews_from_doc(doc,link_url,klass)
           if onward_link
@@ -15,6 +16,7 @@ class Scraper < ActiveRecord::Base
           else
             break
           end
+          cycle += 1
         end
       end
     end

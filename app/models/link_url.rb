@@ -8,6 +8,6 @@ class LinkUrl < ActiveRecord::Base
 
   attr_accessible :link, :current, :title
 
-  delegate: :forum, :to => :product_link
+  delegate :forum, :to => :product_link
 
 end

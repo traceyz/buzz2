@@ -2,7 +2,7 @@ class Scraper < ActiveRecord::Base
 
   require 'open-uri'
 
-  def Scraper.get_reviews(forum)
+  def Scraper.get_reviews
     klass = "#{forum.name}Review"
     forum.product_links.each do |product_link|
       product_link.link_urls.each do |link_url|
@@ -10,9 +10,10 @@ class Scraper < ActiveRecord::Base
         cycle = 0 # check for run-away
         while true && cycle < 100
           doc = doc_from_url(url)
-          onward_link = build_reviews_from_doc(doc,link_url,klass)
+          onward_link = build_reviews_from_doc(doc,link_url,url,klass)
           if onward_link
-            url = url_from_link(onward_link)
+            puts "ONWARD #{onward_link}"
+            url = onward_link#url_from_link(onward_link)
           else
             break
           end
@@ -31,24 +32,28 @@ class Scraper < ActiveRecord::Base
     doc = Nokogiri::HTML(open(url))
   end
 
-  def Scraper.build_reviews_from_doc(doc,link_url,klass)
+  def Scraper.build_reviews_from_doc(doc,link_url,url,klass)
+    count = 0
     review_class = Object.const_get(klass)
     page_reviews(doc).each do |review|
       next unless (key = get_unique_key(review))
       if review_class.where(:unique_key => key).first
-        puts "Review already exists"; next
+        puts "Review already exists"
+        next
       end
       args = {:unique_key => key, :link_url_id => link_url.id}
       next unless (add_args = args_from_review(review))
       args.update(unescape(add_args))
       begin
         the_review = review_class.create!(args)
+        count += 1
       rescue => e
         puts e.message
         puts args.inspect
       end
     end
-    nil # will return the next link when we get that working
+    puts "GOT #{count} REVIEWS"
+    count > 0 ? next_link(doc,link_url,url,klass) : nil
   end
 
   def Scraper.unescape(args)

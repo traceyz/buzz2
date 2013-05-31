@@ -4,10 +4,6 @@ class AmazonScraper < Scraper
     Forum.find_by_name("Amazon")
   end
 
-  def self.harvest_reviews
-    get_reviews(forum)
-  end
-
   def self.page_reviews(doc)
     doc.css("table#productReviews tr td >  div")
   end

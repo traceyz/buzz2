@@ -7,7 +7,7 @@ class CreateReviews < ActiveRecord::Migration
       t.string :location, default: ""
       t.integer :rating, null: false
       t.string :headline, default: ""
-      t.string :body, default: ""
+      t.text :body, default: ""
       t.string :unique_key, null: false
       t.references :link_url, null: false
 

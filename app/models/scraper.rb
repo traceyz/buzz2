@@ -8,15 +8,15 @@ class Scraper < ActiveRecord::Base
       product_link.link_urls.each do |link_url|
         url = url_from_link(link_url)
         cycle = 0 # check for run-away
-        while true && cycle < 100
+        while url && cycle < 100
           doc = doc_from_url(url)
-          onward_link = build_reviews_from_doc(doc,link_url,url,klass)
-          if onward_link
-            puts "ONWARD #{onward_link}"
-            url = onward_link#url_from_link(onward_link)
-          else
-            break
-          end
+          url = build_reviews_from_doc(doc,link_url,url,klass)
+          # if onward_link
+
+          #   url = onward_link#url_from_link(onward_link)
+          # else
+          #   break
+          # end
           cycle += 1
         end
       end
@@ -42,7 +42,12 @@ class Scraper < ActiveRecord::Base
         next
       end
       args = {:unique_key => key, :link_url_id => link_url.id}
-      next unless (add_args = args_from_review(review))
+      begin
+        next unless (add_args = args_from_review(review))
+      rescue => e
+        puts "ERROR #{e.message}"
+        return
+      end
       args.update(unescape(add_args))
       begin
         the_review = review_class.create!(args)

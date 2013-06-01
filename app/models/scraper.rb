@@ -123,8 +123,8 @@ class Scraper < ActiveRecord::Base
   # takes an array of objects
   # concatenates their .to_s
   # makes a hex digest of the result
-  def Scraper.unique_key(hash)
-    str = hash.values.each_with_object(""){ |elt, s| s << elt.to_s }
+  def Scraper.build_unique_key(args)
+    str = args.values.each_with_object(""){ |elt, s| s << elt.to_s }
     Digest::MD5.hexdigest(str)
   end
 

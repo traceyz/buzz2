@@ -4,10 +4,10 @@ class CreateReviews < ActiveRecord::Migration
       t.string :type
       t.date :review_date, null: false
       t.string :author, null: false
-      t.string :location
+      t.string :location, default: ""
       t.integer :rating, null: false
-      t.string :headline
-      t.string :body
+      t.string :headline, default: ""
+      t.string :body, default: ""
       t.string :unique_key, null: false
       t.references :link_url, null: false
 

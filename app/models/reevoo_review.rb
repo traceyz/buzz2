@@ -1,3 +1,3 @@
-class RevooReview < Review
+class ReevooReview < Review
 
 end

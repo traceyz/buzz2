@@ -1,11 +1,11 @@
-bose-quietcomfort-15/page/1,Bose QuietComfort 15 Reviews - Compare Prices and Deals - Reevoo - Page 1,QC 15
-bose-ae2/page/1,Bose AE2 Reviews - Compare Prices and Deals - Reevoo - Page 1,AE2
-bose-companion-3-ii/page/1,Bose Companion 3 II  reviews - Compare prices and deals - Reevoo - Page 1,Companion 3
-bose-companion-2-series-2/page/1,Bose Companion 2 Series 2  reviews - Compare prices and deals - Reevoo - Page 1,Companion 2
-bose-quietcomfort-3-1/page/1,Bose QuietComfort 3  Reviews - Compare Prices and Deals - Reevoo - Page 1,QC 3
-bose-companion-5/page/1,Bose Companion 5  reviews - Compare prices and deals - Reevoo - Page 1,Companion 5
-bose-musicmonitor/page/1,Bose MusicMonitor  reviews - Compare prices and deals - Reevoo - Page 1,Computer Music Monitor
-bose-oe2-1/page/1,Bose OE2  Reviews - Compare Prices and Deals - Reevoo - Page 1,OE2
-bose-ie2/page/1,Bose IE2 Reviews - Compare Prices and Deals - Reevoo - Page 1,IE2
-bose-mie2i/page/1,Bose MIE2i  Reviews - Compare Prices and Deals - Reevoo - Page 1,MIE2
-bose-around-ear/page/1,Bose Around-Ear Reviews - Compare Prices and Deals - Reevoo - Page 1,Bose Around-ear
+/p/bose-quietcomfort-15/most-recent/page/1,Bose QuietComfort 15 Reviews - Compare Prices and Deals - Reevoo - Page 1,QC 15
+/p/bose-ae2/most_recent/page/1,Bose AE2 Reviews - Compare Prices and Deals - Reevoo - Page 1,AE2
+/p/bose-companion-3-ii/most-recent/page/1,Bose Companion 3 II  reviews - Compare prices and deals - Reevoo - Page 1,Companion 3
+/p/bose-companion-2-series-2/most-recent/page/1,Bose Companion 2 Series 2  reviews - Compare prices and deals - Reevoo - Page 1,Companion 2
+/p/bose-quietcomfort-3-1/most-recent/page/1,Bose QuietComfort 3  Reviews - Compare Prices and Deals - Reevoo - Page 1,QC 3
+/p/bose-companion-5/most-recent/page/1,Bose Companion 5  reviews - Compare prices and deals - Reevoo - Page 1,Companion 5
+/p/bose-musicmonitor/most-recent/page/1,Bose MusicMonitor  reviews - Compare prices and deals - Reevoo - Page 1,Computer Music Monitor
+/p/bose-oe2-1/most-recent/page/1,Bose OE2  Reviews - Compare Prices and Deals - Reevoo - Page 1,OE2
+/p/bose-ie2/most-recent/page/1,Bose IE2 Reviews - Compare Prices and Deals - Reevoo - Page 1,IE2
+/p/bose-mie2i/most-recent/page/1,Bose MIE2i  Reviews - Compare Prices and Deals - Reevoo - Page 1,MIE2
+/p/bose-around-ear/most-recent/page/1,Bose Around-Ear Reviews - Compare Prices and Deals - Reevoo - Page 1,Bose Around-ear

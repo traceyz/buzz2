@@ -36,11 +36,9 @@ class CnetScraper < Scraper
 
   def self.next_link(doc,link_url,url,klass)
     begin
-      link = URI::encode("http://reviews.cnet.com#{doc.at_css('li.next a')[:href]}")
-      puts "NEXT LINK #{link}"
+       URI::encode("#{forum.root}#{doc.at_css('li.next a')[:href]}")
     rescue
       puts "NO NEXT LINK"
     end
-    link
   end
 end

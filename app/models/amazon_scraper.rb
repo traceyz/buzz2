@@ -8,7 +8,7 @@ class AmazonScraper < Scraper
     doc.css("table#productReviews tr td >  div")
   end
 
-  def self.next_link(doc)
+  def self.next_link(doc,link_url,url,klass)
     begin
       doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
     rescue
@@ -25,7 +25,6 @@ class AmazonScraper < Scraper
   end
 
   def self.args_from_review(review)
-    args = {}
     text = review.to_s
     date = text =~ /<nobr>([A-z]+ \d{1,2}, \d{4})/ ? $1 : "FAILS"
     if date.eql?("FAILS")
@@ -35,14 +34,14 @@ class AmazonScraper < Scraper
     body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
     body.gsub!(/<[^b][^>]+>/m,"")
     body ||= "EMPTY"
-    location = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : "NA"
+    location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : "NA"
     {
-      :review_date => build_date(date),
-      :rating => review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
-      :body => body.gsub(/<[^>]+>/,"").strip!,
-      :headline => text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
-      :author => text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
-      :location => location.gsub(/[()]/,"")
+      review_date: build_date(date),
+      rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
+      body: body.gsub(/<[^>]+>/,"").strip!,
+      headline: text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
+      author: text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
+      location: location_str.gsub(/[()]/,"")
     }
   end
 

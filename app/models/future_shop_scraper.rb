@@ -33,6 +33,6 @@ class FutureShopScraper < Scraper
   end
 
   def self.next_link(doc,link_url,url,klass)
-    nil
+
   end
 end

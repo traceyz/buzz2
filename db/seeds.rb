@@ -8,12 +8,12 @@
 
 [
   %w(Amazon http://www.amazon.com/ am_logo.png),
-  %w(Apple http://store.apple.com/us/reviews/ ap_logo.png),
+  %w(Apple http://store.apple.com ap_logo.png),
   %w(BestBuy http://www.bestbuy.com/site/ bb_logo.png),
-  %w(Cnet http://reviews.cnet.com/ cnet_logo.png),
+  %w(Cnet http://reviews.cnet.com cnet_logo.png),
   %w(FutureShop http://www.futureshop.ca/en-CA/product/ fs_logo.png),
   %w(NewEgg http://www.newegg.com/Product/ ne_logo.png),
-  %w(Reevoo http://www.reevoo.com/p/ reevoo_logo.png),
+  %w(Reevoo http://www.reevoo.com reevoo_logo.png),
   %w(Target tbd target_logo.png)
 ].each do |data|
   name, root, image = data

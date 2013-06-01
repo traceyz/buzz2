@@ -68,16 +68,16 @@ ActiveRecord::Schema.define(:version => 20130522195129) do
 
   create_table "reviews", :force => true do |t|
     t.string   "type"
-    t.date     "review_date", :null => false
-    t.string   "author",      :null => false
-    t.string   "location"
-    t.integer  "rating",      :null => false
-    t.string   "headline"
-    t.string   "body"
-    t.string   "unique_key",  :null => false
-    t.integer  "link_url_id", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.date     "review_date",                 :null => false
+    t.string   "author",                      :null => false
+    t.string   "location",    :default => ""
+    t.integer  "rating",                      :null => false
+    t.string   "headline",    :default => ""
+    t.string   "body",        :default => ""
+    t.string   "unique_key",                  :null => false
+    t.integer  "link_url_id",                 :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   add_index "reviews", ["unique_key"], :name => "index_reviews_on_unique_key", :unique => true

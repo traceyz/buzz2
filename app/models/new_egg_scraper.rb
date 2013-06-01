@@ -31,7 +31,7 @@ class NewEggScraper < Scraper
     #http://www.newegg.com/Product/Product.aspx?Item=36-166-004&SortField=0&SummaryType=0&Pagesize=10&PurchaseMark=&SelectedRating=-1&VideoOnlyMark=False&VendorMark=&IsFeedbackTab=true&Keywords=%28keywords%29&Page=11#scrollFullInfo
     #increase the page umber until reviews repeat
     #however, links are currently of the form Product.aspx?Item=N82E16826627012
-    #there seems to onbly be one new egg product page that has extra reviews - not worth it
+    #there seems to only be one new egg product page that has extra reviews - not worth it
     nil
   end
 end

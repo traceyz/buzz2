@@ -1,1 +1,7 @@
 %h2 Here are the categories
+
+- @categories.each do |category|
+  %h3= category.name
+
+
+%h4= link_to "All Reviews", reviews_path

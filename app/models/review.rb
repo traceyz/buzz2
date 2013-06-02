@@ -9,4 +9,5 @@ class Review < ActiveRecord::Base
 
   attr_accessible :author, :rating, :review_date, :unique_key, :headline, :body, :location, :link_url_id
 
+  delegate :forum, :to => :link_url
 end

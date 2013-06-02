@@ -1,0 +1,11 @@
+%h1 You are at the Reviews Index Page
+
+- @reviews.each do |review|
+
+  %ul
+    %li= "#{review.review_date.to_s} Rating #{review.rating.to_s} #{review.forum.name}"
+    %li= "#{review.author} from #{review.location}"
+    %li= "#{review.headline}"
+    %li= "#{review.body}"
+
+

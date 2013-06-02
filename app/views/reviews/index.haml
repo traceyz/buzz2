@@ -1,11 +1,16 @@
 %h1 You are at the Reviews Index Page
 
+%p= will_paginate @reviews
+
 - @reviews.each do |review|
 
-  %ul
-    %li= "#{review.review_date.to_s} Rating #{review.rating.to_s} #{review.forum.name}"
-    %li= "#{review.author} from #{review.location}"
-    %li= "#{review.headline}"
-    %li= "#{review.body}"
+  .review-container
+    %ul.review-items
+      %li= "#{review.product.name} on #{review.forum.name}"
+      %li= "#{review.review_date.to_s} Rating #{review.rating.to_s}"
+      %li= author_location(review)
+      %li.headline= "#{review.headline}"
+      %li= "#{review.body}"
+      %hr
 
 

@@ -124,6 +124,7 @@ module LoadData
   end
 
   def load_forum(forum_name, file_name)
+    coder = HTMLEntities.new
     forum = Forum.find_by_name(forum_name)
     raise "#{forum.name} product links already exist" if forum.product_links.first
     data = read_file(file_name)
@@ -133,7 +134,7 @@ module LoadData
       puts "PRODUCT NAME #{product_name}"
       product = Product.find_by_name(product_name.strip)
       raise "NO PRODUCT FOR #{product_name}" unless product
-      build_link(forum, product, title.strip, link.strip)
+      build_link(forum, product, coder.decode(title.strip), link.strip)
     end
     puts "complete links load for #{forum_name}"
     nil

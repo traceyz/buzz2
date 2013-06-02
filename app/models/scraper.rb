@@ -21,11 +21,11 @@ class Scraper < ActiveRecord::Base
       nil
     end
 
-    def self.url_from_link(link_url)
+    def url_from_link(link_url)
       "#{link_url.forum.root}#{link_url.link}#{link_url.forum.tail}"
     end
 
-    def self.doc_from_url(url)
+    def doc_from_url(url)
       begin
         doc = Nokogiri::HTML(open(url))
       rescue => e

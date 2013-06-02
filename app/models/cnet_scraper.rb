@@ -1,44 +1,49 @@
 class CnetScraper < Scraper
 
-  def self.forum
-    Forum.find_by_name("Cnet")
-  end
+  class << self
 
-
-  def self.page_reviews(doc)
-    doc.css(".rateSum")
-  end
-
-  def self.get_unique_key(review)
-    review.attr("messageid")
-  end
-
-  def self.args_from_review(review)
-    review_string = review.at_css(".userReviewBody").to_s
-    pros = review_string =~ /Pros.?<\/strong>(.+?)<\/p>/sm ? "Pros: #{$1} " : ""
-    cons = review_string =~ /Cons.?<\/strong>(.+?)<\/p>/sm ? "Cons: #{$1} " : ""
-    summary = review_string =~ /Summary.?<\/strong>(.+?)<\/p>/sm ? $1 : ""
-    body = "#{pros}#{cons}#{summary}".gsub(/<[^>]+>/,"")
-    begin
-      author_elt = review.at_css(".author").text
-    rescue
-      author_elt = ""
+    def forum
+      Forum.find_by_name("Cnet")
     end
-    {
-      rating: review.at_css(".stars").text.sub(/stars/,"").strip.to_i,
-      headline: review.at_css(".userRevTitle").text.gsub(/\"/, "").strip,
-      author: author_elt,
-      location: "NA",
-      review_date: build_date(review.at_css("time").text),
-      body: body
-    }
+
+
+    def page_reviews(doc)
+      doc.css(".rateSum")
+    end
+
+    def get_unique_key(review)
+      review.attr("messageid")
+    end
+
+    def args_from_review(review)
+      review_string = review.at_css(".userReviewBody").to_s
+      pros = review_string =~ /Pros.?<\/strong>(.+?)<\/p>/sm ? "Pros: #{$1} " : ""
+      cons = review_string =~ /Cons.?<\/strong>(.+?)<\/p>/sm ? "Cons: #{$1} " : ""
+      summary = review_string =~ /Summary.?<\/strong>(.+?)<\/p>/sm ? $1 : ""
+      body = "#{pros}#{cons}#{summary}".gsub(/<[^>]+>/,"")
+      begin
+        author_elt = review.at_css(".author").text
+      rescue
+        author_elt = ""
+      end
+      {
+        rating: review.at_css(".stars").text.sub(/stars/,"").strip.to_i,
+        headline: review.at_css(".userRevTitle").text.gsub(/\"/, "").strip,
+        author: author_elt,
+        location: "NA",
+        review_date: build_date(review.at_css("time").text),
+        body: body
+      }
+    end
+
+    def next_link(doc,link_url,url,klass)
+      begin
+         URI::encode("#{forum.root}#{doc.at_css('li.next a')[:href]}")
+      rescue
+        puts "NO NEXT LINK"
+      end
+    end
+
   end
 
-  def self.next_link(doc,link_url,url,klass)
-    begin
-       URI::encode("#{forum.root}#{doc.at_css('li.next a')[:href]}")
-    rescue
-      puts "NO NEXT LINK"
-    end
-  end
 end

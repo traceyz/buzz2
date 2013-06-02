@@ -1,23 +1,29 @@
 class TargetScraper < Scraper
-  def self.harvest_reviews
+
+  class << self
+
+    def forum
+      Forum.find_by_name("Target")
+    end
+
+    def page_reviews(doc)
+
+    end
+
+    def get_unique_key(review)
+
+    end
+
+    def args_from_review(review)
+      {
+
+      }
+    end
+
+    def next_link((doc,link_url,url,klass)
+
+    end
 
   end
 
-  def self.page_reviews(doc)
-
-  end
-
-  def self.get_unique_key(review)
-
-  end
-
-  def self.args_from_review(review)
-    args = {}
-
-    args
-  end
-
-  def self.next_link(doc)
-    "NOT KNOWN"
-  end
 end

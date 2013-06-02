@@ -11,8 +11,8 @@ class Category < ActiveRecord::Base
     products.includes(:product_links).map(&:review_count).sum
   end
 
-  def new_review_count
-    products.includes(:product_links).map(&:new_review_count).sum
+  def new_review_count(recent_date)
+    products.includes(:product_links).map{|p| p.new_review_count(recent_date)}.sum
   end
 
 end

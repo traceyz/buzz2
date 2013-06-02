@@ -16,8 +16,8 @@ class ProductLink < ActiveRecord::Base
     link_urls.map(&:reviews)
   end
 
-  def new_review_count
-    link_urls.map{|u| u.reviews.where(['review_date >= ?', Report::RECENT]).count}.sum
+  def new_review_count(recent_date)
+    link_urls.map{|u| u.reviews.where(['review_date >= ?', recent_date]).count}.sum
   end
 
 end

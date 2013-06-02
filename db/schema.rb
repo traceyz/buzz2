@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130522195129) do
+ActiveRecord::Schema.define(:version => 20130602171543) do
 
   create_table "categories", :force => true do |t|
     t.string   "name",       :null => false
@@ -62,8 +62,9 @@ ActiveRecord::Schema.define(:version => 20130522195129) do
   add_index "products", ["name"], :name => "index_products_on_name", :unique => true
 
   create_table "reports", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.date     "report_date"
   end
 
   create_table "reviews", :force => true do |t|

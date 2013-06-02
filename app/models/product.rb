@@ -15,8 +15,8 @@ class Product < ActiveRecord::Base
     product_links.includes(:link_urls).map(&:review_count).sum
   end
 
-  def new_review_count
-    product_links.includes(:link_urls).map(&:new_review_count).sum
+  def new_review_count(recent_date)
+    product_links.includes(:link_urls).map{|pl| pl.new_review_count(recent_date)}.sum
   end
 
 end

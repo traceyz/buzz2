@@ -25,7 +25,7 @@ HEADER = <<-EOD
     %hr
     #nav
       %h2= date
-      %h3 Click on a Categry
+      %h3 Click on a Category
       %h3 Return to Home
       %h3 Feedback
 EOD
@@ -40,12 +40,12 @@ BODY = <<-EOD
       - cats.each do |cat|
         %tr
           %td
-            %img{:src => cat[:img_path]}
+            %img{:src => cat.name}
           %td
-            %a{:href => cat[:page_path]}
-              = cat[:name]
-          %td= cat[:new_count]
-          %td= cat[:total_count]
+            %a{:href => cat.name}
+              = cat.name
+          %td= cat.new_review_count(recent)
+          %td= cat.review_count
 
 EOD
 
@@ -54,16 +54,18 @@ EOD
   end
 
   def generate_home_page
-    args = Category.all.map do |category|
-      { name: category.name, new_count: category.new_review_count(recent), total_count: category.review_count}
-    end
+    cats = Category.order(:position)
     obj = Object.new
     date = report_date
-    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :cats, :title, :date)
-    f = File.open("#{Rails.root}/haml_buzz/buzz.html", "w")
-    f.puts obj.render(cats: args, title: "Report", date: date)
+    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :cats, :title, :date, :recent)
+    f = File.open("#{Rails.root}/haml_out/home.html", "w")
+    f.puts obj.render(cats: cats, title: "Report", date: date, recent: recent)
     f.close
     puts "Done"
+    cats.each do |cat|
+      CategoryPage.generate_category_page(cat,date,recent)
+    end
+    nil
   end
 
 end

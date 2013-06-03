@@ -56,6 +56,7 @@ class Scraper < ActiveRecord::Base
           count += 1
         rescue => e
           puts e.message
+          puts the_review.errors
           puts args.inspect
         end
       end
@@ -129,8 +130,8 @@ class Scraper < ActiveRecord::Base
       $1
     end
 
-    # takes an array of objects
-    # concatenates their .to_s
+    # takes a hash of objects
+    # concatenates their values .to_s
     # makes a hex digest of the result
     def build_unique_key(args)
       str = args.values.each_with_object(""){ |elt, s| s << elt.to_s }

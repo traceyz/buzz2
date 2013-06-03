@@ -72,6 +72,12 @@ class Scraper < ActiveRecord::Base
       args
     end
 
+    def remove_entities(str)
+      str.gusb!(/&amp;/, '&')
+      str.gsub!(/&gt;/, '>')
+      str.gsub(/&[^&]+;/, ' ')
+    end
+
     # 2011-11-29
     def build_date4(str)
       array = str.split('-')

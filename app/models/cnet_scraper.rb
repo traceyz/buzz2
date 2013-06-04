@@ -30,7 +30,6 @@ class CnetScraper < Scraper
         rating: review.at_css(".stars").text.sub(/stars/,"").strip.to_i,
         headline: review.at_css(".userRevTitle").text.gsub(/\"/, "").strip,
         author: author_elt,
-        location: "NA",
         review_date: build_date(review.at_css("time").text),
         body: body
       }

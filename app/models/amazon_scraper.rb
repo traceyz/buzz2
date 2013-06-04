@@ -36,14 +36,14 @@ class AmazonScraper < Scraper
       body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
       body.gsub!(/<[^b][^>]+>/m,"")
       body ||= "EMPTY"
-      location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : "NA"
+      location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : nil
       {
         review_date: build_date(date),
         rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
         body: body.gsub(/<[^>]+>/,"").strip!,
         headline: text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
         author: text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
-        location: location_str.gsub(/[()]/,"")
+        location: location_str.gsub(/[()]/,"") if location_str
       }
     end
 

@@ -56,7 +56,6 @@ class Scraper < ActiveRecord::Base
           count += 1
         rescue => e
           puts e.message
-          puts the_review.errors
           puts args.inspect
         end
       end

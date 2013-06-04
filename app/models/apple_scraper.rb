@@ -21,7 +21,7 @@ class AppleScraper < Scraper
         rating: review.css('span[@itemprop="ratingValue"]').text.to_i,
         headline: review.css('h2.summary').text.strip,
         author: review.css('span[@itemprop="author"]').text,
-        location: location_str =~ /.+from (.+)\Z/ ? $1 : "NA",
+        location: location_str =~ /.+from (.+)\Z/ ? $1 : nil,
         review_date: build_date4(date_str),
         body: review.css('p.description').text.strip
       }

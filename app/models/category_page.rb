@@ -36,7 +36,7 @@ BODY = <<-EOD
       - products.each do |product|
         %tr
           %td
-            %a{:href => "p_pages/" + product.name + ".html"}
+            %a{:href => "./p_pages/" + product.name + ".html"}
               = product.name
           %td= product.new_review_count(recent)
           %td= product.review_count
@@ -48,7 +48,7 @@ EOD
     products = category.products.order(:name)
     obj = Object.new
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :products, :title, :date, :recent)
-    f = File.open("#{Rails.root}/haml_out/c_pages/#{category.name}.html", "w")
+    f = File.open("#{Rails.root}/haml_out/c_pages/#{category.page_name}", "w")
     f.puts obj.render(products: products, title: "Category Page", date: date, recent: recent)
     f.close
     puts "Done with Category Page"

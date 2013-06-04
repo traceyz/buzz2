@@ -19,7 +19,7 @@ HEADER = <<-EOD
       %img{:src => "images/apple.gif"}
       %img{:src => "images/futureshop.gif"}
       %img{:src => "images/bestbuy.gif"}
-      %img{:src => "images/revoo.png"}
+      %img{:src => "images/reevoo.png"}
     %hr
     #nav
       %h2= date
@@ -43,7 +43,7 @@ EOD
     reviews = product.reviews[0..200]
     obj = Object.new
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :reviews, :title, :date, :recent)
-    f = File.open("#{Rails.root}/haml_out/p_pages/#{product.name}.html", "w")
+    f = File.open("#{Rails.root}/haml_out/p_pages/#{product.page_name}", "w")
     f.puts obj.render(reviews: reviews, title: "Product Page", date: date, recent: recent)
     f.close
     puts "Done with Product Page"

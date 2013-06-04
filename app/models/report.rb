@@ -1,6 +1,6 @@
 class Report < ActiveRecord::Base
 
-  attr_accessible :report_date
+  attr_accessor :report_date
 
 HEADER = <<-EOD
 !!! XML
@@ -40,9 +40,9 @@ BODY = <<-EOD
       - cats.each do |cat|
         %tr
           %td
-            %img{:src => cat.name}
+            %img{:src => Rails.root + "./public/images" + cat.image_name}
           %td
-            %a{:href => cat.name}
+            %a{:href => Rails.root + "./public/c_pages/" + cat.page_name}
               = cat.name
           %td= cat.new_review_count(recent)
           %td= cat.review_count

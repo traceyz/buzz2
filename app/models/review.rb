@@ -13,7 +13,9 @@ class Review < ActiveRecord::Base
   delegate :product, :to => :link_url
   delegate :title, :to => :link_url
 
+
   def self.display(idx)
     order('review_date DESC').page(idx)
   end
+
 end

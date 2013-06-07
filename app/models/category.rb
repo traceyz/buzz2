@@ -1,5 +1,8 @@
 class Category < ActiveRecord::Base
 
+  require 'path_name'
+  include PathName
+
   has_many :products
 
   validates :name, presence: true, uniqueness: true

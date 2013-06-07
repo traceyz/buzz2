@@ -5,6 +5,9 @@ class Product < ActiveRecord::Base
 
   attr_accessible :name
 
+  require 'path_name'
+  include PathName
+
   validates :name,  presence: true, uniqueness: true
 
   def reviews

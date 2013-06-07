@@ -9,8 +9,7 @@ HEADER = <<-EOD
   %head
     %title= title
     %meta{"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}
-    %link{"rel" => "stylesheet", "href" => "./stylesheets/buzz_home.css", "type" => "text/css"}
-    %link{"rel" => "stylesheet", "href" => "../stylesheets/buzz_page.css", "type" => "text/css"}
+    %link{"rel" => "stylesheet", "href" => root + "stylesheets/buzz_home.css", "type" => "text/css"}
   %body
     #buzz-top
       %h2= "Buzz Report for " + date.to_s

@@ -9,10 +9,12 @@ HEADER = <<-EOD
   %head
     %title= title
     %meta{"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}
-    %link{"rel" => "stylesheet", "href" => "buzz.css", "type" => "text/css"}
+    %link{"rel" => "stylesheet", "href" => "./stylesheets/buzz_home.css", "type" => "text/css"}
+    %link{"rel" => "stylesheet", "href" => "../stylesheets/buzz_page.css", "type" => "text/css"}
   %body
     #buzz-top
-      %h2 Buzz Report
+      %h2= "Buzz Report for " + date.to_s
+      %h3= page_title
     #top-banner
       %img{:src => "./images/amazon.gif"}
       %img{:src => "./images/target.gif"}
@@ -23,20 +25,19 @@ HEADER = <<-EOD
       %img{:src => "./images/bestbuy.gif"}
       %img{:src => "./images/reevoo.png"}
     %hr
-    #nav
-      %h2= date
-      %h3 Click on a Category
-      %h3 Return to Home
-      %h3 Feedback
 EOD
 
 BODY = <<-EOD
     %table
       %tr
-        %th Image
-        %th Category
-        %th New
-        %th Total
+        %td
+        %td Category
+        %td.total-header{:colspan => 2} Latest<br /> Consumer Reviews
+      %tr
+        %td
+        %td
+        %td New
+        %td All Reviews
       - cats.each do |cat|
         %tr
           %td
@@ -57,9 +58,10 @@ EOD
     cats = Category.order(:position)
     obj = Object.new
     date = report_date
-    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :cats, :title, :date, :recent)
+    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :cats, :title, :page_title, :date, :recent)
     f = File.open("#{Rails.root}/public/boseBuzz/home.html", "w")
-    f.puts obj.render(cats: cats, title: "Report", date: date, recent: recent)
+    f.puts obj.render(cats: cats, title: "Report",
+      page_title: "Bose Consumer Reviews from These Web Forums",date: date, recent: recent)
     f.close
     puts "Done"
     cats.each do |cat|

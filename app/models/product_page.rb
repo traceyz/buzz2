@@ -1,30 +1,5 @@
 class ProductPage < ActiveRecord::Base
 
-HEADER = <<-EOD
-!!! XML
-!!!
-%html
-  %head
-    %title= title
-    %meta{"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}
-    %link{"rel" => "stylesheet", "href" => "buzz.css", "type" => "text/css"}
-  %body
-    #buzz-top
-      %h2 Buzz Report
-    #top-banner
-      %img{:src => "../images/amazon.gif"}
-      %img{:src => "../images/target.gif"}
-      %img{:src => "../images/cnet.gif"}
-    #mid-banner
-      %img{:src => "../images/apple.gif"}
-      %img{:src => "../images/futureshop.gif"}
-      %img{:src => "../images/bestbuy.gif"}
-      %img{:src => "../images/reevoo.png"}
-    %hr
-    #nav
-      %h2= date
-
-EOD
 
 BODY = <<-EOD
 - reviews.each do |review|
@@ -43,9 +18,12 @@ EOD
   def self.generate_product_page(product,date,recent)
     reviews = product.reviews[0..200]
     obj = Object.new
-    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :reviews, :title, :date, :recent)
+    root = "../"
+    engine = Haml::Engine.new(Report::HEADER + BODY).def_method(obj, :render,
+      :reviews, :title, :page_title, :date, :recent, :root)
     f = File.open("#{Rails.root}/public/boseBuzz/p_pages/#{product.page_name}", "w")
-    f.puts obj.render(reviews: reviews, title: "Product Page", date: date, recent: recent)
+    f.puts obj.render(reviews: reviews, title: "Product Page", page_title: "Page Title",
+      date: date, recent: recent, root: root)
     f.close
     puts "Done with Product Page"
   end

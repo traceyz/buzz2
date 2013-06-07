@@ -41,9 +41,9 @@ BODY = <<-EOD
       - cats.each do |cat|
         %tr
           %td
-            %img{:src => "./images/" + cat.image_name}
+            %img{:src => root + "images/" + cat.image_name}
           %td
-            %a{:href => "./c_pages/" + cat.page_name}
+            %a{:href => root + "c_pages/" + cat.page_name}
               = cat.name
           %td= cat.new_review_count(recent)
           %td= cat.review_count
@@ -58,10 +58,13 @@ EOD
     cats = Category.order(:position)
     obj = Object.new
     date = report_date
-    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :cats, :title, :page_title, :date, :recent)
+    engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render,
+      :cats, :title, :page_title, :date, :recent, :root)
     f = File.open("#{Rails.root}/public/boseBuzz/home.html", "w")
+    root = "./"
     f.puts obj.render(cats: cats, title: "Report",
-      page_title: "Bose Consumer Reviews from These Web Forums",date: date, recent: recent)
+      page_title: "Bose Consumer Reviews from These Web Forums",
+      date: date, recent: recent, root: root)
     f.close
     puts "Done"
     cats.each do |cat|

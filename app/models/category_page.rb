@@ -29,9 +29,9 @@ EOD
     f.close
     puts "Done with Category Page"
 
-    # products.each do |product|
-    #   ProductPage.generate_product_page(product,date,recent)
-    # end
+    products.each do |product|
+      ProductPage.generate_product_page(product,date,recent)
+    end
     puts "Done with Product Pages"
 
   end

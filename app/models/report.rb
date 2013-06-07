@@ -15,14 +15,14 @@ HEADER = <<-EOD
       %h2= "Buzz Report for " + date.to_s
       %h3= page_title
     #top-banner
-      %img{:src => "./images/amazon.gif"}
-      %img{:src => "./images/target.gif"}
-      %img{:src => "./images/cnet.gif"}
+      %img{:src => root + "images/amazon.gif"}
+      %img{:src => root + "images/target.gif"}
+      %img{:src => root + "images/cnet.gif"}
     #mid-banner
-      %img{:src => "./images/apple.gif"}
-      %img{:src => "./images/futureshop.gif"}
-      %img{:src => "./images/bestbuy.gif"}
-      %img{:src => "./images/reevoo.png"}
+      %img{:src => root + "images/apple.gif"}
+      %img{:src => root + "images/futureshop.gif"}
+      %img{:src => root + "images/bestbuy.gif"}
+      %img{:src => root + "images/reevoo.png"}
     %hr
 EOD
 

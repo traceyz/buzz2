@@ -1,6 +1,6 @@
 class AmazonReview < Review
 
-  def title
-    super.sub(/\AAmazon.com: Customer Reviews: /,'')
+  def display_title
+    title.sub(/\AAmazon.com: Customer Reviews: /,'')
   end
 end

@@ -18,4 +18,8 @@ class Review < ActiveRecord::Base
     order('review_date DESC').page(idx)
   end
 
+  def display_title
+    title
+  end
+
 end

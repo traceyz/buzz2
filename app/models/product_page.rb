@@ -5,7 +5,7 @@ BODY = <<-EOD
 - reviews.each do |review|
   %ul.review-items
     %li= review.forum.name
-    %li= review.title
+    %li= review.display_title
     %li= review.review_date.to_s
     %li= "Rating: " + review.rating.to_s
     %li= review.author

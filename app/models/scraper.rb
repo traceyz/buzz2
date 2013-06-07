@@ -12,7 +12,7 @@ class Scraper < ActiveRecord::Base
           cycle = 0 # check for run-away
           while url && cycle < 100
             doc = doc_from_url(url)
-            next unless doc
+            break unless doc
             url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
             cycle += 1
           end

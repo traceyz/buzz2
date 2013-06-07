@@ -9,7 +9,7 @@ module PathName
   end
 
   def clean_name(str)
-    str.gsub(/[^A-z0-9_]/,'')
+    str.gsub(/[^A-z0-9_]/,'').downcase
   end
 
 end

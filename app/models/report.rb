@@ -1,6 +1,6 @@
 class Report < ActiveRecord::Base
 
-  attr_accessor :report_date
+  cattr_accessor :report_date
 
 HEADER = <<-EOD
 !!! XML
@@ -14,14 +14,14 @@ HEADER = <<-EOD
     #buzz-top
       %h2 Buzz Report
     #top-banner
-      %img{:src => "images/amazon.gif"}
-      %img{:src => "images/target.gif"}
-      %img{:src => "images/cnet.gif"}
+      %img{:src => "./images/amazon.gif"}
+      %img{:src => "./images/target.gif"}
+      %img{:src => "./images/cnet.gif"}
     #mid-banner
-      %img{:src => "images/apple.gif"}
-      %img{:src => "images/futureshop.gif"}
-      %img{:src => "images/bestbuy.gif"}
-      %img{:src => "images/revoo.png"}
+      %img{:src => "./images/apple.gif"}
+      %img{:src => "./images/futureshop.gif"}
+      %img{:src => "./images/bestbuy.gif"}
+      %img{:src => "./images/reevoo.png"}
     %hr
     #nav
       %h2= date
@@ -40,25 +40,25 @@ BODY = <<-EOD
       - cats.each do |cat|
         %tr
           %td
-            %img{:src => Rails.root + "./public/images" + cat.image_name}
+            %img{:src => "./images/" + cat.image_name}
           %td
-            %a{:href => Rails.root + "./public/c_pages/" + cat.page_name}
+            %a{:href => "./c_pages/" + cat.page_name}
               = cat.name
           %td= cat.new_review_count(recent)
           %td= cat.review_count
 
 EOD
 
-  def recent
+  def self.recent
     report_date - 14
   end
 
-  def generate_home_page
+  def self.generate_home_page
     cats = Category.order(:position)
     obj = Object.new
     date = report_date
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render, :cats, :title, :date, :recent)
-    f = File.open("#{Rails.root}/haml_out/home.html", "w")
+    f = File.open("#{Rails.root}/public/boseBuzz/home.html", "w")
     f.puts obj.render(cats: cats, title: "Report", date: date, recent: recent)
     f.close
     puts "Done"

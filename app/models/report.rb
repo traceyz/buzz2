@@ -54,7 +54,7 @@ EOD
   end
 
   def self.generate_home_page
-    cats = Category.order(:position)
+    cats =  [Category.find(10)] # Category.order(:position)
     obj = Object.new
     date = report_date
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render,

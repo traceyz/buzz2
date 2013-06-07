@@ -21,8 +21,7 @@ EOD
   def self.generate_category_page(category,date,recent)
     products = category.products.order(:name)
     obj = Object.new
-    engine = Haml::Engine.new(Report::HEADER + BODY).def_method(obj, :render, :category,
-      :products, :title, :page_title, :date, :recent, :root)
+    engine = Haml::Engine.new(Report::HEADER + BODY).def_method(obj, :render, :category,:products, :title, :page_title, :date, :recent, :root)
     root = "../"
     f = File.open("#{Rails.root}/public/boseBuzz/c_pages/#{category.page_name}", "w")
     f.puts obj.render(category: category, products: products, title: "Category Page", page_title: "",date: date, recent: recent, root: root)

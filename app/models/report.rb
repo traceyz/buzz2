@@ -12,7 +12,7 @@ HEADER = <<-EOD
     %link{"rel" => "stylesheet", "href" => root + "stylesheets/buzz_home.css", "type" => "text/css"}
   %body
     #buzz-top
-      %h2= "Buzz Report for " + date.to_s
+      %h2= "Buzz Report for " + date.strftime("%b %d, %Y")
       %h3= page_title
     #top-banner
       %img{:src => root + "images/amazon.gif"}

@@ -14,6 +14,8 @@ class Review < ActiveRecord::Base
   delegate :title, :to => :link_url
 
 
+  MAX_REVIEWS = 200
+
   def self.display(idx)
     order('review_date DESC').page(idx)
   end

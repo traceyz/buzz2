@@ -11,15 +11,15 @@ class Product < ActiveRecord::Base
   validates :name,  presence: true, uniqueness: true
 
   def reviews
-    product_links.includes(:link_urls).map(&:reviews).flatten.sort_by(&:review_date).reverse
+    product_links.includes(:link_urls).map(&:reviews).flatten.sort_by(&:review_date).reverse[0..REVIEW::MAX_REVIEWS]
   end
 
   def review_count
-    product_links.includes(:link_urls).map(&:review_count).sum
+    [product_links.includes(:link_urls).map(&:review_count).sum, REVIEW::MAX_REVIEWS].min
   end
 
   def new_review_count(recent_date)
-    product_links.includes(:link_urls).map{|pl| pl.new_review_count(recent_date)}.sum
+    [product_links.includes(:link_urls).map{|pl| pl.new_review_count(recent_date)}.sum, REVIEW::MAX_REVIEWS].min
   end
 
 end

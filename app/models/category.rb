@@ -11,7 +11,7 @@ class Category < ActiveRecord::Base
   attr_accessible :name, :position
 
   def review_count
-    [products.includes(:product_links).map(&:review_count).sum, 200].min
+    products.includes(:product_links).map(&:review_count).sum
   end
 
   def new_review_count(recent_date)

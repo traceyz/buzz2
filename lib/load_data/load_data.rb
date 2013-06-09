@@ -147,4 +147,11 @@ module LoadData
     nil
   end
 
+  def update_links
+    Forum.find_by_name("Amazon").product_links.where(:product_id => 66).first.link_urls.create!(
+      link: "Bose-AE2w-Bluetooth-Headphones-Black/product-reviews/B00CD1FB26",
+      title: "Bose AE2w Bluetooth Headphones - Black",
+      current: true)
+  end
+
 end

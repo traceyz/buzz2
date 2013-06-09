@@ -4,6 +4,21 @@ class Scraper < ActiveRecord::Base
 
   class << self
 
+    def check_links
+      forum.product_links.each do |product_link|
+        product_link.link_urls.each do |link_url|
+          url = url_from_link(link_url)
+          begin
+            doc_from_url(url)
+          rescue => e
+            puts "could not get document fron #{url}"
+            puts e.message
+          end
+        end
+      end
+      nil
+    end
+
     def get_reviews(all_reviews = false)
       klass = "#{forum.name}Review"
       forum.product_links.each do |product_link|
@@ -107,6 +122,12 @@ class Scraper < ActiveRecord::Base
     MONTHS = Hash[
       %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec).zip(Array(1..12))]
   # Oct 20, 2011 or October 20, 2011
+
+    def months
+      Hash[
+      %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec).zip(Array(1..12))]
+    end
+
     def build_date(str)
       yr = year(str)
       mo = MONTHS[str[0..2]] #already an integer

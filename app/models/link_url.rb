@@ -1,5 +1,7 @@
 class LinkUrl < ActiveRecord::Base
 
+  require 'open-uri'
+
   belongs_to :product_link
   has_many :reviews
 

@@ -9,43 +9,46 @@ HEADER = <<-EOD
   %head
     %title= title
     %meta{"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}
-    %link{"rel" => "stylesheet", "href" => root + "stylesheets/buzz_home.css", "type" => "text/css"}
+    %link{"rel" => "stylesheet", "href" => root + "stylesheets/buzz.css", "type" => "text/css"}
   %body
-    #buzz-top
-      %h2= "Buzz Report for " + date.strftime("%b %d, %Y")
-      %h3= page_title
-    #top-banner
-      %img{:src => root + "images/amazon.gif"}
-      %img{:src => root + "images/target.gif"}
-      %img{:src => root + "images/cnet.gif"}
-    #mid-banner
-      %img{:src => root + "images/apple.gif"}
-      %img{:src => root + "images/futureshop.gif"}
-      %img{:src => root + "images/bestbuy.gif"}
-      %img{:src => root + "images/reevoo.png"}
-    %hr
+    #header
+      #buzz-top
+        %h2= "Buzz Report for " + date.strftime("%b %d, %Y")
+        %h3= page_title
+      #top-banner
+        %img{:src => root + "images/amazon.gif"}
+        %img{:src => root + "images/target.gif"}
+        %img{:src => root + "images/cnet.gif"}
+        %img{:src => root + "images/newegg.png"}
+      #mid-banner
+        %img{:src => root + "images/apple.gif"}
+        %img{:src => root + "images/futureshop.gif"}
+        %img{:src => root + "images/bestbuy.gif"}
+        %img{:src => root + "images/reevoo.png"}
+      %hr
 EOD
 
 BODY = <<-EOD
-    %table
+.home
+  %table
+    %tr.first
+      %td
+      %td Category
+      %td.total-header{:colspan => 2} Latest<br /> Consumer Reviews
+    %tr.second
+      %td
+      %td
+      %td#new New
+      %td#all All Reviews
+    - cats.each do |cat|
       %tr
         %td
-        %td Category
-        %td.total-header{:colspan => 2} Latest<br /> Consumer Reviews
-      %tr
+          %img{:src => root + "images/" + cat.image_name}
         %td
-        %td
-        %td New
-        %td All Reviews
-      - cats.each do |cat|
-        %tr
-          %td
-            %img{:src => root + "images/" + cat.image_name}
-          %td
-            %a{:href => root + "c_pages/" + cat.page_name}
-              = cat.name
-          %td= cat.new_review_count(recent)
-          %td= cat.review_count
+          %a{:href => root + "c_pages/" + cat.page_name}
+            = cat.name
+        %td.count= cat.new_review_count(recent)
+        %td.count= cat.review_count
 
 EOD
 
@@ -54,7 +57,7 @@ EOD
   end
 
   def self.generate_home_page
-    cats =  [Category.find(10)] # Category.order(:position)
+    cats =  Category.order(:position)
     obj = Object.new
     date = report_date
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render,

@@ -6,4 +6,8 @@ class Forum < ActiveRecord::Base
 
   attr_accessible :name, :image, :root, :tail, :id
 
+  def new_review_count(recent)
+    product_links.map{|pl| pl.new_review_count(recent) }.sum
+  end
+
 end

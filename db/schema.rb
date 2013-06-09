@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130602171543) do
+ActiveRecord::Schema.define(:version => 20130609164028) do
 
   create_table "categories", :force => true do |t|
     t.string   "name",       :null => false
@@ -69,16 +69,17 @@ ActiveRecord::Schema.define(:version => 20130602171543) do
 
   create_table "reviews", :force => true do |t|
     t.string   "type"
-    t.date     "review_date",                 :null => false
-    t.string   "author",                      :null => false
-    t.string   "location",    :default => ""
-    t.integer  "rating",                      :null => false
+    t.date     "review_date",                    :null => false
+    t.string   "author",                         :null => false
+    t.string   "location"
+    t.integer  "rating",                         :null => false
     t.string   "headline",    :default => ""
     t.text     "body",        :default => ""
-    t.string   "unique_key",                  :null => false
-    t.integer  "link_url_id",                 :null => false
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.string   "unique_key",                     :null => false
+    t.integer  "link_url_id",                    :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.boolean  "exclude",     :default => false
   end
 
   add_index "reviews", ["unique_key"], :name => "index_reviews_on_unique_key", :unique => true

@@ -13,4 +13,6 @@ haml_out/
 c_pages/
 p_pages/
 home.html
+*.xls
+lib/load_data/target.html
 

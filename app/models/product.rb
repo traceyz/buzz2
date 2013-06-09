@@ -14,6 +14,10 @@ class Product < ActiveRecord::Base
     product_links.includes(:link_urls).map(&:reviews).flatten.sort_by(&:review_date).reverse[0..Review::MAX_REVIEWS]
   end
 
+  def recent_reviews(recent)
+    reviews.select{ |review| review.review_date >= recent }
+  end
+
   def review_count
     [product_links.includes(:link_urls).map(&:review_count).sum, Review::MAX_REVIEWS].min
   end

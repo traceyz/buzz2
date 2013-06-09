@@ -12,6 +12,7 @@ class Review < ActiveRecord::Base
   delegate :forum, :to => :link_url
   delegate :product, :to => :link_url
   delegate :title, :to => :link_url
+  delegate :link, :to => :link_url
 
 
   MAX_REVIEWS = 200

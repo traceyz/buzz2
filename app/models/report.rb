@@ -1,5 +1,7 @@
 class Report < ActiveRecord::Base
 
+  require 'spreadsheet'
+
   cattr_accessor :report_date
 
 HEADER = <<-EOD
@@ -72,6 +74,51 @@ EOD
     cats.each do |cat|
       CategoryPage.generate_category_page(cat,date,recent)
     end
+    nil
+  end
+
+  def self.generate_xl
+    Spreadsheet.client_encoding = 'UTF-8'
+    book = Spreadsheet::Workbook.new
+    Category.order(:position).each do |category|
+      next unless category.new_review_count(recent) > 0
+      sheet = book.create_worksheet :name => category.name
+      sheet.row(0).concat %w(Name Forum Date Author Location Rating Headline Content)
+      idx = 1
+      category.products.each do |product|
+        reviews = product.recent_reviews(recent)
+        next unless reviews.first
+        reviews.each do |review|
+          row = sheet.row(idx)
+          row[0] = product.name
+          row[1] = review.forum.name
+          row[2] = review.review_date.to_s
+          row[3] = review.author
+          row[4] = review.location || ""
+          row[5] = review.rating
+          row[6] = review.headline
+          row[7] = review.body
+          idx += 1
+        end
+        idx += 1 # skip a line between products
+      end
+    end
+    sheet = book.create_worksheet :name => "Totals by Forum"
+    idx = 0
+    Forum.order(:name).each do |forum|
+      count = forum.new_review_count(recent)
+      next unless count > 0
+      sheet.row(idx)[0] = forum.name
+      sheet.row(idx)[1] = count
+      idx += 1
+    end
+    book.write "#{Rails.root}/public/reviews#{report_date.to_s}.xls"
+    nil
+  end
+
+  def self.package_report
+    `cd public && zip -r allBuzz_2013_06_07.zip  boseBuzz/`
+    `zip allBuzz_2013_06_07.zip reviews2013-06-07.xls`
     nil
   end
 

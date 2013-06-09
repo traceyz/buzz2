@@ -132,6 +132,7 @@ module LoadData
       link, title, product_name = datum.chomp.split(",")
       next if product_name.eql?("UNCERTAIN")
       puts "PRODUCT NAME #{product_name}"
+      break unless product_name
       product = Product.find_by_name(product_name.strip)
       raise "NO PRODUCT FOR #{product_name}" unless product
       build_link(forum, product, coder.decode(title.strip), link.strip)

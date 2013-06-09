@@ -88,7 +88,7 @@ class Scraper < ActiveRecord::Base
     end
 
     def remove_entities(str)
-      str.gusb!(/&amp;/, '&')
+      str.gsub!(/&amp;/, '&')
       str.gsub!(/&gt;/, '>')
       str.gsub(/&[^&]+;/, ' ')
     end
@@ -123,10 +123,10 @@ class Scraper < ActiveRecord::Base
       %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec).zip(Array(1..12))]
   # Oct 20, 2011 or October 20, 2011
 
-    def months
-      Hash[
-      %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec).zip(Array(1..12))]
-    end
+    # def months
+    #   Hash[
+    #   %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec).zip(Array(1..12))]
+    # end
 
     def build_date(str)
       yr = year(str)

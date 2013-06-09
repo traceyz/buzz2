@@ -16,6 +16,7 @@ gem 'sass'
 gem 'will_paginate', '~> 3.0.0'
 
 gem 'json'
+gem 'spreadsheet'
 
 # Gems used only for assets and not required
 # in production environments by default.

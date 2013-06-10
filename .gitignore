@@ -15,4 +15,6 @@ p_pages/
 home.html
 *.xls
 lib/load_data/target.html
+*.zip
+allBuzz2013*
 

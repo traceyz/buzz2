@@ -116,9 +116,16 @@ EOD
     nil
   end
 
+  def self.dir_name
+    "allBuzz#{report_date.strftime("%Y_%m_%d")}"
+  end
+
   def self.package_report
-    `cd public && zip -r allBuzz_2013_06_07.zip  boseBuzz/`
-    `zip allBuzz_2013_06_07.zip reviews2013-06-07.xls`
+    Dir.mkdir("#{dir_name}")
+    FileUtils.cp_r(Dir['public/boseBuzz'], "#{dir_name}")
+    FileUtils.cp("public/reviews#{report_date.strftime("%Y-%m-%d")}.xls","#{dir_name}")
+    `zip -r Archive.zip "#{dir_name}"/`
+    File.rename('Archive.zip', "#{dir_name}.zip")
     nil
   end
 

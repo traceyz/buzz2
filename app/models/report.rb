@@ -72,7 +72,7 @@ EOD
     f.close
     puts "Done"
     cats.each do |cat|
-      CategoryPage.generate_category_page(cat,date,recent)
+      CategoryPage.generate_category_page(cat,date,recent,report_date)
     end
     nil
   end

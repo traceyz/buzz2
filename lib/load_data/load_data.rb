@@ -155,4 +155,27 @@ module LoadData
       current: true)
   end
 
+  def update_c3
+    forum = Forum.find_by_name("Amazon")
+    product = Product.find_by_name("Companion 2 Series III")
+    raise "NIL" unless forum && product
+    title = "Bose Companion 2 Series III Multimedia Speakers"
+    link = "Bose-Companion-Series-Multimedia-Speakers/product-reviews/B00CD1PTF0"
+    build_link(forum,product, title, link)
+    forum = Forum.find_by_name("BestBuy")
+    raise "NIL" unless forum
+    title = "Bose Companion 2 Series III Multimedia Speaker System 2Piece COMPANION 2 SERIES III SYSTEM"
+    link = "Bose%26%23174%3B+-+Companion%26%23174%3B+2+Series+III+Multimedia+Speaker+System+(2-Piece)/8864513.p?id=1218918122908&skuId=8864513"
+    build_link(forum,product, title, link)
+  end
+
+  def update_bb_sound_link
+    # cat = Category.find_by_name("Multimedia Speakers")
+    # product = cat.products.create!(:name => "SoundLink Mini")
+    product = Product.find_by_name("SoundLink Mini")
+    forum = Forum.find_by_name("BestBuy")
+    title = "Bose SoundLink Mini Bluetooth Speaker"
+    link = "SoundLink%26%23174%3B+Mini+Bluetooth+Speaker/9154107.p?skuId=9154107&id=1218992518770"
+    build_link(forum,product, title, link)
+  end
 end

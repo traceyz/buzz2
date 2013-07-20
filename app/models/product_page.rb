@@ -29,7 +29,7 @@ BODY = <<-EOD
 EOD
 
   def self.generate_product_page(product,date,recent)
-    reviews = product.reviews[0..200]
+    reviews = product.report_reviews(date)
     obj = Object.new
     engine = Haml::Engine.new(Report::HEADER + BODY).def_method(obj, :render, :category, :reviews, :title, :page_title, :date, :recent, :root)
     f = File.open("#{Rails.root}/public/boseBuzz/p_pages/#{product.page_name}", "w")

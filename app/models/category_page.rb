@@ -19,8 +19,8 @@ BODY = <<-EOD
         %td.p-link
           %a{:href => root + "p_pages/" + product.page_name}
             = product.name
-        %td.count= product.new_review_count(recent)
-        %td.count= product.review_count
+        %td.count= product.new_count(:recent_date => recent, :report_date => date)
+        %td.count= product.report_count(date)
       %tr
         %td{:colspan => 4}
           %hr

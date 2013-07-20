@@ -10,12 +10,13 @@ class Category < ActiveRecord::Base
 
   attr_accessible :name, :position
 
-  def review_count
-    products.includes(:product_links).map(&:review_count).sum
+  def report_count(report_date)
+    products.includes(:product_links).map{ |p| p.report_count(report_date) }.sum
   end
 
-  def new_review_count(recent_date)
-    products.includes(:product_links).map{|p| p.new_review_count(recent_date)}.sum
+  # args = { :report_date, :recent_date }
+  def new_count(args)
+    products.includes(:product_links).map{ |p| p.new_count(args) }.sum
   end
 
 end

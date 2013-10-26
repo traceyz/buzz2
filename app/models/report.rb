@@ -49,8 +49,8 @@ BODY = <<-EOD
         %td
           %a{:href => root + "c_pages/" + cat.page_name}
             = cat.name
-        %td.count= cat.new_review_count(recent)
-        %td.count= cat.review_count
+        %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+        %td.count= cat.report_count(date)
 
 EOD
 
@@ -72,7 +72,7 @@ EOD
     f.close
     puts "Done"
     cats.each do |cat|
-      CategoryPage.generate_category_page(cat,date,recent,report_date)
+      CategoryPage.generate_category_page(cat,date,recent)
     end
     nil
   end
@@ -80,13 +80,14 @@ EOD
   def self.generate_xl
     Spreadsheet.client_encoding = 'UTF-8'
     book = Spreadsheet::Workbook.new
+    args = { :recent_date => recent, :report_date => report_date }
     Category.order(:position).each do |category|
-      next unless category.new_review_count(recent) > 0
+      next unless category.new_count(args) > 0
       sheet = book.create_worksheet :name => category.name
       sheet.row(0).concat %w(Name Forum Date Author Location Rating Headline Content)
       idx = 1
       category.products.each do |product|
-        reviews = product.recent_reviews(recent)
+        reviews = product.new_reviews(args)
         next unless reviews.first
         reviews.each do |review|
           row = sheet.row(idx)
@@ -106,7 +107,7 @@ EOD
     sheet = book.create_worksheet :name => "Totals by Forum"
     idx = 0
     Forum.order(:name).each do |forum|
-      count = forum.new_review_count(recent)
+      count = forum.new_count(args)
       next unless count > 0
       sheet.row(idx)[0] = forum.name
       sheet.row(idx)[1] = count

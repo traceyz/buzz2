@@ -6,16 +6,42 @@ class AmazonScraper < Scraper
       Forum.find_by_name("Amazon")
     end
 
+    # make sure we don't forget that we need to get 'all' the reviews
+    # from Amazon each time
+
     def page_reviews(doc)
       doc.css("table#productReviews tr td >  div")
     end
 
     def next_link(doc,link_url,url,klass)
       begin
-        doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
+        # doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
+        # next_link = doc.css('ul.a-pagination > li.a-last a')[0][:href]#.select{|a| a.text =~ /Next/}.first[:href]
+        # p link_url
+        # next_number = 2
+        # if link_url =~ /pageNumber=(\d)/
+        #   next_number = $1
+        # end
+        # puts url
+        # puts "#{url}&pageNumber=#{next_number}"
+        #doc.css('.CMpaginate a').each{ |a| puts a[:href] }
+        #puts doc.css('span.paging').to_s
+        #puts doc.css('.CMpaginate span.paging').to_s
+        next_link = doc.css('.CMpaginate span.paging').to_s =~ /href="([^>]+)">Next/ ? $1 : nil
+        next_link << "&sortBy=bySubmissionDateDescending" unless next_link =~ /bySubmissionDateDescending/
+        # unless next_link =~ /bySubmissionDateDescending/
+        #   nextLink << "&sortBy=bySubmissionDateDescending"
+        # end
+        # next_link = doc.css('.paging a').select{|a| a.text =~ /Next/}.first[:href]
+        puts "NEXT LINK IS #{next_link}"
+        next_link
       rescue
-        nil
+        puts "NO NEXT LINK"
       end
+    end
+
+    def url_from_link(link_url)
+      "#{link_url.forum.root}#{link_url.link}#{link_url.forum.tail}"
     end
 
     def get_unique_key(review)

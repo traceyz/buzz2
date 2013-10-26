@@ -24,6 +24,7 @@ class Scraper < ActiveRecord::Base
       forum.product_links.each do |product_link|
         product_link.link_urls.each do |link_url|
           url = url_from_link(link_url)
+          puts "LINK IS #{url}"
           cycle = 0 # check for run-away
           while url && cycle < 100
             doc = doc_from_url(url)
@@ -54,10 +55,15 @@ class Scraper < ActiveRecord::Base
       review_class = Object.const_get(klass)
       page_reviews(doc).each do |review|
         next unless (key = get_unique_key(review))
-        if review_class.where(:unique_key => key).first
-          puts "Review already exists"
+        r = review_class.where(:unique_key => key).first
+        if r
+          puts "Review already exists #{r.review_date.to_s}"
           next
         end
+        # if review_class.where(:unique_key => key).first
+        #   puts "Review already exists"
+        #   next
+        # end
         args = { unique_key: key, link_url_id: link_url.id }
         begin
           next unless (add_args = args_from_review(review))

@@ -19,4 +19,8 @@ class Category < ActiveRecord::Base
     products.includes(:product_links).map{ |p| p.new_count(args) }.sum
   end
 
+  def self.audio_for_video
+
+  end
+
 end

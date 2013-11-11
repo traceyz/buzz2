@@ -42,16 +42,121 @@ BODY = <<-EOD
       %td
       %td#new New
       %td#all All Reviews
-    - cats.each do |cat|
+    %tr
+      %td{:colspan => 4}
+        %h2 Audio for Video
+    - cat = cats[0]
+    %tr
+      %td{:rowspan => 3}
+        %img{:src => root + "images/audio_for_video.png"}
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[1]
+    %tr
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[2]
+    %tr
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+
+    %tr
+      %td{:colspan => 4}
+        %h2 Video
+    - cat = cats[3]
+    %tr
+      %td
+        %img{:src => root + "images/video.png"}
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    %tr
+      %td{:colspan => 4}
+        %h2 Home Music Systems
+    - cat = cats[4]
+    %tr
+      %td{:rowspan => 3}
+        %img{:src => root + "images/home_music_systems.png" }
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[5]
+    %tr
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[6]
+    %tr
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    %tr
+      %td{:colspan => 4}
+        %h2 Mobile and Computer Audio
+    - cat = cats[7]
+    %tr
+      %td{:rowspan => 3}
+        %img{:src => root + "images/mobile_and_computer_audio.png" }
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[8]
+    %tr
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[9]
+    %tr
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+    - cat = cats[10]
+    %tr
+      %td{:colspan => 4}
+        %h2 Headphones
+    %tr
+      %td
+        %img{:src => root + "images/" + cat.image_name}
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+
+    %tr
+      %td{:colspan => 4}
+        %h2 Other
+    - cats[11..-1].each do |cat|
       %tr
         %td
-          %img{:src => root + "images/" + cat.image_name}
         %td
           %a{:href => root + "c_pages/" + cat.page_name}
             = cat.name
         %td.count= cat.new_count(:report_date => date, :recent_date => recent)
         %td.count= cat.report_count(date)
-
 EOD
 
   def self.recent
@@ -59,7 +164,7 @@ EOD
   end
 
   def self.generate_home_page
-    cats =  Category.order(:position)
+    cats =  Category.order('position ASC, name ASC')
     obj = Object.new
     date = report_date
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render,
@@ -81,7 +186,7 @@ EOD
     Spreadsheet.client_encoding = 'UTF-8'
     book = Spreadsheet::Workbook.new
     args = { :recent_date => recent, :report_date => report_date }
-    Category.order(:position).each do |category|
+    Category.order('position ASC, name ASC').each do |category|
       next unless category.new_count(args) > 0
       sheet = book.create_worksheet :name => category.name
       sheet.row(0).concat %w(Name Forum Date Author Location Rating Headline Content)

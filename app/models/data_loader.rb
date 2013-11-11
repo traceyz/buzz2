@@ -80,4 +80,32 @@ class DataLoader < ActiveRecord::Base
     Category.where(:name => "Headphones").first.update_attributes(:position => 11)
   end
 
+  def self.new_products
+    cat = Category.where(:name => "Wi-Fi Music Systems").first
+    cat.products.create!(:name => "SoundTouch Controller")
+    cat.products.create!(:name => "SoundTouch Stereo JC Wi-Fi")
+    cat.products.create!(:name => "SoundTouch SA-4 Amplifier")
+    cat = Category.where(:name => "Lifestyle").first
+    [
+      "Lifestyle 535 Series II",
+      "Lifestyle 525 Series II",
+      "Lifestyle 520",
+      "Lifestyle 510",
+      "Lifestyle 235 Series II",
+      "Lifestyle 135 Series II"
+    ].each{|n| cat.products.create!(:name => n)}
+    Category.where(:name => "Wave").first.products.create!(:name => "VideoWave III")
+    Category.where(:name => "Wave").first.products.create!(:name => "Wave SoundTouch Music System")
+
+  end
+
+  def self.list_products
+    Category.order('position ASC, name ASC').each do |cat|
+      puts "#{cat.position} #{cat.name}"
+      cat.products.each{|p| puts p.name}
+      puts
+    end
+    nil
+  end
+
 end

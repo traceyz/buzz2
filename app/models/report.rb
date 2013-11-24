@@ -158,7 +158,7 @@ EOD
 
   def self.generate_home_page
     self.report_date = Date.today
-    cats =  Category.order('position ASC, name ASC')
+    cats =  Category.where("category_id IS NULL").order('position ASC, name ASC')
     obj = Object.new
     date = report_date
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render,

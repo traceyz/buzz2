@@ -22,7 +22,6 @@ class BbLinkScraper < ActiveRecord::Base
   end
 
   def get_links
-    file = File.open('bb_new_links.txt', 'w')
     all_links = Set.new
     LINKS.each do |link|
       doc = Nokogiri::HTML(open(link))
@@ -35,11 +34,6 @@ class BbLinkScraper < ActiveRecord::Base
         all_links.add(link)
       end
     end
-    #all_links.each{ |lk| puts lk }
-    all_links.each do |lk|
-      file.puts "http://www.bestbuy.com/site/#{lk}" unless LinkUrl.where(:link => lk).first
-    end
-    file.close
     nil
   end
 

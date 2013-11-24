@@ -99,6 +99,24 @@ class DataLoader < ActiveRecord::Base
 
   end
 
+  def self.am_11_24
+    product = Product.find(114) # Lifestyle 525 Series II
+    link = "Bose-Lifestyle-Series-Entertainment-System/product-reviews/B00FGLTYFK"
+    title = "Bose Lifestyle 525 Series II Home Entertainment System"
+    build_link(A,product,title,link)
+    product = Product.where(:name => "SoundLink Bluetooth").first
+    link = "Bose-SoundLink-Bluetooth-Wireless-Speaker/product-reviews/B00EE95UDU"
+    title = "Bose SoundLink Mini Bluetooth Wireless Speaker and Soft Green Cover Bundle"
+    build_link(A,product,title,link)
+  end
+
+  def self.ap_11_24
+    product = Product.where(:name => "SoundTouch 30").first
+    link = "/us/reviews/HD476VC/A/bose-soundtouch-30-wi-fi-music-system"
+    title = "Bose SoundTouch 30 WiFi Music System"
+    build_link(AP,product,title,link)
+  end
+
   def self.list_products
     Category.order('position ASC, name ASC').each do |cat|
       puts "#{cat.position} #{cat.name}"

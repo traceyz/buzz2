@@ -42,6 +42,7 @@ BODY = <<-EOD
       %td
       %td#new New
       %td#all All Reviews
+
     %tr
       %td{:colspan => 4}
         %h2 Audio for Video
@@ -74,6 +75,7 @@ BODY = <<-EOD
           = cat.name
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
+
     %tr
       %td{:colspan => 4}
         %h2 Home Music Systems
@@ -86,20 +88,14 @@ BODY = <<-EOD
           = cat.name
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
-    - cat = cats[5]
-    %tr
-      %td
-        %a{:href => root + "c_pages/" + cat.page_name}
-          = cat.name
-      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-      %td.count= cat.report_count(date)
-    - cat = cats[6]
-    %tr
-      %td
-        %a{:href => root + "c_pages/" + cat.page_name}
-          = cat.name
-      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-      %td.count= cat.report_count(date)
+    - cats[5..6].each do |cat|
+      %tr
+        %td
+          %a{:href => root + "c_pages/" + cat.page_name}
+            = cat.name
+        %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+        %td.count= cat.report_count(date)
+
     %tr
       %td{:colspan => 4}
         %h2 Mobile and Computer Audio
@@ -112,20 +108,14 @@ BODY = <<-EOD
           = cat.name
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
-    - cat = cats[8]
-    %tr
-      %td
-        %a{:href => root + "c_pages/" + cat.page_name}
-          = cat.name
-      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-      %td.count= cat.report_count(date)
-    - cat = cats[9]
-    %tr
-      %td
-        %a{:href => root + "c_pages/" + cat.page_name}
-          = cat.name
-      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-      %td.count= cat.report_count(date)
+    - cats[8..9].each do |cat|
+      %tr
+        %td
+          %a{:href => root + "c_pages/" + cat.page_name}
+            = cat.name
+        %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+        %td.count= cat.report_count(date)
+
     - cat = cats[10]
     %tr
       %td{:colspan => 4}
@@ -139,17 +129,7 @@ BODY = <<-EOD
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
 
-    %tr
-      %td{:colspan => 4}
-        %h2 Other
-    - cats[11..-1].each do |cat|
-      %tr
-        %td
-        %td
-          %a{:href => root + "c_pages/" + cat.page_name}
-            = cat.name
-        %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-        %td.count= cat.report_count(date)
+
 EOD
 
   def self.recent
@@ -170,9 +150,9 @@ EOD
       date: date, recent: recent, root: root)
     f.close
     puts "Done"
-    # cats.each do |cat|
-    #   CategoryPage.generate_category_page(cat,date,recent)
-    # end
+    cats.each do |cat|
+      CategoryPage.generate_category_page(cat,date,recent)
+    end
     nil
   end
 

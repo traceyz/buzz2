@@ -54,20 +54,13 @@ BODY = <<-EOD
           = cat.name
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
-    - cat = cats[1]
-    %tr
-      %td
-        %a{:href => root + "c_pages/" + cat.page_name}
-          = cat.name
-      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-      %td.count= cat.report_count(date)
-    - cat = cats[2]
-    %tr
-      %td
-        %a{:href => root + "c_pages/" + cat.page_name}
-          = cat.name
-      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
-      %td.count= cat.report_count(date)
+    - cats[1..2].each do |cat|
+      %tr
+        %td
+          %a{:href => root + "c_pages/" + cat.page_name}
+            = cat.name
+        %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+        %td.count= cat.report_count(date)
 
     %tr
       %td{:colspan => 4}
@@ -164,6 +157,7 @@ EOD
   end
 
   def self.generate_home_page
+    self.report_date = Date.today
     cats =  Category.order('position ASC, name ASC')
     obj = Object.new
     date = report_date
@@ -176,9 +170,9 @@ EOD
       date: date, recent: recent, root: root)
     f.close
     puts "Done"
-    cats.each do |cat|
-      CategoryPage.generate_category_page(cat,date,recent)
-    end
+    # cats.each do |cat|
+    #   CategoryPage.generate_category_page(cat,date,recent)
+    # end
     nil
   end
 

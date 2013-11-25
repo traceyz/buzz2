@@ -137,8 +137,7 @@ EOD
   end
 
   def self.generate_home_page
-    self.report_date = Date.today
-    cats =  Category.where("category_id IS NULL").order('position ASC, name ASC')
+    cats =  Category.where("category_id IS NULL").order('position ASC, name ASC').reject{|c| c.name == "Multimedia Speakers"}
     obj = Object.new
     date = report_date
     engine = Haml::Engine.new(HEADER + BODY).def_method(obj, :render,
@@ -149,7 +148,7 @@ EOD
       page_title: "Bose Consumer Reviews from These Web Forums",
       date: date, recent: recent, root: root)
     f.close
-    puts "Done"
+    puts "Home Page Done"
     cats.each do |cat|
       CategoryPage.generate_category_page(cat,date,recent)
     end
@@ -161,7 +160,7 @@ EOD
     book = Spreadsheet::Workbook.new
     args = { :recent_date => recent, :report_date => report_date }
     Category.order('position ASC, name ASC').each do |category|
-      next unless category.new_count(args) > 0
+      next unless category.products.first
       sheet = book.create_worksheet :name => category.name
       sheet.row(0).concat %w(Name Forum Date Author Location Rating Headline Content)
       idx = 1

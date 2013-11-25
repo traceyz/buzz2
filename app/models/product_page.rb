@@ -7,7 +7,7 @@ BODY = <<-EOD
     %a{:href => "../home.html"}
       = "Back to the Main Page"
     %a{:href => "../c_pages/" + category.page_name}
-      = "Back to the " + category.name + " Page"
+      = "Back to the " + category.parent_name + " Page"
   %hr
 - reviews.each do |review|
   .review_item

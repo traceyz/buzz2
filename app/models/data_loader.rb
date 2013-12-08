@@ -117,6 +117,20 @@ class DataLoader < ActiveRecord::Base
     build_link(AP,product,title,link)
   end
 
+  def self.am_12_8
+    product = Product.where(:name => "SoundDock III").first
+    link = "Bose-SoundDock-Series-Speaker-Limited-Edition/product-reviews/B00FSB696K"
+    title = "SoundDock Series III Speaker - Limited-Edition Blue"
+    build_link(A,product,title,link)
+    link = "Bose-SoundDock-Series-Speaker-Limited-Edition/product-reviews/B00FSB695Q"
+    title = "SoundDock Series III Speaker - Limited-Edition Purple"
+    build_link(A,product,title,link)
+    product = Product.where(:name => "SoundLink Mini Covers").first
+    link = "SoundLink%C2%AE-Bluetooth%C2%AE-speaker-leather-cover/product-reviews/B00GWNFC9I"
+    title = "SoundLink Mini Bluetooth speaker leather cover - Black"
+    build_link(A,product,title,link)
+  end
+
   def self.list_products
     Category.order('position ASC, name ASC').each do |cat|
       puts "#{cat.position} #{cat.name}"

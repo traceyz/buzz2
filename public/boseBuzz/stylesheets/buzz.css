@@ -73,6 +73,10 @@ p.headline {
   text-align: right;
 }
 
+.home tr.sub-cat td a{
+  height: 30px !important;
+}
+
 #category table {
   width: 600px;
   margin-left: 30px;
@@ -95,5 +99,9 @@ p.headline {
 }
 #category tr.first td {
   padding-bottom: 10px;
+}
+#category td.sub-name {
+  padding-left: 30px;
+  font-weight: bold;
 }
 

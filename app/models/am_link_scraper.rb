@@ -11,12 +11,12 @@ class AmLinkScraper < ActiveRecord::Base
   end
 
   def get_links
-    file = File.open("am_links_new.txt", "w")
-    get_links_from_link(LINK, file)
-    file.close
+    # file = File.open("am_links_new.txt", "w")
+    get_links_from_link(LINK)
+    # file.close
   end
 
-  def get_links_from_link(link, file)
+  def get_links_from_link(link)
     links = Set.new
     doc = Nokogiri::HTML(open(link))
     doc.css('.asinReviewsSummary a').each do |href|
@@ -31,11 +31,13 @@ class AmLinkScraper < ActiveRecord::Base
     #links.each{ |lk|  file.puts "http://www.amazon.com/#{lk}" }
     links.each do |lk|
       dc = Nokogiri::HTML(open("http://www.amazon.com/#{lk}"))
+      title = dc.at_css('title').to_s.chomp
+      next if title =~ /Travel Bag|Link A Cable|Sassy/
       puts lk
       puts dc.at_css('title')
     end
     next_link = doc.css('a#pagnNextLink')[0]
-    get_links_from_link(next_link[:href], file) if next_link
+    get_links_from_link(next_link[:href]) if next_link
   end
 
 end

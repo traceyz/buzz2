@@ -56,7 +56,7 @@ BODY = <<-EOD
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
     - cats[1..2].each do |cat|
-      %tr
+      %tr.sub-cat
         %td
           %a{:href => root + "c_pages/" + cat.page_name}
             = cat.name
@@ -89,7 +89,7 @@ BODY = <<-EOD
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
     - cats[5..6].each do |cat|
-      %tr
+      %tr.sub-cat
         %td
           %a{:href => root + "c_pages/" + cat.page_name}
             = cat.name
@@ -109,7 +109,7 @@ BODY = <<-EOD
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
     - cats[8..9].each do |cat|
-      %tr
+      %tr.sub-cat
         %td
           %a{:href => root + "c_pages/" + cat.page_name}
             = cat.name

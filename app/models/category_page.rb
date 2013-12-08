@@ -17,7 +17,7 @@ BODY = <<-EOD
     - cats.each do |cat|
       - if cats.count > 1
         %tr
-          %td{:colspan => 4}= cat.name
+          %td{:colspan => 4, :class=> 'sub-name'}= cat.name
         %tr
           %td{:colspan => 4}
             %hr

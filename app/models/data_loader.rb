@@ -219,4 +219,316 @@ class DataLoader < ActiveRecord::Base
     build_link(A,product,title,link)
   end
 
+  def self.build_bb_link(name, title, link)
+    product = Product.where(:name => name).first
+    raise "NO PRODUCT FOR **#{name}**" unless product
+    build_link(BB, product, title, link)
+  end
+
+  def self.bb_links_12_22
+    name = "CineMate"
+    link = "bose-174-cinemate-174-gs-series-ii-digital-home-theater-speaker-system/9480411.p?skuId=9480411&id=1218112362266"
+    title = "Bose CineMate GS Series II Digital Home Theater Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "Bose Solo"
+    link = "bose-174-solo-tv-sound-system/8753193.p?skuId=8753193&id=1218890195868"
+    title = "Bose Solo TV Sound System"
+    build_bb_link(name, title, link)
+
+    name = "Cinemate 1 SR"
+    link = "bose-174-cinemate-174-1-sr-digital-home-theater-speaker-system/2939159.p?skuId=2939159&id=1218365971467"
+    title = "Bose CineMate 1 SR"
+    build_bb_link(name, title, link)
+
+    name = "Lifestyle 535 Series II"
+    link = "bose-174-lifestyle-174-535-series-ii-home-entertainment-system/1730024.p?skuId=1730024&id=1219062285175"
+    title = "Bose Lifestyle 535 Series II Home Entertainment System"
+    build_bb_link(name, title, link)
+
+    name = "Lifestyle 525 Series II"
+    link = "bose-174-lifestyle-174-525-series-ii-home-entertainment-system/1730015.p?skuId=1730015&id=1219062280591"
+    title = "Bose Lifestyle 525 Series II"
+    build_bb_link(name, title, link)
+
+    name = "Lifestyle 135 Series II"
+    link = "bose-174-lifestyle-174-135-series-ii-home-entertainment-system/1693328.p?skuId=1693328&id=1219060354872"
+    title = "Bose Lifestyle 135 Series II Home Entertainment System"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Bluetooth"
+    link = "bose-174-soundlink-174-mini-bluetooth-speaker/9154107.p?skuId=9154107&id=1218992518770"
+    title = "Bose SoundLink Mini Bluetooth Speaker"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Mini"
+    link = "bose-174-soundlink-174-wireless-mobile-speaker-ii-dark-gray/6449688.p?skuId=6449688&id=1218737492901"
+    title = "Bose SoundLink Wireless Mobile Speaker II"
+    build_bb_link(name, title, link)
+
+    name = "SoundDock III"
+    link = "bose-174-sounddock-174-series-iii-digital-music-system/7551221.p?skuId=7551221&id=1218851198658"
+    title = "Bose SoundDock Series III Digital Music System"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Mini Covers"
+    link = "bose-174-soundlink-174-mini-bluetooth-speaker-soft-cover-blue/9912574.p?skuId=9912574&id=1219043636860"
+    title = "Bose SoundLink Mini Bluetooth Speaker Soft Cover Blue"
+
+    name = "SoundLink Mini Covers"
+    link = "bose-174-soundlink-174-mini-bluetooth-speaker-soft-cover-green/9910764.p?skuId=9910764&id=1219043636862"
+    title = "Bose SoundLink Mini Bluetooth Speaker Soft Cover Green"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Mini Covers"
+    link = "bose-174-soundlink-174-mini-bluetooth-speaker-soft-cover-orange/9909768.p?skuId=9909768&id=1219043636859"
+    title = "Bose SoundLink Mini Bluetooth Speaker Soft Cover Orange"
+    build_bb_link(name, title, link)
+
+    name = "SoundDock Portable"
+    link = "bose-174-sounddock-174-portable-digital-music-system-for-apple-174-ipod-174-black/8509438.p?skuId=8509438&id=1186005749503"
+    title = "Bose SoundDock Portable Digital Music System for Apple iPod SoundDock Portable Digital Music System"
+    build_bb_link(name, title, link)
+
+    name = "SoundDock"
+    link = "bose-174-sounddock-174-series-ii-digital-music-system-for-apple-174-ipod-174-white/6292469.p?skuId=6292469&id=1218725894433"
+    title = "Bose SoundDock Series II Digital Music System for Apple iPod White"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Bluetooth"
+    link = "bose-174-soundlink-174-bluetooth-mobile-speaker-ii-white/8834792.p?skuId=8834792&id=1218911492090"
+    title = "Bose SoundLink Bluetooth Mobile Speaker II White Leather"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Bluetooth"
+    link = "bose-174-soundlink-174-bluetooth-mobile-speaker-ii-black-pink/8826757.p?skuId=8826757&id=1218909521416"
+    title = "Bose SoundLink Bluetooth Mobile Speaker II Black Leather Pink"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Bluetooth"
+    link = "bose-174-soundlink-174-bluetooth-mobile-speaker-ii-tan-turquoise/8826587.p?skuId=8826587&id=1218910869119"
+    title = "Bose SoundLink Bluetooth Mobile Speaker Leather"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Air"
+    link = "bose-174-soundlink-174-air-wireless-speaker-for-select-apple-174-devices-black/6238349.p?skuId=6238349&id=1218723190099"
+    title = "Bose SoundLink Air Wireless Speaker for Select Apple Devices"
+    build_bb_link(name, title, link)
+
+    name = "SoundDock 10"
+    link = "bose-174-sounddock-174-10-bluetooth-digital-music-system-for-apple-174-ipod-174-silver/6449697.p?skuId=6449697&id=1218737496015"
+    title = "Bose SoundDock 10 Bluetooth Digital Music System for Apple iPod"
+    build_bb_link(name, title, link)
+
+    name = "SoundLink Bluetooth"
+    link = "bose-174-soundlink-174-wireless-mobile-speaker-ii-silver/6449724.p?skuId=6449724&id=1218737493430"
+    title = "Bose SoundLink Wireless Mobile Speaker II Brown"
+    build_bb_link(name, title, link)
+
+    name = "SoundDock 10"
+    link = "bose-174-sounddock-174-10-bluetooth-dock/9509677.p?skuId=9509677&id=1218116541195"
+    title = "Bose SoundDock 10 Bluetooth Dock"
+    build_bb_link(name, title, link)
+
+    name = "QC 15"
+    link = "bose-174-quietcomfort-174-15-acoustic-noise-cancelling-174-headphones/9450578.p?skuId=9450578&id=1218106625357"
+    title = "Bose QuietComfort 15 Acoustic Noise Cancelling Headphones"
+    build_bb_link(name, title, link)
+
+    name = "AE2"
+    link = "bose-174-ae2-audio-headphones-black/1117121.p?skuId=1117121&id=1218222410544"
+    title = "Bose AE2 Audio Headphones"
+    build_bb_link(name, title, link)
+
+    name = "IE2"
+    link = "bose-174-ie2-earbud-headphones-black-white/1114791.p?skuId=1114791&id=1218221912874"
+    title = "Bose IE2 Headphones"
+    build_bb_link(name, title, link)
+
+    name = "QC 20"
+    link = "bose-174-quietcomfort-174-20i-acoustic-noise-cancelling-174-earbud-headphones/9154082.p?skuId=9154082&id=1218992521020"
+    title = "Bose QuietComfort 20i Acoustic Noise Cancelling Earbud Headphones"
+    build_bb_link(name, title, link)
+
+    name = "MIE2"
+    link = "bose-174-mie2i-mobile-headset-black-silver/1246325.p?skuId=1246325&id=1218241024821"
+    title = "Bose MIE2i mobile headset"
+    build_bb_link(name, title, link)
+
+    name = "QC 15"
+    link = "bose-174-quietcomfort-174-15-acoustic-noise-cancelling-174-headphones-limited-edition-slate-brown/1945216.p?skuId=1945216&id=1219067715035"
+    title = "Bose QuietComfort 15 Acoustic Noise Cancelling Headphones Limited Edition"
+    build_bb_link(name, title, link)
+
+    name = "AE2w"
+    link = "bose-174-ae2w-bluetooth-headphones/8874374.p?skuId=8874374&id=1218924807689"
+    title = "Bose AE2w Bluetooth Headphones"
+    build_bb_link(name, title, link)
+
+    name = "OE2"
+    link = "bose-174-oe2-audio-headphones-black/3021732.p?skuId=3021732&id=1218372336693"
+    title = "Bose OE2 Audio Headphones Black"
+    build_bb_link(name, title, link)
+
+    name = "SIE2"
+    link = "bose-174-sie2i-sport-earbud-headphones-green/6292539.p?skuId=6292539&id=1218725901627"
+    title = "Bose SIE2i Headphones"
+    build_bb_link(name, title, link)
+
+    name = "SIE2"
+    link = "bose-174-sie2i-sport-earbud-headphones-blue/8835018.p?skuId=8835018&id=1218911496242"
+    title = "Bose SIE2i Sport Earbud Headphones Blue"
+    build_bb_link(name, title, link)
+
+    name = "AE2"
+    link = "bose-174-ae2i-audio-headphones-black/2197034.p?skuId=2197034&id=1218313909189"
+    title = "Bose AE2i Headphones"
+    build_bb_link(name, title, link)
+
+    name = "QC 3"
+    link = "bose-174-quietcomfort-174-3-acoustic-noise-cancelling-174-headphones-silver/9039818.p?skuId=9039818&id=1218019624962"
+    title = "Bose Corporation QC3 Headhones"
+    build_bb_link(name, title, link)
+
+    name = "AE2"
+    link = "bose-174-ae2-audio-headphones-white/6266244.p?skuId=6266244&id=1218725181177"
+    title = "Bose AE2 Audio Headphones AE2 White"
+    build_bb_link(name, title, link)
+
+    name = "SIE2"
+    link = "bose-174-sie2i-sport-earbud-headphones-orange/6292511.p?skuId=6292511&id=1218725903494"
+    title = "Bose SIE2i Headphones"
+    build_bb_link(name, title, link)
+
+    name = "QC 20"
+    link = "bose-174-quietcomfort-174-20-acoustic-noise-cancelling-174-earbud-headphones/9154055.p?skuId=9154055&id=1218992521419"
+    title = "Bose QuietComfort 20 Acoustic Noise Cancelling Earbud Headphones"
+    build_bb_link(name, title, link)
+
+    name = "MIE2"
+    link = "bose-174-mie2-earbud-headphones-black-white/1246316.p?skuId=1246316&id=1218241024954"
+    title = "Bose MIE2 Headphones"
+    build_bb_link(name, title, link)
+
+    name = "SIE2"
+    link = "bose-174-sie2i-sport-earbud-headphones-purple/9364078.p?skuId=9364078&id=1219013413492"
+    title = "Bose SIE2i Sport Earbud Headphones Purple"
+    build_bb_link(name, title, link)
+
+    name = "OE2"
+    link = "bose-174-oe2-audio-headphones-white/3021714.p?skuId=3021714&id=1218372338016"
+    title = "Bose OE2 Headphones"
+    build_bb_link(name, title, link)
+
+    name = "SIE2"
+    link = "bose-174-sie2-sport-earbud-headphones-green/6266299.p?skuId=6266299&id=1218725179959"
+    title = "Bose SIE2 Sport Earbud Headphones Green"
+    build_bb_link(name, title, link)
+
+    name = "OE2"
+    link = "bose-174-oe2i-audio-headphones-black/3021769.p?skuId=3021769&id=1218372338158"
+    title = "Bose OE2i Audio Headphones Black"
+    build_bb_link(name, title, link)
+
+    name = "OE2"
+    link = "bose-174-oe2i-audio-headphones-white/3021741.p?skuId=3021741&id=1218372337448"
+    title = "Bose OE2i Audio Headphones White"
+    build_bb_link(name, title, link)
+
+    name = "AE2"
+    link = "bose-174-ae2i-audio-headphones-white/6612586.p?skuId=6612586&id=1218762299590"
+    title = "Bose AE2i Audio Headphones White"
+    build_bb_link(name, title, link)
+
+    name = "Bluetooth Headset Series 2"
+    link = "bose-174-bluetooth-174-headset-series-2-right-ear/2969131.p?skuId=2969131&id=1218367939478"
+    title = "Bose Bluetooth Headset Series 2 Right Ear"
+    build_bb_link(name, title, link)
+
+    name = "Bluetooth Headset Series 2"
+    link = "bose-174-bluetooth-174-headset-series-2-left-ear/2968539.p?skuId=2968539&id=1218367939336"
+    title = "Bose Bluetooth Headset Series 2 Left Ear"
+    build_bb_link(name, title, link)
+
+    name = "Companion 2 Series III"
+    link = "bose-174-companion-174-2-series-iii-multimedia-speaker-system-2-piece/8864513.p?skuId=8864513&id=1218918122908"
+    title = "Bose Companion 2 Series III Multimedia Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "Companion 20"
+    link = "bose-174-companion-174-20-multimedia-speaker-system-2-piece/2683194.p?skuId=2683194&id=1218345204416"
+    title = "Bose Companion 20 Multimedia Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "Companion 5"
+    link = "bose-174-companion-174-5-multimedia-speaker-system-3-piece/7996403.p?skuId=7996403&id=1155071062436"
+    title = "Bose Companion 5 Multimedia Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "Computer Music Monitor"
+    link = "bose-174-computer-musicmonitor-174-black/4941271.p?skuId=4941271&id=1218580149523"
+    title = "Bose Computer MusicMonitor"
+    build_bb_link(name, title, link)
+
+    name = "Computer Music Monitor"
+    link = "bose-174-computer-musicmonitor-174-silver/4941262.p?skuId=4941262&id=1218580117059"
+    title = "Bose Computer MusicMonitor Silver"
+    build_bb_link(name, title, link)
+
+    name = "161"
+    link = "bose-174-161-153-speaker-system-black/4151394.p?skuId=4151394&id=1051384749690"
+    title = "Bose 161 Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "301"
+    link = "bose-174-301-174-series-v-direct-reflecting-174-speaker-system-black/4746449.p?skuId=4746449&id=1051806235077"
+    title = "Bose 301 Series V DirectReflecting Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "201"
+    link = "bose-174-201-174-series-v-direct-reflecting-174-speaker-system-black/4746225.p?skuId=4746225&id=1051806234629"
+    title = "Bose 201 Series V DirectReflecting Speaker System"
+    build_bb_link(name, title, link)
+
+    name = "251"
+    link = "bose-174-151-174-se-environmental-speakers-pair-white/6340907.p?skuId=6340907&id=1076628385961"
+    title = "Bose 151 SE Environmental Speakers"
+    build_bb_link(name, title, link)
+
+    name = "191"
+    link = "bose-174-virtually-invisible-174-191-speakers-pair/5402441.p?skuId=5402441&id=1051826210458"
+    title = "Bose Virtually Invisible 191 Speakers"
+    build_bb_link(name, title, link)
+
+    name = "151"
+    link = "bose-174-151-174-se-environmental-speakers-pair-black/6355632.p?skuId=6355632&id=1076628694828"
+    title = "Bose 151 SE Environmental Speakers"
+    build_bb_link(name, title, link)
+
+    name = "251"
+    link = "bose-174-251-174-environmental-speakers-pair-white/3887510.p?skuId=3887510&id=1051384599811"
+    title = "Bose 251 Environmental Speakers"
+    build_bb_link(name, title, link)
+
+    name = "791"
+    link = "bose-174-virtually-invisible-174-791-in-ceiling-speakers-pair/9570118.p?skuId=9570118&id=1218126041624"
+    title = "Bose Virtually Invisible 791 InCeiling Speakers"
+    build_bb_link(name, title, link)
+
+    name = "FS 51"
+    link = "bose-174-freespace-174-51-landscape-speaker-pair-green/5674941.p?skuId=5674941&id=1055388008634"
+    title = "Bose Free Space 51 Outdoor Speakers"
+    build_bb_link(name, title, link)
+
+    name = "161"
+    link = "bose-174-161-153-speaker-system-white/4337444.p?skuId=4337444&id=1051384816544"
+    title = "Bose 161 Speaker System 161 White"
+    build_bb_link(name, title, link)
+
+    name = "251"
+    link = "bose-174-251-174-environmental-speakers-pair-black/4299636.p?skuId=4299636&id=1051384804692"
+    title = "Bose 251 Environmental Speakers"
+    build_bb_link(name, title, link)
+  end
+
 end

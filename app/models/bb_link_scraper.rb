@@ -34,6 +34,18 @@ class BbLinkScraper < ActiveRecord::Base
         all_links.add(link)
       end
     end
+    all_links.to_a.each do |k|
+      prod_link = "http://www.bestbuy.com/site/#{k}"
+      doc = Nokogiri::HTML(open(prod_link))
+      title = doc.at_css('title').to_s.chomp
+      if title =~ /<title>([^<]+)</
+        puts "#{k}"
+        puts $1
+      else
+        puts "**#{title}**"
+      end
+      puts
+    end
     nil
   end
 

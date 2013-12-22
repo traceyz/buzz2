@@ -50,7 +50,7 @@ class Scraper < ActiveRecord::Base
       end
     end
 
-    def build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
+    def build_reviews_from_doc(doc,link_url,url,klass,all_reviews, file = false)
       count = 0
       review_class = Object.const_get(klass)
       page_reviews(doc).each do |review|
@@ -82,6 +82,7 @@ class Scraper < ActiveRecord::Base
       end
       puts "GOT #{count} REVIEWS"
       # we may need to get all reviews
+      return nil if file
       (count > 0 || all_reviews) ? next_link(doc,link_url,url,klass) : nil
     end
 

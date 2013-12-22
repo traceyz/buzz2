@@ -51,6 +51,12 @@ class BestBuyScraper < Scraper
       }
     end
 
+    def build_reviews_from_file(file)
+      path = "#{Rails.root}/#{file}"
+      doc = Nokogiri::HTML(File.open(path))
+      build_reviews_from_doc(doc, nil, nil, "BestBuyReview", true, true)
+    end
+
   end
 
 end

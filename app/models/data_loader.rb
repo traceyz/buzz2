@@ -140,4 +140,83 @@ class DataLoader < ActiveRecord::Base
     nil
   end
 
+  def self.am_12_21
+    product = Product.where(:name => "SoundLink Mini Covers").first
+    link = "Bose-Soft-Cover-SoundLink-Mini/product-reviews/B00GMONZWS"
+    title = "Bose Soft Cover for SoundLink Mini - Orange"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "Lifestyle 535 Series II").first
+    link = "Bose-Lifestyle-Series-Entertainment-System/product-reviews/B00FGLTYEG"
+    title = "Bose Lifestyle 535 Series II Home Entertainment System"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "SoundDock III").first
+    link = "Bose-SoundDock%C2%AE-Series-speaker-Limited-Edition/product-reviews/B00FSB6B2W"
+    title = "Bose SoundDock Series III speaker - Limited-Edition Green"
+    build_link(A,product,title,link)
+    link = "Bose-SoundDock-Series-Speaker-Limited-Edition/product-reviews/B00FSB6B22"
+    title = "Bose SoundDock Series III Speaker - Limited-Edition Orange"
+    build_link(A,product,title,link)
+
+  end
+
+  def self.am_12_21A
+    product = Product.where(:name => "Wave SoundTouch Music System").first
+    link = "Bose-Wave-SoundTouch-music-system/product-reviews/B00GR0OFKS"
+    title = "Bose Wave SoundTouch music system - Titanium Silver"
+    build_link(A,product,title,link)
+  end
+
+  def self.am_12_21B
+    product = Product.where(:name => "CineMate").first
+    link = "CineMate%C2%AE-Digital-Theater-Speaker-Version/product-reviews/B002KY2OU8"
+    title = "Bose CineMate Series II Digital Home Theater Speaker System"
+    build_link(A,product,title,link)
+
+    link = "Bose%C2%AE-CineMate%C2%AE-Series-Digital-System/product-reviews/B00ANEAJZY"
+    title = "Bose CineMate Series II Digital Music System"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "SoundDock").first
+    link = "Bose-Sounddock-Series-Digital-System/product-reviews/B005LWY68E"
+    title = "Bose Sounddock Series II Digital Music System for iPod (Black)"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "321").first
+    link = "Bose-3-2-1-Home-Entertainment-System/product-reviews/B0000DJF5S"
+    title = "Bose 3-2-1 GS DVD Home Entertainment System"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "Bose Solo").first
+    link = "Bose%C2%AE-Solo-TV-Sound-System/product-reviews/B00DOQ2WNA"
+    title = "Bose Solo TV Sound System"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "Wave Control Pod").first
+    link = "Bose-Wave%C2%AE-control-pod/product-reviews/B004C1VX7W"
+    title = "Bose Wave control pod"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "Wave Radio").first
+    link = "Bose-351020-0020-Wave%C2%AE-III-dock/product-reviews/B00BZBJJ50"
+    title = "Bose Wave III dock"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "Wave Radio CD").first
+    link = "Bose-Radio-Player-White-Color/product-reviews/B00803CXO0"
+    title = "Bose Wave Radio/cd Player White in Color"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "SoundLink Bluetooth").first
+    link = "Bose-SoundLink-Bluetooth-Speaker-Wireless/product-reviews/B00EPY9KIU"
+    title = "Bose SoundLink Mini Bluetooth Speaker"
+    build_link(A,product,title,link)
+
+    product = Product.where(:name => "QC 3").first
+    link = "Bose-QuietComfort-Acoustic-Canceling-Headphones/product-reviews/B00EFWBIT6"
+    title = "Bose QuietComfort 3 Acoustic Noise Canceling Headphones"
+    build_link(A,product,title,link)
+  end
+
 end

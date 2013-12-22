@@ -4,8 +4,6 @@ class ProductLink < ActiveRecord::Base
   belongs_to :forum
   belongs_to :product
 
-  validates :active, presence: true
-
   attr_accessor :active
 
   def report_count(report_date)

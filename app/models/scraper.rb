@@ -58,7 +58,8 @@ class Scraper < ActiveRecord::Base
         r = review_class.where(:unique_key => key).first
         if r
           puts "Review already exists #{r.review_date.to_s}"
-          next
+          puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
+          return nil
         end
         # if review_class.where(:unique_key => key).first
         #   puts "Review already exists"
@@ -80,7 +81,9 @@ class Scraper < ActiveRecord::Base
           puts args.inspect
         end
       end
-      puts "GOT #{count} REVIEWS"
+      puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
+      review_class.new_count ||= 0
+      review_class.new_count += 1
       # we may need to get all reviews
       return nil if file
       (count > 0 || all_reviews) ? next_link(doc,link_url,url,klass) : nil

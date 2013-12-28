@@ -14,6 +14,7 @@ class Review < ActiveRecord::Base
   delegate :title, :to => :link_url
   delegate :link, :to => :link_url
 
+  cattr_accessor :new_count
 
   MAX_REVIEWS = 200
 

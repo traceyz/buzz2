@@ -32,6 +32,8 @@ class BestBuyScraper < Scraper
     def next_link(doc,link_url,previous_url,klass)
       raise "NEXT LINK FAILS #{link_url}" unless previous_url =~ /page=(\d+)&/
       idx = $1.to_i + 1
+      puts "NEXT LINK:   #{$1} #{$1.to_i} #{idx}"
+      return nil if idx > 5
       url_from_link(link_url, idx)
     end
 

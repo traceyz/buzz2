@@ -10,4 +10,15 @@ class Forum < ActiveRecord::Base
     product_links.map{|pl| pl.new_count(args) }.sum
   end
 
+  def list_links
+    product_links.sort_by{|pl| pl.product.name}.each do |pl|
+      puts
+      puts pl.product.name
+      pl.link_urls.each do |lu|
+        puts "#{lu.title} #{lu.link}"
+      end
+    end
+    nil
+  end
+
 end

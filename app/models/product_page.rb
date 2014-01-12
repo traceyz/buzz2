@@ -13,6 +13,7 @@ BODY = <<-EOD
   .review_item
     %input{:type => "hidden", :value=>review.unique_key, :name=>:unique_key}
     %input{:type => "hidden", :value=>review.link, :name=>:link}
+    %input{:type => "hidden", :value =>review.link_url_id, :name=>:link_url_id}
     %img{ :src => root + "images/" + review.forum.image }
     %span.date= review.review_date.strftime("%b %d, %Y")
     %span.rating= "Rating: " + review.rating.to_s + " out of 5"

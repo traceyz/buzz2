@@ -20,6 +20,8 @@ class Scraper < ActiveRecord::Base
     end
 
     def get_reviews(all_reviews = false)
+      file = File.open('test.html', 'w')
+      ActiveRecord::Base.logger = nil
       klass = "#{forum.name}Review"
       forum.product_links.each do |product_link|
         product_link.link_urls.each do |link_url|
@@ -27,7 +29,10 @@ class Scraper < ActiveRecord::Base
           puts "LINK IS #{url}"
           cycle = 0 # check for run-away
           while url && cycle < 100
+            puts "GETTING PAGE FROM #{url}"
             doc = doc_from_url(url)
+            # file.puts doc.to_s
+            # return
             break unless doc
             url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
             cycle += 1
@@ -55,8 +60,7 @@ class Scraper < ActiveRecord::Base
       review_class = Object.const_get(klass)
       page_reviews(doc).each do |review|
         next unless (key = get_unique_key(review))
-        r = review_class.where(:unique_key => key).first
-        if r
+        if (r = review_class.where(:unique_key => key).first)
           puts "Review already exists #{r.review_date.to_s}"
           next
         end

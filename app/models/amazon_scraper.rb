@@ -3,7 +3,7 @@ class AmazonScraper < Scraper
   class << self
 
     def forum
-      Forum.find_by_name("Amazon")
+      Forum.where(:name => "Amazon").first
     end
 
     # make sure we don't forget that we need to get 'all' the reviews
@@ -14,34 +14,55 @@ class AmazonScraper < Scraper
     end
 
     def next_link(doc,link_url,url,klass)
-      begin
-        # doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
-        # next_link = doc.css('ul.a-pagination > li.a-last a')[0][:href]#.select{|a| a.text =~ /Next/}.first[:href]
-        # p link_url
-        # next_number = 2
-        # if link_url =~ /pageNumber=(\d)/
-        #   next_number = $1
-        # end
-        # puts url
-        # puts "#{url}&pageNumber=#{next_number}"
-        #doc.css('.CMpaginate a').each{ |a| puts a[:href] }
-        #puts doc.css('span.paging').to_s
-        #puts doc.css('.CMpaginate span.paging').to_s
-        next_link = doc.css('.CMpaginate span.paging').to_s =~ /href="([^>]+)">Next/ ? $1 : nil
-        next_link << "&sortBy=bySubmissionDateDescending" unless next_link =~ /bySubmissionDateDescending/
-        # unless next_link =~ /bySubmissionDateDescending/
-        #   nextLink << "&sortBy=bySubmissionDateDescending"
-        # end
-        # next_link = doc.css('.paging a').select{|a| a.text =~ /Next/}.first[:href]
-        puts "NEXT LINK IS #{next_link}"
-        next_link
-      rescue
-        puts "NO NEXT LINK"
+
+      if doc.to_s !~ /<a[^>]+>Next/
+        return nil
+      elsif url =~ /(.+)top_recent_(.+)UTF8(.+)/
+        "#{$1}next_2#{$2}UTF8&page_number=2#{$3}"
+      elsif url =~ /(.+)top_link_1/
+        "#{$1}top_link_2?ie=UTF8&pageNumber=2&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      elsif url =~ /(.+)top_link_(\d+)/
+        page = $2.to_i + 1
+        "#{$1}top_link_#{page}?ie=UTF8&pageNumber=#{page}&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      elsif url =~ /(.+)next_(\d+)(.+)page_number=(\d+)(.+)/
+        page = $2.to_i + 1
+        "#{$1}next_#{page}#{$3}pageNumber=#{page}#{$5}"
+      elsif url =~ /(.+)next_(\d+)(.+)pageNumber=(\d+)(.+)/
+        page = $2.to_i + 1
+        "#{$1}next_#{page}#{$3}pageNumber=#{page}#{$5}"
+      else
+        puts "NO MATCH FOR #{url}"
       end
+      # begin
+      #   # doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
+      #   # next_link = doc.css('ul.a-pagination > li.a-last a')[0][:href]#.select{|a| a.text =~ /Next/}.first[:href]
+      #   # p link_url
+      #   # next_number = 2
+      #   # if link_url =~ /pageNumber=(\d)/
+      #   #   next_number = $1
+      #   # end
+      #   # puts url
+      #   # puts "#{url}&pageNumber=#{next_number}"
+      #   #doc.css('.CMpaginate a').each{ |a| puts a[:href] }
+      #   #puts doc.css('span.paging').to_s
+      #   #puts doc.css('.CMpaginate span.paging').to_s
+      #   next_link = doc.css('.CMpaginate span.paging').to_s =~ /href="([^>]+)">Next/ ? $1 : nil
+      #   next_link << "&sortBy=bySubmissionDateDescending" unless next_link =~ /bySubmissionDateDescending/
+      #   # unless next_link =~ /bySubmissionDateDescending/
+      #   #   nextLink << "&sortBy=bySubmissionDateDescending"
+      #   # end
+      #   # next_link = doc.css('.paging a').select{|a| a.text =~ /Next/}.first[:href]
+      #   puts "NEXT LINK IS #{next_link}"
+      #   next_link
+      # rescue
+      #   puts "NO NEXT LINK"
+      # end
     end
 
     def url_from_link(link_url)
-      "#{link_url.forum.root}#{link_url.link}#{link_url.forum.tail}"
+      url = "#{link_url.forum.root}#{link_url.link}#{link_url.forum.tail}"
+      puts "URL FROM LINK => LINK IS #{url}"
+      url
     end
 
     def get_unique_key(review)
@@ -52,6 +73,12 @@ class AmazonScraper < Scraper
       end
     end
 
+    def get_date(review)
+      text = review.to_s
+      text =~ /<nobr>[A-z]+ \d{1,2}, (\d{4})/
+      $1.to_i
+    end
+
     def args_from_review(review)
       text = review.to_s
       date = text =~ /<nobr>([A-z]+ \d{1,2}, \d{4})/ ? $1 : "FAILS"
@@ -59,18 +86,26 @@ class AmazonScraper < Scraper
         puts "DATE FAILS"
         return nil
       end
-      body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
-      body.gsub!(/<[^b][^>]+>/m,"")
-      body ||= "EMPTY"
+      #body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
+      body = review.at_css('div.reviewText').text
+      puts
+      puts "#" * 50
+      puts body
+      raise "EMPTY AMAZON BODY" unless body.length > 0
+      # body.gsub!(/<[^b][^>]+>/m,"")
+      # body ||= "EMPTY"
+      #body = body.gsub(/<[^>]+>/,"").strip!
       location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : ""
       location = location_str.gsub(/[()]/,"").strip
+      review_from = text =~ /This review is from: <\/span>[^>]+>Bose ([^>]+)<\/a/m ? $1 : nil
       {
         review_date: build_date(date),
         rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
-        body: body.gsub(/<[^>]+>/,"").strip!,
+        body: body, #.gsub(/<[^>]+>/,"").strip!,
         headline: text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
         author: text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
-        location: location.length > 0 ? location : nil
+        location: location.length > 0 ? location : nil,
+        review_from: review_from
       }
     end
 
@@ -107,5 +142,14 @@ class AmazonScraper < Scraper
       nil
     end
 
-  end
+    def find_body
+      path = "#{Rails.root}/exercise_files/amazon_body.html"
+      doc = Nokogiri::HTML(open(path))
+      product = Product.where(:name => "AM 5").first
+      doc = Nokogiri::HTML(open(path))
+      reviews = doc.css("table#productReviews tr td >  div")
+      puts reviews.first.at_css('div.reviewText').text
+    end
+
+  end # self
 end

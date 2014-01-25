@@ -20,13 +20,23 @@ class Scraper < ActiveRecord::Base
     end
 
     def get_reviews(all_reviews = false)
-      file = File.open('test.html', 'w')
-      ActiveRecord::Base.logger = nil
+      # file = File.open('test.html', 'w')
+      #ActiveRecord::Base.logger = nil
       klass = "#{forum.name}Review"
-      forum.product_links.each do |product_link|
+      total_links = forum.product_links
+      total_count = total_links.count
+      total_links.each_with_index do |product_link, index|
+        name = product_link.product.name
+        puts "PROCESSING FORUM PRODUCT LINK #{index+1} OUT OF #{total_count}"
+        puts "PRODUCT IS #{name}"
+        link_set = Set.new
         product_link.link_urls.each do |link_url|
           url = url_from_link(link_url)
           puts "LINK IS #{url}"
+          # unless link_set.add?(url)
+          #   puts "LOOP DETECTED : LINK ALREADY VISITED"
+          #   break
+          # end
           cycle = 0 # check for run-away
           while url && cycle < 100
             puts "GETTING PAGE FROM #{url}"
@@ -35,6 +45,10 @@ class Scraper < ActiveRecord::Base
             # return
             break unless doc
             url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
+            unless link_set.add?(url)
+              puts "LOOP DETECTED : LINK ALREADY VISITED"
+              cycle = 100
+            end
             cycle += 1
           end
         end
@@ -55,10 +69,20 @@ class Scraper < ActiveRecord::Base
       end
     end
 
+    def get_date(review)
+      2014
+    end
+
     def build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
+      puts "PAGE FOR #{link_url.product.name}"
       count = 0
       review_class = Object.const_get(klass)
       page_reviews(doc).each do |review|
+        year = get_date(review)
+        unless year >= 2014
+          puts "#{year} TOO OLD"
+          next
+        end
         next unless (key = get_unique_key(review))
         if (r = review_class.where(:unique_key => key).first)
           puts "Review already exists #{r.review_date.to_s}"

@@ -13,23 +13,39 @@ class AmazonScraper < Scraper
       doc.css("table#productReviews tr td >  div")
     end
 
-    def next_link(doc,link_url,url,klass)
+    def specific_product(product_link)
+      true
+    end
 
-      if doc.to_s !~ /<a[^>]+>Next/
+    def next_link(doc,link_url,url,klass)
+      if doc.to_s !~ /<a[^>]+>Next/i
+        puts "Match 22"
         return nil
-      elsif url =~ /(.+)top_recent_(.+)UTF8(.+)/
-        "#{$1}next_2#{$2}UTF8&page_number=2#{$3}"
-      elsif url =~ /(.+)top_link_1/
-        "#{$1}top_link_2?ie=UTF8&pageNumber=2&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      elsif url =~ /(.+)top_link_1\?/ # careful, lest it it get confused by top_link_10
+        puts "MATCH 26"
+        "#{$1}top_link_2?ie=UTF8&pageNumber=2&showViewpoints=0"
       elsif url =~ /(.+)top_link_(\d+)/
-        page = $2.to_i + 1
-        "#{$1}top_link_#{page}?ie=UTF8&pageNumber=#{page}&showViewpoints=0&sortBy=bySubmissionDateDescending"
-      elsif url =~ /(.+)next_(\d+)(.+)page_number=(\d+)(.+)/
-        page = $2.to_i + 1
-        "#{$1}next_#{page}#{$3}pageNumber=#{page}#{$5}"
-      elsif url =~ /(.+)next_(\d+)(.+)pageNumber=(\d+)(.+)/
-        page = $2.to_i + 1
-        "#{$1}next_#{page}#{$3}pageNumber=#{page}#{$5}"
+        puts "MATCH 29"
+        page = $2.to_i+1
+        "#{$1}top_link_#{page}?ie=UTF8&pageNumber=#{page}&showViewpoints=0"
+      # elsif url =~ /(.+)top_recent_(.+)UTF8(.+)/
+      #   puts "Match 25"
+      #   "#{$1}next_2#{$2}UTF8&page_number=2" ##{$3}"
+      # elsif url =~ /(.+)top_link_1/
+      #   puts "Match 28"
+      #   "#{$1}top_link_2?ie=UTF8&pageNumber=2" #&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      # elsif url =~ /(.+)top_link_(\d+)/
+      #   puts "Match 30"
+      #   page = $2.to_i + 1
+      #   "#{$1}top_link_#{page}?ie=UTF8&pageNumber=#{page}" #&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      # elsif url =~ /(.+)next_(\d+)(.+)page_number=(\d+)(.+)/
+      #   puts "Match 35"
+      #   page = $2.to_i + 1
+      #   "#{$1}next_#{page}#{$3}pageNumber=#{page}"##{$5}"
+      # elsif url =~ /(.+)next_(\d+)(.+)pageNumber=(\d+)(.+)/
+      #   puts "Match 39"
+      #   page = $2.to_i + 1
+      #   "#{$1}next_#{page}#{$3}pageNumber=#{page}"##{$5}"
       else
         puts "NO MATCH FOR #{url}"
       end

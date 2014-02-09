@@ -4,6 +4,8 @@ class Scraper < ActiveRecord::Base
 
   class << self
 
+    TOO_OLD = 2014
+
     def check_links
       forum.product_links.each do |product_link|
         product_link.link_urls.each do |link_url|
@@ -11,12 +13,17 @@ class Scraper < ActiveRecord::Base
           begin
             doc_from_url(url)
           rescue => e
-            puts "could not get document fron #{url}"
+            puts "could not get document from #{url}"
             puts e.message
           end
         end
       end
       nil
+    end
+
+    # overide this in the frum specific scraper to limit scraping to specific products
+    def specific_product(id)
+      true
     end
 
     def get_reviews(all_reviews = false)
@@ -26,23 +33,19 @@ class Scraper < ActiveRecord::Base
       total_links = forum.product_links
       total_count = total_links.count
       total_links.each_with_index do |product_link, index|
+        next unless specific_product(product_link)
         name = product_link.product.name
-        puts "PROCESSING FORUM PRODUCT LINK #{index+1} OUT OF #{total_count}"
+        puts "PROCESSING FORUM PRODUCT LINK #{product_link.id}, #{index+1} OUT OF #{total_count}"
         puts "PRODUCT IS #{name}"
         link_set = Set.new
         product_link.link_urls.each do |link_url|
           url = url_from_link(link_url)
           puts "LINK IS #{url}"
-          # unless link_set.add?(url)
-          #   puts "LOOP DETECTED : LINK ALREADY VISITED"
-          #   break
-          # end
           cycle = 0 # check for run-away
           while url && cycle < 100
             puts "GETTING PAGE FROM #{url}"
             doc = doc_from_url(url)
-            # file.puts doc.to_s
-            # return
+            puts "BREAK NO DOC FOR #{url}" unless doc
             break unless doc
             url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
             unless link_set.add?(url)
@@ -79,20 +82,17 @@ class Scraper < ActiveRecord::Base
       review_class = Object.const_get(klass)
       page_reviews(doc).each do |review|
         year = get_date(review)
-        unless year >= 2014
+        unless year >= TOO_OLD
           puts "#{year} TOO OLD"
           next
         end
         next unless (key = get_unique_key(review))
         if (r = review_class.where(:unique_key => key).first)
           puts "Review already exists #{r.review_date.to_s}"
+          next if all_reviews
           puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
           return nil
         end
-        # if review_class.where(:unique_key => key).first
-        #   puts "Review already exists"
-        #   next
-        # end
         args = { unique_key: key, link_url_id: link_url.id }
         begin
           next unless (add_args = args_from_review(review))
@@ -113,8 +113,9 @@ class Scraper < ActiveRecord::Base
       review_class.new_count ||= 0
       review_class.new_count += 1
       # we may need to get all reviews
-      return nil if file
-      (count > 0 || all_reviews) ? next_link(doc,link_url,url,klass) : nil
+      #return nil if file
+      #(count > 0 || all_reviews) ? next_link(doc,link_url,url,klass) : nil
+      next_link(doc,link_url,url,klass)
     end
 
     def unescape(args)

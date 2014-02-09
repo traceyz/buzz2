@@ -4,7 +4,7 @@ class Scraper < ActiveRecord::Base
 
   class << self
 
-    TOO_OLD = 2014
+    TOO_OLD = 2013
 
     def check_links
       forum.product_links.each do |product_link|
@@ -83,16 +83,16 @@ class Scraper < ActiveRecord::Base
       page_reviews(doc).each do |review|
         year = get_date(review)
         unless year >= TOO_OLD
-          puts "#{year} TOO OLD"
+          #puts "#{year} TOO OLD"
           next
         end
         next unless (key = get_unique_key(review))
-        if (r = review_class.where(:unique_key => key).first)
-          puts "Review already exists #{r.review_date.to_s}"
-          next if all_reviews
-          puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
-          return nil
-        end
+        # if (r = review_class.where(:unique_key => key).first)
+        #   puts "Review already exists #{r.review_date.to_s}"
+        #   next if all_reviews
+        #   puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
+        #   return nil
+        # end
         args = { unique_key: key, link_url_id: link_url.id }
         begin
           next unless (add_args = args_from_review(review))
@@ -101,13 +101,13 @@ class Scraper < ActiveRecord::Base
           return
         end
         args.update(unescape(add_args))
-        begin
-          the_review = review_class.create!(args)
-          count += 1
-        rescue => e
-          puts e.message
-          puts args.inspect
-        end
+        # begin
+        #   the_review = review_class.create!(args)
+        #   count += 1
+        # rescue => e
+        #   puts e.message
+        #   puts args.inspect
+        # end
       end
       puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
       review_class.new_count ||= 0

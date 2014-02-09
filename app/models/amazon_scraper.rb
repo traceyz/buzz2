@@ -104,16 +104,22 @@ class AmazonScraper < Scraper
       end
       #body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
       body = review.at_css('div.reviewText').text
-      puts
-      puts "#" * 50
-      puts body
+      # puts
+      # puts "#" * 50
+      # puts body
       raise "EMPTY AMAZON BODY" unless body.length > 0
       # body.gsub!(/<[^b][^>]+>/m,"")
       # body ||= "EMPTY"
       #body = body.gsub(/<[^>]+>/,"").strip!
       location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : ""
       location = location_str.gsub(/[()]/,"").strip
-      review_from = text =~ /This review is from: <\/span>[^>]+>Bose ([^>]+)<\/a/m ? $1 : nil
+      #review_from = text =~ /This review is from: <\/span>[^>]+>Bose ([^>]+)<\/a/m ? $1 : nil
+      review_from = text =~ /(This review is from:.+?)<\/b/m ? $1 : nil
+      if review_from
+        puts "REVIEW FROM ***#{review_from}***"
+      else
+        puts "NO REVIEW FROM"
+      end
       {
         review_date: build_date(date),
         rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,

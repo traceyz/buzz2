@@ -4,7 +4,7 @@ class Scraper < ActiveRecord::Base
 
   class << self
 
-    TOO_OLD = 2013
+    TOO_OLD = 2014
 
     def check_links
       forum.product_links.each do |product_link|
@@ -22,7 +22,7 @@ class Scraper < ActiveRecord::Base
     end
 
     # overide this in the frum specific scraper to limit scraping to specific products
-    def specific_product(id)
+    def specific_product(product_link)
       true
     end
 
@@ -87,12 +87,12 @@ class Scraper < ActiveRecord::Base
           next
         end
         next unless (key = get_unique_key(review))
-        # if (r = review_class.where(:unique_key => key).first)
-        #   puts "Review already exists #{r.review_date.to_s}"
-        #   next if all_reviews
-        #   puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
-        #   return nil
-        # end
+        if (r = review_class.where(:unique_key => key).first)
+          puts "Review already exists #{r.review_date.to_s}"
+          next if all_reviews
+          puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
+          return nil
+        end
         args = { unique_key: key, link_url_id: link_url.id }
         begin
           next unless (add_args = args_from_review(review))
@@ -101,21 +101,23 @@ class Scraper < ActiveRecord::Base
           return
         end
         args.update(unescape(add_args))
-        # begin
-        #   the_review = review_class.create!(args)
-        #   count += 1
-        # rescue => e
-        #   puts e.message
-        #   puts args.inspect
-        # end
+        begin
+          the_review = review_class.create!(args)
+          raise unless the_review.review_from_id
+          puts "REVIEW FROM ID #{the_review.review_from_id}"
+          count += 1
+        rescue => e
+          puts e.message
+          puts args.inspect
+        end
       end
       puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
-      review_class.new_count ||= 0
-      review_class.new_count += 1
+      # review_class.new_count ||= 0
+      # review_class.new_count += 1
       # we may need to get all reviews
       #return nil if file
-      #(count > 0 || all_reviews) ? next_link(doc,link_url,url,klass) : nil
-      next_link(doc,link_url,url,klass)
+      (count > 0 || all_reviews) ? next_link(doc,link_url,url,klass) : nil
+      #next_link(doc,link_url,url,klass)
     end
 
     def unescape(args)

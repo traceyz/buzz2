@@ -531,4 +531,11 @@ class DataLoader < ActiveRecord::Base
     build_bb_link(name, title, link)
   end
 
+  def self.bb_2_15
+    name = "SoundLink Bluetooth speaker III"
+    link = "soundlink-174-bluetooth-speaker-iii/3202003.p?id=1219089114355&skuId=3202003&st=pcmcat169800050010_categoryid$pcmcat310200050004"
+    title = "Bose SoundLink Bluetooth Speaker III"
+    build_bb_link(name, title, link)
+  end
+
 end

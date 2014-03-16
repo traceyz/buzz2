@@ -162,7 +162,7 @@ EOD
     Category.order('position ASC, name ASC').each do |category|
       next unless category.products.first
       sheet = book.create_worksheet :name => category.name
-      sheet.row(0).concat %w(Name Forum Date Author Location Rating Headline Content)
+      sheet.row(0).concat %w(Name ReviewFrom Forum Date Author Location Rating Headline Content)
       idx = 1
       category.products.each do |product|
         reviews = product.new_reviews(args)
@@ -170,13 +170,14 @@ EOD
         reviews.each do |review|
           row = sheet.row(idx)
           row[0] = product.name
-          row[1] = review.forum.name
-          row[2] = review.review_date.to_s
-          row[3] = review.author
-          row[4] = review.location || ""
-          row[5] = review.rating
-          row[6] = review.headline
-          row[7] = review.body
+          row[1] = review.review_from ? review.review_from.phrase : ""
+          row[2] = review.forum.name
+          row[3] = review.review_date.to_s
+          row[4] = review.author
+          row[5] = review.location || ""
+          row[6] = review.rating
+          row[7] = review.headline
+          row[8] = review.body
           idx += 1
         end
         idx += 1 # skip a line between products

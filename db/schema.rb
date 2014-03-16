@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131124181515) do
+ActiveRecord::Schema.define(:version => 20140217134207) do
 
   create_table "categories", :force => true do |t|
     t.string   "name",        :null => false
@@ -68,19 +68,29 @@ ActiveRecord::Schema.define(:version => 20131124181515) do
     t.date     "report_date"
   end
 
+  create_table "review_froms", :force => true do |t|
+    t.string   "phrase",     :null => false
+    t.integer  "product_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "review_froms", ["phrase"], :name => "index_review_froms_on_phrase", :unique => true
+
   create_table "reviews", :force => true do |t|
     t.string   "type"
-    t.date     "review_date",                    :null => false
-    t.string   "author",                         :null => false
+    t.date     "review_date",                       :null => false
+    t.string   "author",                            :null => false
     t.string   "location"
-    t.integer  "rating",                         :null => false
-    t.string   "headline",    :default => ""
-    t.text     "body",        :default => ""
-    t.string   "unique_key",                     :null => false
-    t.integer  "link_url_id",                    :null => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-    t.boolean  "exclude",     :default => false
+    t.integer  "rating",                            :null => false
+    t.string   "headline",       :default => ""
+    t.text     "body",           :default => ""
+    t.string   "unique_key",                        :null => false
+    t.integer  "link_url_id",                       :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.boolean  "exclude",        :default => false
+    t.integer  "review_from_id"
   end
 
   add_index "reviews", ["unique_key"], :name => "index_reviews_on_unique_key", :unique => true

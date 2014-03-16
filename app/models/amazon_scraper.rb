@@ -115,11 +115,26 @@ class AmazonScraper < Scraper
       location = location_str.gsub(/[()]/,"").strip
       #review_from = text =~ /This review is from: <\/span>[^>]+>Bose ([^>]+)<\/a/m ? $1 : nil
       review_from = text =~ /(This review is from:.+?)<\/b/m ? $1 : nil
+      rf = nil
       if review_from
-        puts "REVIEW FROM ***#{review_from}***"
+        #puts "REVIEW FROM ***#{review_from}***"
+        cleaned = ReviewFrom.clean(review_from)
+        rf = ReviewFrom.where(:phrase => cleaned).first
+        unless rf
+          puts "NO REVIEW FROM FOR **#{cleaned}**"
+          print "Enter product id: "
+          product_id = gets.chomp
+          unless product_id && product_id.length > 0
+            puts "Skipping #{cleaned}"
+            return nil
+          else
+            rf = Product.find(product_id.to_i).review_froms.create!(:phrase => cleaned)
+          end
+        end
       else
         puts "NO REVIEW FROM"
       end
+      rf_id = rf ? rf.id : nil
       {
         review_date: build_date(date),
         rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
@@ -127,7 +142,7 @@ class AmazonScraper < Scraper
         headline: text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
         author: text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
         location: location.length > 0 ? location : nil,
-        review_from: review_from
+        review_from_id: rf_id
       }
     end
 

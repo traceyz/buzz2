@@ -1,6 +1,8 @@
 class Review < ActiveRecord::Base
 
   belongs_to :link_url
+  belongs_to :review_from
+  attr_accessible :review_from_id
 
   validates :author, presence: true
   validates :rating, numericality: { only_integer: true }

@@ -1,6 +1,7 @@
 class Product < ActiveRecord::Base
 
   has_many :product_links
+  has_many :review_froms
   belongs_to :category
 
   attr_accessible :name, :category_id

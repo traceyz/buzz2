@@ -155,7 +155,12 @@ EOD
     nil
   end
 
-  def self.generate_xl
+  def self.generate_excel
+    generate_xl
+    generate_xl(true)
+  end
+
+  def self.generate_xl(only_bose = false)
     Spreadsheet.client_encoding = 'UTF-8'
     book = Spreadsheet::Workbook.new
     args = { :recent_date => recent, :report_date => report_date }
@@ -167,6 +172,11 @@ EOD
       category.products.each do |product|
         reviews = product.new_reviews(args)
         next unless reviews.first
+        if only_bose
+          reviews = reviews.select{ |r| r.forum.name == "Bose" }
+        else
+          reviews = reviews.select{ |r| r.forum.name != "Bose" }
+        end
         reviews.each do |review|
           row = sheet.row(idx)
           row[0] = product.name
@@ -180,19 +190,21 @@ EOD
           row[8] = review.body
           idx += 1
         end
-        idx += 1 # skip a line between products
+        idx += 1 if reviews.first # skip a line between products
       end
     end
     sheet = book.create_worksheet :name => "Totals by Forum"
     idx = 0
     Forum.order(:name).each do |forum|
+      next if only_bose && forum.name != "Bose"
       count = forum.new_count(args)
       next unless count > 0
       sheet.row(idx)[0] = forum.name
       sheet.row(idx)[1] = count
       idx += 1
     end
-    book.write "#{Rails.root}/public/reviews#{report_date.to_s}.xls"
+    report_name = only_bose ? "bose_reviews" : "reviews"
+    book.write "#{Rails.root}/public/#{report_name}#{report_date.to_s}.xls"
     nil
   end
 
@@ -204,6 +216,7 @@ EOD
     Dir.mkdir("#{dir_name}")
     FileUtils.cp_r(Dir['public/boseBuzz'], "#{dir_name}")
     FileUtils.cp("public/reviews#{report_date.strftime("%Y-%m-%d")}.xls","#{dir_name}")
+    FileUtils.cp("public/bose_reviews#{report_date.strftime("%Y-%m-%d")}.xls","#{dir_name}")
     `zip -r Archive.zip "#{dir_name}"/`
     File.rename('Archive.zip', "#{dir_name}.zip")
     nil

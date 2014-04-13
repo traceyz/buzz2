@@ -2,10 +2,199 @@ class DataLoader < ActiveRecord::Base
   A = Forum.where(:name => "Amazon").first
   AP = Forum.where(:name => "Apple").first
   BB = Forum.where(:name => "BestBuy").first
+  BOSE = Forum.where(:name => "Bose").first
+
+  def self.build_bose_links
+
+    name = "Wave music system"
+    product = Product.where(:name => name).first
+    title = "Wave music system III"
+    link = "wave_systems/wms/index.jsp"
+    build_link(BOSE, product, title, link)
+    title ="Acoustic Wave music system II"
+    link = "wave_systems/awms/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "Wave Radio"
+    product = Product.where(:name => name).first
+    title = "Wave radio III"
+    link = "wave_systems/wave_radio_iii/index.jsp"
+    build_link(BOSE, product, title, link)
+    title = "Wave radio III with BLUETOOTH music adapter"
+    link = "wave_systems/wave_radio_iii/wr3_bluetooth_music_adapter_pkg.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "Wave SoundTouch Music System"
+    product = Product.where(:name => name).first
+    title = "Wave SoundTouch music system"
+    link = "wave_systems/wave_soundtouch/index.jsp"
+    build_link(BOSE, product, title, link)
+
+
+    name = "QC 20"
+    product = Product.where(:name => name).first
+    title = "QuietComfort 20 Acoustic Noise Cancelling headphones"
+    link = "headphones/noise_cancelling_headphones/quietcomfort_20/index.jsp&Variant=qc20i"
+    build_link(BOSE, product, title, link)
+    link = "headphones/noise_cancelling_headphones/quietcomfort_20/index.jsp&Variant=qc20"
+    build_link(BOSE, product, title, link)
+
+
+    name = "SIE2"
+    product = Product.where(:name => name).first
+    title = "SIE2 sport headphones"
+    link = "headphones/sport_headphones/index.jsp&Variant=sie2_headphones"
+    build_link(BOSE, product, title, link)
+    link = "headphones/sport_headphones/index.jsp&Variant=sie2i_headset"
+    build_link(BOSE, product, title, link)
+    link = "headphones/sport_headphones/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "IE2"
+    product = Product.where(:name => name).first
+    title = "IE2 In-ear headphones"
+    link = "headphones/audio_headphones/in_ear_headphones/index.jsp&Variant=ie2_headphones"
+    build_link(BOSE, product, title, link)
+
+
+    name = "MIE2"
+    product = Product.where(:name => name).first
+    title = "MIE2 In-ear headphones"
+    link = "headphones/audio_headphones/in_ear_headphones/index.jsp&Variant=mie2_headset"
+    build_link(BOSE, product, title, link)
+    link = "headphones/audio_headphones/in_ear_headphones/index.jsp&Variant=mie2i_headset"
+    build_link(BOSE, product, title, link)
+
+
+    name = "QC 15"
+    product = Product.where(:name => name).first
+    title = "QuietComfort 15 Acoustic Noise Cancelling headphones"
+    link = "headphones/noise_cancelling_headphones/quietcomfort_15/index.jsp"
+    build_link(BOSE, product, title, link)
+    link = "headphones/noise_cancelling_headphones/quietcomfort_15/index.jsp&Variant=qc15_custom#currentState=qc15_custom"
+    build_link(BOSE, product, title, link)
+
+    name = "AE2w"
+    product = Product.where(:name => name).first
+    title = "AE2w Bluetooth headphones"
+    link = "headphones/wireless_headphones/ae2w_headphones/index.jsp"
+    build_link(BOSE, product, title, link)
+
+
+    name = "AE2"
+    product = Product.where(:name => name).first
+    title = "AE2 audio headphones"
+    link = "headphones/audio_headphones/around_ear_headphones/index.jsp&Variant=ae2_headphones"
+    build_link(BOSE, product, title, link)
+    link = "headphones/audio_headphones/around_ear_headphones/index.jsp&Variant=ae2i_headphones"
+    build_link(BOSE, product, title, link)
+
+    name = "QC 3"
+    product = Product.where(:name => name).first
+    title = "QuietComfort 3 Acoustic Noise Cancelling headphones"
+    link = "headphones/noise_cancelling_headphones/quietcomfort_3/index.js"
+    build_link(BOSE, product, title, link)
+
+    name = "OE2"
+    product = Product.where(:name => name).first
+    title = "OE2 audio headphones"
+    link = "headphones/audio_headphones/on_ear_headphones/index.jsp&Variant=oe2_headphones"
+    build_link(BOSE, product, title, link)
+    link = "headphones/audio_headphones/on_ear_headphones/index.jsp&Variant=oe2i_headphones"
+    build_link(BOSE, product, title, link)
+
+    name = "Bluetooth Headset Series 2"
+    product = Product.where(:name => name).first
+    title = "Bose Bluetooth headset Series 2"
+    link = "headphones/mobile_solutions/bluetooth_headset/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "Bose Solo"
+    product = Product.where(:name => name).first
+    title= "Bose Solo TV sound system"
+    link = "home_theater/tv_speakers/solo_tv_sound_system/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "Cinemate 1 SR"
+    product = Product.where(:name => name).first
+    title = "CineMate 1 SR System"
+    link = "home_theater/simplified_home_theater/cinemate_1_sr/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "Lifestyle 535 Series II"
+    product = Product.where(:name => name).first
+    title = "Bose Lifestyle 535 Series II home entertainment system"
+    link = "home_theater/home_theater_for_your_hdtv/lifestyle_v_class/index.jsp#currentState=ls535"
+    build_link(BOSE, product, title, link)
+
+    name = "Lifestyle 525 Series II"
+    product = Product.where(:name => name).first
+    title = "Bose Lifestyle 525 Series II home entertainment system"
+    link = "home_theater/home_theater_for_your_hdtv/lifestyle_v_class/index.jsp#currentState=ls525"
+    build_link(BOSE, product, title, link)
+
+    name = "Lifestyle 135 Series II"
+    product = Product.where(:name => name).first
+    title = "Bose Lifestyle 135 Series II system"
+    link = "home_theater/home_theater_for_your_hdtv/lifestyle_135/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "VideoWave III"
+    product = Product.where(:name => name).first
+    title = "VideoWave III entertainment system"
+    link = "home_theater/hdtvs_with_built_in_home_theater/videowave/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "SoundLink Mini"
+    product = Product.where(:name => name).first
+    title = "SoundLink Mini Bluetooth speaker"
+    link = "digital_music_systems/bluetooth_speakers/soundlink_mini/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "SoundLink Bluetooth"
+    product = Product.where(:name => name).first
+    title = "Bose SoundLink Bluetooth speaker III"
+    link = "digital_music_systems/bluetooth_speakers/soundlink_wireless_speaker/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "SoundLink Air"
+    product = Product.where(:name => name).first
+    title = "SoundLink Air digital music system"
+    link = "digital_music_systems/speakers_for_airplay/soundlink_air/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "SoundTouch 30"
+    product = Product.where(:name => name).first
+    title = "SoundTouch 30 Wi-Fi music system"
+    link = "wifi_music_systems/soundtouch_music/soundtouch_30/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "SoundTouch 20"
+    product = Product.where(:name => name).first
+    title = "SoundTouch 20 Wi-Fi music system"
+    link = "wifi_music_systems/soundtouch_music/soundtouch_20/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "SoundTouch Portable"
+    product = Product.where(:name => name).first
+    title = "SoundTouch Portable Wi-Fi music system"
+    link = "wifi_music_systems/soundtouch_music/soundtouch_portable/index.jsp"
+    build_link(BOSE, product, title, link)
+
+    name = "Companion 2 Series III"
+    product = Product.where(:name => name).first
+    title = "Companion 2 Series III multimedia speaker system"
+    link = "speakers/computer_speakers/companion_2/companion2_s3.jsp"
+    build_link(BOSE, product, title, link)
+
+  end
 
   def self.build_link(forum, product, title, link)
     #puts "PRODUCT ID IS #{product.id}"
-    product_link = forum.product_links.create!(:product_id => product.id, :active => true)
+    raise "NIL ARGS" unless forum && product && title && link
+    args = {:product_id => product.id, :active => true}
+    product_link = forum.product_links.where(args).first ||
+                            forum.product_links.create!(:product_id => product.id, :active => true)
     product_link.link_urls.create!(:link => link, :title => title, :current => true)
     nil
   end
@@ -536,6 +725,56 @@ class DataLoader < ActiveRecord::Base
     link = "soundlink-174-bluetooth-speaker-iii/3202003.p?id=1219089114355&skuId=3202003&st=pcmcat169800050010_categoryid$pcmcat310200050004"
     title = "Bose SoundLink Bluetooth Speaker III"
     build_bb_link(name, title, link)
+  end
+
+  def self.new_headphones_4_12
+    c = Category.where(:name => "Headphones").first
+    ["SoundTrue AE", "SoundTrue OE", "FreeStyle Earbuds"].each do |name|
+        c.products.create!(:name => name)
+    end
+    nil
+  end
+
+  def self.new_bb_headphones_4_12
+    name = "SoundTrue OE"
+    link = "bose-174-soundtrue-153-over-the-ear-headphones/4645014.p?id=1219100304022&skuId=4645014"
+    title = "SoundTrue Over-the-ear Headphones"
+    build_bb_link(name, title, link)
+
+    name = "FreeStyle Earbuds"
+    link = "bose-174-freestyle-153-earbud-headphones-indigo/4642017.p?id=1219100307254&skuId=4642017"
+    title = "FreeStyle Earbud Headphones"
+    build_bb_link(name, title, link)
+
+    name = "SoundTrue OE"
+    link = "bose-174-soundtrue-153-over-the-ear-headphones-black-mint/4642062.p?id=1219100307123&skuId=4642062"
+    title = "SoundTrue Over-the-ear Headphones Black/Mint"
+    build_bb_link(name, title, link)
+  end
+
+  def self.build_bose_link(name,title,link)
+    forum = Forum.where(:name => "Bose").first
+    product = Product.where(:name => name).first
+    build_link(forum,product,title,link)
+    nil
+  end
+
+  def self.new_bose_links_4_13
+    name = "FreeStyle Earbuds"
+    title = "FreeStyle earbuds"
+    link = "headphones/in_ear_headphones/freestyle_earbuds/index.jsp"
+    build_bose_link(name,title,link)
+
+    name = "SoundTrue OE"
+    title = "SoundTrue headphones, On-ear style"
+    link = "headphones/ae_and_oe_headphones/soundtrue_headphones/index.jsp#currentState=soundtrue_oe_headphones"
+    build_bose_link(name,title,link)
+
+    name = "SoundTrue AE"
+    title = "SoundTrue headphones, Around-ear style"
+    link = "headphones/ae_and_oe_headphones/soundtrue_headphones/index.jsp#currentState=soundtrue_ae_headphones"
+    build_bose_link(name,title,link)
+
   end
 
 end

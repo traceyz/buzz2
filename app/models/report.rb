@@ -163,6 +163,9 @@ EOD
   def self.generate_xl(only_bose = false)
     Spreadsheet.client_encoding = 'UTF-8'
     book = Spreadsheet::Workbook.new
+    all_reviews_sheet = book.create_worksheet :name => "All Reviews"
+    all_reviews_sheet.row(0).concat %w(Name ReviewFrom Forum Date Author Location Rating Headline Content)
+    all_reviews_idx = 1
     args = { :recent_date => recent, :report_date => report_date }
     Category.order('position ASC, name ASC').each do |category|
       next unless category.products.first
@@ -179,16 +182,21 @@ EOD
         end
         reviews.each do |review|
           row = sheet.row(idx)
-          row[0] = product.name
-          row[1] = review.review_from ? review.review_from.phrase : ""
-          row[2] = review.forum.name
-          row[3] = review.review_date.to_s
-          row[4] = review.author
-          row[5] = review.location || ""
-          row[6] = review.rating
-          row[7] = review.headline
-          row[8] = review.body
+          all_reviews_row = all_reviews_sheet.row(all_reviews_idx)
+          data = [product.name]
+          phrase = review.review_from ? review.review_from.phrase : ""
+          data << phrase
+          data << review.forum.name
+          data << review.review_date.to_s
+          data << review.author
+          data << review.location || ""
+          data << review.rating
+          data << review.headline
+          data << review.body
+          row.concat(data)
+          all_reviews_row.concat(data)
           idx += 1
+          all_reviews_idx += 1
         end
         idx += 1 if reviews.first # skip a line between products
       end
@@ -201,6 +209,7 @@ EOD
       next unless count > 0
       sheet.row(idx)[0] = forum.name
       sheet.row(idx)[1] = count
+      puts "#{forum.name} has #{count} new reviews"
       idx += 1
     end
     report_name = only_bose ? "bose_reviews" : "reviews"

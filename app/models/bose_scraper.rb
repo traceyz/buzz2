@@ -19,6 +19,7 @@ class BoseScraper < Scraper
     end
 
     def reviews_from_file(link_url_id, path = nil)
+      puts LinkUrl.find(link_url_id).product_link.product.name
       path ||= "#{Rails.root}/app/models/bose_files/index"
       doc = Nokogiri::HTML(open(path))
       reviews = doc.css(".pluck-review-full-review-single-review-wrap")

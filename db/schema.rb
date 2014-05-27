@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140217134207) do
+ActiveRecord::Schema.define(:version => 20140510121848) do
 
   create_table "categories", :force => true do |t|
     t.string   "name",        :null => false
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20140217134207) do
     t.datetime "updated_at",                        :null => false
     t.boolean  "exclude",        :default => false
     t.integer  "review_from_id"
+    t.integer  "product_id"
   end
 
   add_index "reviews", ["unique_key"], :name => "index_reviews_on_unique_key", :unique => true

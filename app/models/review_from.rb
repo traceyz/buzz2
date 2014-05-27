@@ -1,6 +1,7 @@
 class ReviewFrom < ActiveRecord::Base
 
   has_many :reviews
+  belongs_to :product
   belongs_to :link_url
 
   attr_accessible :phrase

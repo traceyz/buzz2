@@ -50,8 +50,11 @@ class AmLinkScraper < ActiveRecord::Base
         build_link(product_id.to_i, title, _link)
       end
     end
-    next_link = doc.css('a#pagnNextLink')[0]
-    get_links_from_link(next_link[:href]) if next_link
+    elt = doc.css('a#pagnNextLink')[0]
+    return unless elt
+    next_link = elt[:href]
+    next_link = "http://www.amazon.com" + next_link unless next_link.start_with?('http')
+    get_links_from_link(next_link)# if next_link
   end
 
 def build_link(product_id, title, link)

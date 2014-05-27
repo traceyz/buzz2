@@ -7,8 +7,14 @@ class Scraper < ActiveRecord::Base
     TOO_OLD = 2014
 
     def check_links
-      forum.product_links.each do |product_link|
-        product_link.link_urls.each do |link_url|
+      total_links = forum.product_links
+      total_count = total_links.count
+      puts total_count
+      count = 0
+      total_links.each do |product_link|
+        product_link.link_urls.each_with_index do |link_url, index|
+          count += 1
+          puts "Link #{count} of #{total_count}"
           url = url_from_link(link_url)
           begin
             doc_from_url(url)
@@ -26,36 +32,52 @@ class Scraper < ActiveRecord::Base
       true
     end
 
-    def get_reviews(all_reviews = false)
+    def get_reviews(all_reviews = false, specific_links = nil)
+      start = Time.now
+      puts "Start: #{start}"
       # file = File.open('test.html', 'w')
       #ActiveRecord::Base.logger = nil
       klass = "#{forum.name}Review"
-      total_links = forum.product_links
+      total_links = specific_links ? specific_links : forum.product_links
       total_count = total_links.count
-      total_links.each_with_index do |product_link, index|
-        next unless specific_product(product_link)
-        name = product_link.product.name
-        puts "PROCESSING FORUM PRODUCT LINK #{product_link.id}, #{index+1} OUT OF #{total_count}"
-        puts "PRODUCT IS #{name}"
-        link_set = Set.new
-        product_link.link_urls.each do |link_url|
-          url = url_from_link(link_url)
-          puts "LINK IS #{url}"
-          cycle = 0 # check for run-away
-          while url && cycle < 100
-            puts "GETTING PAGE FROM #{url}"
-            doc = doc_from_url(url)
-            puts "BREAK NO DOC FOR #{url}" unless doc
-            break unless doc
-            url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
-            unless link_set.add?(url)
-              puts "LOOP DETECTED : LINK ALREADY VISITED"
-              cycle = 100
+
+      begin
+
+        total_links.each_with_index do |product_link, index|
+          puts "LINE 36 **#{product_link.product_id}**"
+          next unless specific_product(product_link)
+          name = product_link.product.name
+          puts "PROCESSING FORUM PRODUCT LINK #{product_link.id}, #{index+1} OUT OF #{total_count}"
+          puts "PRODUCT IS #{name}"
+          link_set = Set.new
+
+          product_link.link_urls.each do |link_url|
+            url = url_from_link(link_url)
+            puts "LINK IS #{url}"
+            cycle = 0 # check for run-away
+            while cycle < 100 && url
+              puts "GETTING PAGE FROM #{url}"
+              doc = doc_from_url(url)
+              puts "BREAK NO DOC FOR #{url}" unless doc
+              break unless doc
+              url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
+              unless link_set.add?(url)
+                puts "LOOP DETECTED : LINK ALREADY VISITED"
+                cycle = 100
+                break
+              end
+              cycle += 1
             end
-            cycle += 1
           end
         end
+
+      rescue => e
+        puts e.message
+        print e.backtrace.join("\n")
       end
+      finish = Time.now
+      puts "End: #{finish}"
+      puts "Elapsed time: #{finish - start}"
       nil
     end
 

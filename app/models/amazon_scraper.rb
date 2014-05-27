@@ -146,6 +146,17 @@ class AmazonScraper < Scraper
       }
     end
 
+    def update_product_ids
+      AmazonReview.where("product_id IS NULL").each do |review|
+        if review.review_from
+          review.product_id = review.review_from.product_id
+        else
+          review.product_id = review.link_url.product_link.product_id
+        end
+        review.save!
+      end
+    end
+
     def exercise
       product = Product.find_by_name("QC 15")
       link_url = forum \

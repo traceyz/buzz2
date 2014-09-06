@@ -20,7 +20,7 @@ class Review < ActiveRecord::Base
 
   cattr_accessor :new_count
 
-  MAX_REVIEWS = 200
+  MAX_REVIEWS = 300
 
   def self.display(idx)
     order('review_date DESC').page(idx)

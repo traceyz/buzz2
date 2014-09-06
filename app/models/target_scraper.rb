@@ -25,7 +25,7 @@ class TargetScraper < Scraper
       review.at_css('input[id="owner-key"]').attr(:name)
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
       rating_str = review.at_css('p.ratings-current').text.strip
       rating_str =~ /\d of (\d) stars/
       rating = $1.to_i

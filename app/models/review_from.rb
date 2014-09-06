@@ -19,6 +19,8 @@ class ReviewFrom < ActiveRecord::Base
     str.gsub!(/\([^)]+\)/,'') # take out anything in parentheses
     str.sub!(/\s+\-+[^-]+?\z/,'') # take out trailing color variants
     str.gsub!(/;/,'') # take out a lingering semi-colon
+    str.gsub(/\?/, '') # take out question mark, which is ususally the residue of an unknown character
+    str.sub(/\A-/, '') # take out a leading dash
     str.strip
   end
 

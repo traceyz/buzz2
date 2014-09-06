@@ -15,7 +15,7 @@ class FutureShopScraper < Scraper
       build_unique_key(args_from_review(review))
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url = nil)
       date = review.at_css(".date").text.strip
       if date =~ /(\d+) days ago/
         d = Time.now - ($1.to_i * 60 * 60 * 24)

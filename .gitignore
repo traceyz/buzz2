@@ -21,4 +21,6 @@ allBuzz2014*
 exercise_files
 *.sql
 *.dmp
+missing_rfs*
+errors.txt
 

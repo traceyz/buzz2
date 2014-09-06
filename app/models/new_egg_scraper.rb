@@ -14,7 +14,7 @@ class NewEggScraper < Scraper
       review.at_css("form").attr("name").gsub(/\D/,'')
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
       date_str = review.css('th.reviewer ul li')[1].content.scan(/\d+\/\d+\/\d+/)[0]
       postdate = review.at_css('h3')
       postdate.at_css('img.eggs')[:alt].scan(/^\d/)[0]

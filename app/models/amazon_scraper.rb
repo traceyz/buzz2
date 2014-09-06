@@ -10,7 +10,9 @@ class AmazonScraper < Scraper
     # from Amazon each time
 
     def page_reviews(doc)
-      doc.css("table#productReviews tr td >  div")
+      reviews = doc.css("table#productReviews tr td >  div")
+      puts "THERE ARE #{reviews.count} REVIEWS ONTHIS PAGE"
+      reviews
     end
 
     def specific_product(product_link)
@@ -95,7 +97,9 @@ class AmazonScraper < Scraper
       $1.to_i
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
+      # for some reason, these are slipping into the scraper
+      retun nil if link_url.link.start_with?('Cosmos-Pattern-Protection')
       text = review.to_s
       date = text =~ /<nobr>([A-z]+ \d{1,2}, \d{4})/ ? $1 : "FAILS"
       if date.eql?("FAILS")
@@ -121,15 +125,22 @@ class AmazonScraper < Scraper
         cleaned = ReviewFrom.clean(review_from)
         rf = ReviewFrom.where(:phrase => cleaned).first
         unless rf
-          puts "NO REVIEW FROM FOR **#{cleaned}**"
-          print "Enter product id: "
-          product_id = gets.chomp
-          unless product_id && product_id.length > 0
-            puts "Skipping #{cleaned}"
-            return nil
-          else
-            rf = Product.find(product_id.to_i).review_froms.create!(:phrase => cleaned)
+          File.open("#{Rails.root}/missing_rfs_#{Date.today}.txt", 'a') do |f|
+            f.puts "\nNO REVIEW FROM FOR: #{cleaned}"
+            f.puts "LinkUrl id: #{link_url.id}"
+            f.puts "Link: #{link_url.link}"
+            f.puts "Titile: #{link_url.title}"
           end
+          return nil
+          # puts "NO REVIEW FROM FOR **#{cleaned}**"
+          # print "Enter product id: "
+          # product_id = gets.chomp
+          # unless product_id && product_id.length > 0
+          #   puts "Skipping #{cleaned}"
+          #   return nil
+          # else
+          #   rf = Product.find(product_id.to_i).review_froms.create!(:phrase => cleaned)
+          # end
         end
       else
         puts "NO REVIEW FROM"
@@ -197,6 +208,14 @@ class AmazonScraper < Scraper
       doc = Nokogiri::HTML(open(path))
       reviews = doc.css("table#productReviews tr td >  div")
       puts reviews.first.at_css('div.reviewText').text
+    end
+
+
+    def reviews_from_file(link_url_id)
+      path = "#{Rails.root}/app/models/az_files/index"
+      doc = Nokogiri::HTML(open(path))
+      link_url = LinkUrl.find(link_url_id)
+      build_reviews_from_doc(doc, link_url, "", "AmazonReview", true)
     end
 
   end # self

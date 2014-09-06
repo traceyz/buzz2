@@ -137,6 +137,11 @@ EOD
   end
 
   def self.generate_home_page
+    no_id_count = Review.where("product_id IS NULL").count
+    if count > 0
+      puts "There are #{count} reviews with no product_id !!"
+      return
+    end
     cats =  Category.where("category_id IS NULL").order('position ASC, name ASC').reject{|c| c.name == "Multimedia Speakers"}
     obj = Object.new
     date = report_date
@@ -229,6 +234,18 @@ EOD
     `zip -r Archive.zip "#{dir_name}"/`
     File.rename('Archive.zip', "#{dir_name}.zip")
     nil
+  end
+
+  def self.update_product_ids
+    updates = Review.where("product_id IS NULL").each do |review|
+      if review.review_from
+        review.product_id = review.review_from.product_id
+      else
+        review.product_id = review.link_url.product.id
+      end
+      review.save!
+    end
+    updates.count
   end
 
 end

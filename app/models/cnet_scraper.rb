@@ -15,7 +15,7 @@ class CnetScraper < Scraper
       review.attr("messageid")
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
       review_string = review.at_css(".userReviewBody").to_s
       pros = review_string =~ /Pros.?<\/strong>(.+?)<\/p>/sm ? "Pros: #{$1} " : ""
       cons = review_string =~ /Cons.?<\/strong>(.+?)<\/p>/sm ? "Cons: #{$1} " : ""

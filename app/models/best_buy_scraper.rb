@@ -41,7 +41,7 @@ class BestBuyScraper < Scraper
       review.attr("id").split("_")[1]
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
       date_str = review.css('span.BVRRReviewDate').text.strip
       {
         headline: review.css('span.BVRRReviewTitle').text.strip,

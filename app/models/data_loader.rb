@@ -752,6 +752,13 @@ class DataLoader < ActiveRecord::Base
     build_bb_link(name, title, link)
   end
 
+  def self.new_bb_links_8_4
+    name = "SoundTrue AE"
+    link = "bose-soundtrue-around-ear-headphones/4645014.p?id=1219100304022&skuId=4645014"
+    title = "SoundTrue Around-Ear Headphones"
+    build_bb_link(name, title, link)
+  end
+
   def self.build_bose_link(name,title,link)
     forum = Forum.where(:name => "Bose").first
     product = Product.where(:name => name).first
@@ -774,6 +781,23 @@ class DataLoader < ActiveRecord::Base
     title = "SoundTrue headphones, Around-ear style"
     link = "headphones/ae_and_oe_headphones/soundtrue_headphones/index.jsp#currentState=soundtrue_ae_headphones"
     build_bose_link(name,title,link)
+
+  end
+
+  def self.am_review_froms_8_9
+    data = [
+        ["Acoustimass 15 Series II Home Entertainment Speaker System",19],
+        ["Bluetooth headset Series 2  Left ear", 68],
+        ["SoundDock 10 Bluetooth Digital Music System", 36],
+        ["301 Series IV - Speaker - 75 Watt - 3-way", 48],
+        ["151 Indoor/Outdoor Speaker Pair", 44],
+        ["251 Environmental Outdoor Speakers", 58],
+        ["SoundDock Series III with Lightning Connector", 37],
+        ["CineMate Digital Home Theater Speaker System", 24],
+        ["SoundLink Bluetooth Speaker III with Green Cover", 127],
+        ["SoundTrue Headphones On-Ear Style, Mint", 132]
+    ]
+    data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
 
   end
 

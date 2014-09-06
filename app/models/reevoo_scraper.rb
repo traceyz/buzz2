@@ -14,7 +14,7 @@ class ReevooScraper < Scraper
       review.at_css("form")[:action].split("/")[2]
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
       attribution = review.at_css(".attribution").text.split(",")
       strengths = review.css(".pros")[1].text.gsub(/\s+/, " ")
       weaknesses = review.css(".cons")[1].text.gsub(/\s+/, " ")

@@ -33,6 +33,7 @@ class Scraper < ActiveRecord::Base
     end
 
     def get_reviews(all_reviews = false, specific_links = nil)
+      file = File.open("#{Rails.root}/errors.txt", "w")
       start = Time.now
       puts "Start: #{start}"
       # file = File.open('test.html', 'w')
@@ -58,8 +59,11 @@ class Scraper < ActiveRecord::Base
             while cycle < 100 && url
               puts "GETTING PAGE FROM #{url}"
               doc = doc_from_url(url)
-              puts "BREAK NO DOC FOR #{url}" unless doc
-              break unless doc
+              unless doc
+                puts "BREAK NO DOC FOR #{url}"
+                file.puts url
+                break
+              end
               url = build_reviews_from_doc(doc,link_url,url,klass,all_reviews)
               unless link_set.add?(url)
                 puts "LOOP DETECTED : LINK ALREADY VISITED"
@@ -75,6 +79,7 @@ class Scraper < ActiveRecord::Base
         puts e.message
         print e.backtrace.join("\n")
       end
+      file.close
       finish = Time.now
       puts "End: #{finish}"
       puts "Elapsed time: #{finish - start}"
@@ -117,7 +122,7 @@ class Scraper < ActiveRecord::Base
         end
         args = { unique_key: key, link_url_id: link_url.id }
         begin
-          next unless (add_args = args_from_review(review))
+          next unless (add_args = args_from_review(review, link_url))
         rescue => e
           puts "ERROR #{e.message}"
           return

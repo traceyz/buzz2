@@ -14,7 +14,7 @@ class AppleScraper < Scraper
       review.css('input[name="voteId"]').attr("value").text
     end
 
-    def args_from_review(review)
+    def args_from_review(review, link_url)
       location_str = review.css('ul.statistics > li').first.text.strip
       date_str = review.css('time').attr('datetime').text
       {

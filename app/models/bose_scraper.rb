@@ -52,6 +52,10 @@ class BoseScraper < Scraper
           next
         end
         args[:unique_key] = key
+        unless r.at_css('.rating')
+          puts "NO RATING"
+          next
+        end
         args[:rating] = r.at_css('.rating').text.to_i
         date = r.at_css('span.pluck-review-full-timestamp').text
         args[:review_date] = build_date3(date)

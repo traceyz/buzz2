@@ -60,7 +60,7 @@ class AmLinkScraper < ActiveRecord::Base
   end
 
 def build_link(product_id, title, link)
-  File.open("#{Rails.root}/new _amazon_links_#{Date.today}.txt", 'a') do |f|
+  File.open("#{Rails.root}/new_amazon_links_#{Date.today}.txt", 'a') do |f|
     f.puts "\nNew link for: #{Product.find(product_id).name}"
     title =~ /<title>(.+)<\/title>/
     f.puts "Title: #{$1}"

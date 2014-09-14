@@ -1,5 +1,8 @@
 class AmazonScraper < Scraper
 
+  require "net/http"
+  require "uri"
+
   class << self
 
     def forum
@@ -218,5 +221,93 @@ class AmazonScraper < Scraper
       build_reviews_from_doc(doc, link_url, "", "AmazonReview", true)
     end
 
+    def ajax_reviews(codes = nil)
+      existing_keys = Set.new(AmazonReview.where("review_date >= '2014-01-01'").map(&:unique_key))
+      new_reviews = 0
+      codes ||= get_all_codes
+      uri = URI.parse("http://www.amazon.com/ss/customer-reviews/ajax/reviews/get/ref=cm_cr_pr_top_recent")
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Post.new(uri.request_uri)
+      codes.each do |code|
+        offset = 0
+        form_data = {"asin" => code, "reviewerType" => "all_reviews", "filterByStar" => "all_stars",
+          "formatType" => "all_formats", "sortBy" => "recent", "count" => 10}
+        response = next_ajax_response(http, request, form_data, 0)
+        #response = http.request(request)
+        status = response.code
+        puts "\nSTATUS IS #{status} for #{code}"
+        next unless status == "200"
+        doc = Nokogiri::HTML(response.body)
+        unless doc.css('span.review-count-total').first
+          puts "NO REVIEWS"
+          next
+        end
+        total_reviews = doc.css('span.review-count-total').first.content.scan(/\d+/).first
+        puts "TOTAL REVIEWS #{total_reviews}"
+        showing =  doc.css('span.review-count-shown').first.content
+        puts "SHOWING #{showing}"
+        if showing =~ /\d+-(\d+)/
+          last_showing = $1.to_i
+          puts "LAST SHOWING #{last_showing}"
+        else
+          puts "NO LAST SHOWING"
+        end
+        reviews = doc.css('.review')
+        puts "REVIEW COUNT #{reviews.count}"
+        reviews.each do |review|
+           puts
+          rows = review.css('.a-row')
+          author_date =  rows[2].content # author and date
+          unless author_date =~ /UTC 2014/
+            puts "TOO OLD"
+            break
+          end
+
+          unique_key =  review.attributes['id'].value
+          puts "UNIQUE KEY #{unique_key}"
+          unless existing_keys.add?(unique_key)
+            puts "ALREADY EXISTS"
+            next # I tried break but only got 248 reviews instead of 259
+            # some small number of review lists are still not in descending order ?
+          end
+
+          new_reviews += 1
+          rating = rows[1].to_s.scan(/a-star-\d/)[0] # rating
+          puts "RATING #{rating}"
+          headline =  rows[1].content # headline
+          puts "HEADLINE #{headline}"
+
+          puts "AUTHOR / DATE  #{author_date}"
+          style = rows[3].at_css('span.a-size-mini')
+          puts "STYLE #{style.content}" if style
+          body = rows[3].css('.a-section').each{|s| puts s.content.strip} # review
+          puts body # returns a zero
+        end
+      end
+      puts "NEW REVIEWS: #{new_reviews}"
+      nil
+    end
+
+    def next_ajax_response(http, request, form_data, offset)
+      form_data["offset"] = offset
+      request.set_form_data(form_data)
+      http.request(request)
+    end
+
+    def get_all_codes
+      codes = []
+      Forum.find(1).product_links.each do |pl|
+        pl.link_urls.each do |lu|
+          link = lu.link
+          if link =~ /\/([A-Z0-9]+)\z/
+            codes << $1
+          end
+        end
+      end
+      codes.uniq
+    end
+
   end # self
 end
+
+# first 20 codes ["B001DOHYS8", "B00356PVLE", "B001DE4D5U", "B001DP9002", "B001DPB1XG", "B000GFPTQY", "B00022RV6C", "B008RQG1BG", "B00006WNKQ", "B00006J054", "B00GQ0R64Q", "B00006J055", "B00006L7RT", "B00006L7RV", "B00006L7RW", "B000A0HFKI", "B00011CNWG", "B000HWV8QG", "B0091EBU28", "B007ZDEAT2", "B00478O0JI"]

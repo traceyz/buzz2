@@ -149,7 +149,7 @@ class AmazonScraper < Scraper
         puts "NO REVIEW FROM"
       end
       rf_id = rf ? rf.id : nil
-      {
+     args =  {
         review_date: build_date(date),
         rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
         body: body, #.gsub(/<[^>]+>/,"").strip!,
@@ -158,6 +158,8 @@ class AmazonScraper < Scraper
         location: location.length > 0 ? location : nil,
         review_from_id: rf_id
       }
+      p args
+      args
     end
 
     def update_product_ids
@@ -221,75 +223,127 @@ class AmazonScraper < Scraper
       build_reviews_from_doc(doc, link_url, "", "AmazonReview", true)
     end
 
+        FIRST_20_CODES =[
+  "B001DOHYS8", "B00356PVLE", "B001DE4D5U", "B001DP9002", "B001DPB1XG",
+  "B000GFPTQY", "B00022RV6C", "B008RQG1BG", "B00006WNKQ", "B00006J054",
+  "B00GQ0R64Q", "B00006J055", "B00006L7RT", "B00006L7RV", "B00006L7RW",
+  "B000A0HFKI", "B00011CNWG", "B000HWV8QG", "B0091EBU28", "B007ZDEAT2" ]
+
     def ajax_reviews(codes = nil)
-      existing_keys = Set.new(AmazonReview.where("review_date >= '2014-01-01'").map(&:unique_key))
-      new_reviews = 0
+      processed_keys = Set.new(AmazonReview.where("review_date >= '2014-01-01'").map(&:unique_key))
+      puts "PRIOR KEYS #{processed_keys.count}"
       codes ||= get_all_codes
       uri = URI.parse("http://www.amazon.com/ss/customer-reviews/ajax/reviews/get/ref=cm_cr_pr_top_recent")
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.request_uri)
+      file = File.open("styles.txt", "w")
       codes.each do |code|
-        offset = 0
+        new_reviews = 0
+        #offset = 0
         form_data = {"asin" => code, "reviewerType" => "all_reviews", "filterByStar" => "all_stars",
-          "formatType" => "all_formats", "sortBy" => "recent", "count" => 10}
-        response = next_ajax_response(http, request, form_data, 0)
-        #response = http.request(request)
+          "formatType" => "all_formats", "sortBy" => "recent", "count" => 10, "offset" => 0}
+        response = next_ajax_response(http, request, form_data)
         status = response.code
         puts "\nSTATUS IS #{status} for #{code}"
         next unless status == "200"
         doc = Nokogiri::HTML(response.body)
         unless doc.css('span.review-count-total').first
-          puts "NO REVIEWS"
+          puts "NO REVIEWS for #{code}"
           next
         end
-        total_reviews = doc.css('span.review-count-total').first.content.scan(/\d+/).first
-        puts "TOTAL REVIEWS #{total_reviews}"
-        showing =  doc.css('span.review-count-shown').first.content
-        puts "SHOWING #{showing}"
-        if showing =~ /\d+-(\d+)/
-          last_showing = $1.to_i
-          puts "LAST SHOWING #{last_showing}"
-        else
-          puts "NO LAST SHOWING"
-        end
-        reviews = doc.css('.review')
-        puts "REVIEW COUNT #{reviews.count}"
-        reviews.each do |review|
-           puts
-          rows = review.css('.a-row')
-          author_date =  rows[2].content # author and date
-          unless author_date =~ /UTC 2014/
-            puts "TOO OLD"
-            break
-          end
-
-          unique_key =  review.attributes['id'].value
-          puts "UNIQUE KEY #{unique_key}"
-          unless existing_keys.add?(unique_key)
-            puts "ALREADY EXISTS"
-            next # I tried break but only got 248 reviews instead of 259
-            # some small number of review lists are still not in descending order ?
-          end
-
-          new_reviews += 1
-          rating = rows[1].to_s.scan(/a-star-\d/)[0] # rating
-          puts "RATING #{rating}"
-          headline =  rows[1].content # headline
-          puts "HEADLINE #{headline}"
-
-          puts "AUTHOR / DATE  #{author_date}"
-          style = rows[3].at_css('span.a-size-mini')
-          puts "STYLE #{style.content}" if style
-          body = rows[3].css('.a-section').each{|s| puts s.content.strip} # review
-          puts body # returns a zero
-        end
+        total_reviews = doc.css('span.review-count-total').first.content.scan(/\d+/).first.to_i
+        puts "TOTAL REVIEWS #{total_reviews(doc)} for #{code}"
+        processed_keys = process_response(doc, http, request, form_data, processed_keys, file)
+        #puts "NEW REVIEWS FOR #{code}: #{new_reviews}"
+        puts "PROCESSED KEYS #{processed_keys.count}"
       end
-      puts "NEW REVIEWS: #{new_reviews}"
+      file.close
       nil
     end
 
-    def next_ajax_response(http, request, form_data, offset)
-      form_data["offset"] = offset
+
+    def process_response(doc, http, request, form_data, prior_keys, file)
+
+      styles = Set.new
+      processed_keys = Set.new(prior_keys)
+      reviews = doc.css('.review')
+      puts "REVIEW COUNT #{reviews.count}"
+      reviews.each do |review|
+        puts
+        rows = review.css('.a-row')
+        author_date =  rows[2].content # author and date
+        unless author_date =~ /UTC 2014/
+          puts "TOO OLD"
+          return processed_keys
+        end
+
+        unique_key =  review.attributes['id'].value
+        puts "UNIQUE KEY #{unique_key}"
+        # unless processed_keys.add?(unique_key)
+        #   puts "ALREADY EXISTS"
+        #   next # I tried break but only got 248 reviews instead of 259
+        #   # some small number of review lists are still not in descending order ?
+        # end
+
+        rating_str = rows[1].to_s.scan(/a-star-\d/)[0] # rating
+        if (rating_str =~ /a-star-(\d)/)
+          rating = $1.to_i
+        else
+          puts "NO RATING"
+          next
+        end
+        puts "RATING #{rating}"
+        headline =  rows[1].content # headline
+        puts "HEADLINE #{headline}"
+        puts "AUTHOR / DATE  #{author_date}"
+        style_elt = rows[3].at_css('span.a-size-mini')
+        if style_elt
+          style = style_elt.content.gsub(/<[^>]+>/, '')
+          puts "STYLE #{style}"
+          styles.add(style)
+        end
+        # style.gsub!(/<[^>]+>/, '')
+        # puts "STYLE #{style}" if style
+        # styles.add(style) if style
+        body = rows[3].css('.a-section').each{|s| puts s.content.strip} # review
+        puts body # returns a zero
+
+      end
+      more = more_reviews(doc)
+      if (more > 0)
+        puts "#{more} reviews left"
+        form_data['offset'] += 10
+        response = next_ajax_response(http, request, form_data)
+        doc = Nokogiri::HTML(response.body)
+        processed_keys = process_response(doc, http, request, form_data, processed_keys, file)
+      end
+      styles.to_a.uniq.each{ |s| file.puts s}
+      processed_keys
+    end
+
+
+    def total_reviews(doc)
+      doc.css('span.review-count-total').first.content.scan(/\d+/).first.to_i
+    end
+
+    def last_showing(doc)
+      showing =  doc.css('span.review-count-shown').first.content
+      puts "SHOWING #{showing}"
+      if showing =~ /\d+-(\d+)/
+        last_showing = $1.to_i
+        puts "LAST SHOWING #{last_showing}"
+      else
+        raise "NO LAST SHOWING"
+      end
+      last_showing
+    end
+
+    def more_reviews(doc)
+      total_reviews(doc) - last_showing(doc)
+    end
+
+    def next_ajax_response(http, request, form_data)
+      #form_data["offset"] = offset
       request.set_form_data(form_data)
       http.request(request)
     end
@@ -305,6 +359,15 @@ class AmazonScraper < Scraper
         end
       end
       codes.uniq
+    end
+
+    def process_styles
+      styles = Set.new
+      IO.readlines("styles.txt").each do |line|
+        styles.add(line.chomp)
+      end
+      styles.to_a.each{|s| puts s}
+      nil
     end
 
   end # self

@@ -21,4 +21,12 @@ class Forum < ActiveRecord::Base
     nil
   end
 
+  # when adding new links, we take put the root and possibly the tail
+  # http://www.amazon.com/Bose-Model-Single-Portable-System/product-reviews/B009HUM2IW
+  # becomes Bose-Model-Single-Portable-System/product-reviews/B009HUM2IW
+  def link_from_url(url)
+    url =~ /amazon.com\/(.+)\z/
+    $1
+  end
+
 end

@@ -408,6 +408,12 @@ class DataLoader < ActiveRecord::Base
     build_link(A,product,title,link)
   end
 
+  def self.build_az_link(name, title, link)
+    product = Product.where(:name => name).first
+    raise "NO PRODUCT FOR **#{name}**" unless product
+    build_link(A, product, title, link)
+  end
+  
   def self.build_bb_link(name, title, link)
     product = Product.where(:name => name).first
     raise "NO PRODUCT FOR **#{name}**" unless product
@@ -759,6 +765,48 @@ class DataLoader < ActiveRecord::Base
     build_bb_link(name, title, link)
   end
 
+  def self.new_bb_links_9_28
+    name = "QC 25"
+    link = "bose-quietcomfort-25-acoustic-noise-cancelling-headphones-black/8323098.p?id=1219323747659&skuId=8323098&st=pcmcat168900050019_categoryid$abcat0204000&cp=1&lp=4"
+    title = "Bose QuietComfort 25 Acoustic Noise Cancelling Headphones - Black"
+    build_bb_link(name, title, link)
+
+    link = "bose-quietcomfort-25-acoustic-noise-cancelling-headphones-white/8324006.p?id=1219323749248&skuId=8324006&st=pcmcat168900050019_categoryid$abcat0204000&cp=1&lp=8"
+    title = "Bose QuietComfort 25 Acoustic Noise Cancelling Headphones - White"
+    build_bb_link(name, title, link)
+
+    name = "SoundTrue OE"
+    link = "bose-soundtrue-on-ear-headphones-purple-mint/4642071.p?id=1219100305465&skuId=4642071&st=pcmcat168900050019_categoryid$abcat0204000&cp=2&lp=9"
+    title = "Bose SoundTrue On-Ear Headphones Purple/Mint"
+    build_bb_link(name, title, link)
+
+    link = "http://www.bestbuy.com/site/bose-soundtrue-on-ear-headphones-white/4642168.p?id=1219100305796&skuId=4642168&st=pcmcat168900050019_categoryid$abcat0204000&cp=2&lp=15"
+    title = "Bose SoundTrue On-Ear White"
+    build_bb_link(name, title, link)
+  end
+
+  def self.new_bose_links_9_28
+    name = "SoundLink on ear headphone"
+    link = "headphones/wireless_headphones/soundlink_oe_headphones/index.jsp"
+    title = "SoundLink on-ear Bluetooth Headphones"
+    build_bose_link(name,title,link) # 1147
+
+    name = "CineMate 15"
+    link = "home_theater/simplified_home_theater/cinemate_15/index.jsp"
+    title = "CineMate 15 home theater speaker system"
+    build_bose_link(name,title,link) # 1148
+
+    name = "Bose Solo 15"
+    link = "home_theater/tv_speakers/solo_tv_sound_system/solo_15/index.jsp"
+    title = "Bose Solo 15 TV sound system"
+    build_bose_link(name,title,link) # 1149
+
+    name = "SoundLink Color /SoundLink Colour"
+    link = "digital_music_systems/bluetooth_speakers/soundlink_color/index.jsp"
+    title = "SoundLink Color Bluetooth Speaker"
+    build_bose_link(name,title,link) # 1150
+  end
+
   def self.build_bose_link(name,title,link)
     forum = Forum.where(:name => "Bose").first
     product = Product.where(:name => name).first
@@ -799,6 +847,101 @@ class DataLoader < ActiveRecord::Base
     ]
     data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
 
+  end
+
+  def self.bose_products_10_14
+    name = "SoundTrue IE"
+    title = "SoundTrue in-ear"
+    link = "headphones/in_ear_headphones/soundtrue_ie/index.jsp"
+    build_bose_link(name, title, link) # 1154
+
+    name = "SoundSport IE"
+    title = "SoundSport in-ear"
+    link = "headphones/sport_headphones/index.jsp#currentState=soundsport_ie_headphones_apple"
+    build_bose_link(name, title, link) # 1155
+
+    name = "Lifestyle 525 Series III"
+    title = "Lifestyle 525 Series III home entertainment system"
+    link = "home_theater/surround_sound_systems/lifestyle_525_535/index.jsp#currentState=ls525_iii"
+    build_bose_link(name, title, link) # 1156
+
+    name = "Lifestyle 535 Series III"
+    title = "Lifestyle 535 Series III home entertainment system"
+    link = "home_theater/surround_sound_systems/lifestyle_525_535/index.jsp#currentState=ls535_iii"
+    build_bose_link(name, title, link) # 1157
+
+    name = "Lifestyle 135 Series III"
+    title = "Lifestyle 135 Series III home entertainment system"
+    link = "home_theater/soundbars/lifestyle_135/index.jsp"
+    build_bose_link(name, title, link) # 1158
+  end
+
+  def self.bose_products_10_15
+        name = "SoundTouch Portable Series II"
+        title = "SoundTouch Portable Series II Wi-Fi Music System"
+        link = "soundtouch_music/soundtouch_portable/index.jsp"
+        build_bose_link(name, title, link) # 1159
+
+        name = "SoundTouch 30 Series II"
+        title = "SoundTouch 30 Series II Wi-Fi Music System"
+        link = "wifi_music_systems/soundtouch_music/soundtouch_30/index.jsp#series_ii"
+        build_bose_link(name, title, link) # 1160
+  end
+  
+  def self.new_bb_links
+    require 'csv'
+    require 'open-uri'
+    dir = "#{Rails.root}/app/models/bose_files"
+    skip = ['broken link', 'do not include']
+    file = 'NewBestBuyLinksAmy.csv'
+    csv_path = File.join(dir, file)
+    CSV.foreach(csv_path) do |line|
+      p line
+      url, name, corrected = line
+      next if url == 'LINK'
+      doc = Nokogiri::HTML(open(url))
+      title = doc.css('title').text.sub(/\s+- Best Buy$/,'')
+      puts title
+      next if skip.include?(name)
+      if url =~ /site\/(.+)\#tabbed/
+        link = $1
+      else
+        puts "NO LINK"; next
+      end
+      build_bb_link(name, title, link)
+    end
+  end
+  
+  def self.new_az_links
+    require 'csv'
+    require 'open-uri'
+    dir = "#{Rails.root}/app/models/bose_files"
+    skip = ['broken link', 'do not include']
+    file = 'new_amazon_links_Oct_13_from_amy.csv'
+    csv_path = File.join(dir, file)
+    CSV.foreach(csv_path) do |line|
+      url, name, category = line
+      next if url == 'LINK'
+      next if skip.include?(name)
+      begin
+        doc = Nokogiri::HTML(open(url))
+      rescue => e
+        puts "#{e.message} #{url}"
+        next
+      end
+      title = doc.css('title').text.sub(/Amazon.com: Customer Reviews:\s+/,'')
+      if url =~ /amazon.com\/(.+)$/
+        link = $1
+      else
+        puts "NO LINK"; next
+      end
+      begin
+        build_az_link(name, title, link)
+      rescue => e
+        puts "#{e.message} #{link}"
+      end
+    end;1
+    
   end
 
 end

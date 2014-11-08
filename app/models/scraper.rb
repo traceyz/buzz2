@@ -1,6 +1,7 @@
 class Scraper < ActiveRecord::Base
 
   require 'open-uri'
+  require 'csv'
 
   class << self
 
@@ -224,6 +225,31 @@ class Scraper < ActiveRecord::Base
     def build_unique_key(args)
       str = args.values.each_with_object(""){ |elt, s| s << elt.to_s }
       Digest::MD5.hexdigest(str)
+    end
+
+    path = '/Users/tracey/Desktop/amazon_links_11_6_AmyCSV.csv'
+    def load_amys_links(path, forum_name="Amazon", header=true)
+      forum = Forum.where(:name => forum_name).first
+      rows = CSV.readlines(path)
+      rows.shift if header
+      rows.each do |url, title, product_name, category_name|
+        print '.'
+        next if ['Do not include','broken link'].include?(product_name)
+        puts title
+        next
+        product = Product.where(:name => product_name).first
+        raise "NO PRODUCT FOR #{product_name}" unless product
+        category = Category.where(:name => category_name).first
+        raise "NO CATEGORY FOR #{category_name}" unless category
+        raise "#{product.name} does not belong with #{category.name}" unless category.products.include?(product)
+        link = forum.link_from_url(url)
+        if (lu = LinkUrl.where(:link => link).first)
+          puts "LINK #{link} already exists"
+        else
+          DataLoader.build_link(forum, product, title, link)
+        end
+      end
+      nil
     end
 
   end

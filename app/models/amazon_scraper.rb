@@ -3,6 +3,12 @@ class AmazonScraper < Scraper
   require "net/http"
   require "uri"
 
+  STYLE_PRODUCTS = {
+    "SoundTouch Portable" => 95,
+    "SoundTouch 20" => 96,
+    "SoundTouch 30" => 97
+  }
+
   class << self
 
     def forum
@@ -230,14 +236,16 @@ class AmazonScraper < Scraper
   "B000A0HFKI", "B00011CNWG", "B000HWV8QG", "B0091EBU28", "B007ZDEAT2" ]
 
     def ajax_reviews(codes = nil)
-      processed_keys = Set.new(AmazonReview.where("review_date >= '2014-01-01'").map(&:unique_key))
+      processed_keys = Set.new(AmazonReview.where("review_date >= '2013-12-01'").map(&:unique_key))
       puts "PRIOR KEYS #{processed_keys.count}"
-      codes ||= get_all_codes
+      codes_to_keys = get_all_codes
+      #codes ||= codes_to_keys.keys
       uri = URI.parse("http://www.amazon.com/ss/customer-reviews/ajax/reviews/get/ref=cm_cr_pr_top_recent")
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.request_uri)
       file = File.open("styles.txt", "w")
-      codes.each do |code|
+      codes_to_keys.each do |code, link_url|
+        puts "CODE #{code}"
         new_reviews = 0
         #offset = 0
         form_data = {"asin" => code, "reviewerType" => "all_reviews", "filterByStar" => "all_stars",
@@ -245,6 +253,7 @@ class AmazonScraper < Scraper
         response = next_ajax_response(http, request, form_data)
         status = response.code
         puts "\nSTATUS IS #{status} for #{code}"
+        puts "PRODUCT: #{link_url.product.name}"
         next unless status == "200"
         doc = Nokogiri::HTML(response.body)
         unless doc.css('span.review-count-total').first
@@ -253,7 +262,7 @@ class AmazonScraper < Scraper
         end
         total_reviews = doc.css('span.review-count-total').first.content.scan(/\d+/).first.to_i
         puts "TOTAL REVIEWS #{total_reviews(doc)} for #{code}"
-        processed_keys = process_response(doc, http, request, form_data, processed_keys, file)
+        processed_keys = process_response(doc, http, request, form_data, processed_keys, file, link_url)
         #puts "NEW REVIEWS FOR #{code}: #{new_reviews}"
         puts "PROCESSED KEYS #{processed_keys.count}"
       end
@@ -262,28 +271,28 @@ class AmazonScraper < Scraper
     end
 
 
-    def process_response(doc, http, request, form_data, prior_keys, file)
+    def process_response(doc, http, request, form_data, prior_keys, file, link_url)
 
       styles = Set.new
       processed_keys = Set.new(prior_keys)
       reviews = doc.css('.review')
-      puts "REVIEW COUNT #{reviews.count}"
+      #puts "REVIEW COUNT #{reviews.count}"
       reviews.each do |review|
-        puts
         rows = review.css('.a-row')
         author_date =  rows[2].content # author and date
         unless author_date =~ /UTC 2014/
-          puts "TOO OLD"
           return processed_keys
         end
 
+        puts author_date
+
         unique_key =  review.attributes['id'].value
+        unless processed_keys.add?(unique_key)
+          print '.'
+          next# I tried break but only got 248 reviews instead of 259
+          # some small number of review lists are still not in descending order ?
+        end
         puts "UNIQUE KEY #{unique_key}"
-        # unless processed_keys.add?(unique_key)
-        #   puts "ALREADY EXISTS"
-        #   next # I tried break but only got 248 reviews instead of 259
-        #   # some small number of review lists are still not in descending order ?
-        # end
 
         rating_str = rows[1].to_s.scan(/a-star-\d/)[0] # rating
         if (rating_str =~ /a-star-(\d)/)
@@ -292,30 +301,63 @@ class AmazonScraper < Scraper
           puts "NO RATING"
           next
         end
-        puts "RATING #{rating}"
+        puts "\nRATING #{rating}"
         headline =  rows[1].content # headline
         puts "HEADLINE #{headline}"
         puts "AUTHOR / DATE  #{author_date}"
+        if author_date =~ /By.(.+)on (Mon|Tue|Wed|Thu|Fri|Sat|Sun) (\w\w\w) (\d\d) .+ UTC (\d\d\d\d)/
+          author = $1
+          month = $3
+          day = $4
+          year = $5
+        else
+          puts "NO AUTHOR DATE MATCH"
+        end
+        review_date = "#{year}-#{month}-#{day}"
+        puts "**#{author}**  **#{review_date}**"
         style_elt = rows[3].at_css('span.a-size-mini')
+        product_id = link_url.product.id
         if style_elt
           style = style_elt.content.gsub(/<[^>]+>/, '')
           puts "STYLE #{style}"
           styles.add(style)
+          if style =~ /Style Name: (.+)/
+            if (id = STYLE_PRODUCTS[$1])
+              product_id = id
+            end
+          end
         end
-        # style.gsub!(/<[^>]+>/, '')
-        # puts "STYLE #{style}" if style
-        # styles.add(style) if style
-        body = rows[3].css('.a-section').each{|s| puts s.content.strip} # review
-        puts body # returns a zero
+        body = rows[3].css('.a-section').map{|s| s.content.strip}.join(' ') # review
+        args = {
+          unique_key: unique_key,
+          review_date: review_date,
+          rating: rating,
+          body: body,
+          rating: rating,
+          author: author,
+          product_id: product_id,
+          code: form_data["asin"],
+          link_url_id: link_url.id,
+          style: style
+        }
+        r = AmazonReview.new(args)
+        valid = r.valid?
+        puts "REVIEW VALID: #{valid}"
+        r.errors.each{|e| puts e.to_s}#  unless valid
+        p args
+        r.save! if valid
 
       end
       more = more_reviews(doc)
+      #more = 0 # hack for now :-(
       if (more > 0)
         puts "#{more} reviews left"
         form_data['offset'] += 10
         response = next_ajax_response(http, request, form_data)
         doc = Nokogiri::HTML(response.body)
-        processed_keys = process_response(doc, http, request, form_data, processed_keys, file)
+        puts doc.to_s
+        raise
+        processed_keys = process_response(doc, http, request, form_data, processed_keys, file, link_url)
       end
       styles.to_a.uniq.each{ |s| file.puts s}
       processed_keys
@@ -328,10 +370,10 @@ class AmazonScraper < Scraper
 
     def last_showing(doc)
       showing =  doc.css('span.review-count-shown').first.content
-      puts "SHOWING #{showing}"
+      #puts "SHOWING #{showing}"
       if showing =~ /\d+-(\d+)/
         last_showing = $1.to_i
-        puts "LAST SHOWING #{last_showing}"
+        #puts "LAST SHOWING #{last_showing}"
       else
         raise "NO LAST SHOWING"
       end
@@ -343,22 +385,22 @@ class AmazonScraper < Scraper
     end
 
     def next_ajax_response(http, request, form_data)
-      #form_data["offset"] = offset
+      #form_data["offset"] = form_data["offset"] + 10
       request.set_form_data(form_data)
       http.request(request)
     end
 
     def get_all_codes
-      codes = []
+      codes_to_products = {}
       Forum.find(1).product_links.each do |pl|
         pl.link_urls.each do |lu|
           link = lu.link
           if link =~ /\/([A-Z0-9]+)\z/
-            codes << $1
+            codes_to_products[$1] = lu
           end
         end
       end
-      codes.uniq
+      codes_to_products
     end
 
     def process_styles
@@ -370,7 +412,23 @@ class AmazonScraper < Scraper
       nil
     end
 
+    def list_links_to_products
+      file = File.open("links_to_products.tsv", "w")
+      product_links = Forum.find(1).product_links.sort_by{ |pl| pl.product.name }
+      root = Forum.find(1).root
+      product_links.each do |pl|
+        name = pl.product.name
+        pl.link_urls.each do |lu|
+          file.puts "#{name}\t#{root}#{lu.link}"
+        end
+      end
+      file.close
+      nil
+    end
+
   end # self
 end
+
+
 
 # first 20 codes ["B001DOHYS8", "B00356PVLE", "B001DE4D5U", "B001DP9002", "B001DPB1XG", "B000GFPTQY", "B00022RV6C", "B008RQG1BG", "B00006WNKQ", "B00006J054", "B00GQ0R64Q", "B00006J055", "B00006L7RT", "B00006L7RV", "B00006L7RW", "B000A0HFKI", "B00011CNWG", "B000HWV8QG", "B0091EBU28", "B007ZDEAT2", "B00478O0JI"]

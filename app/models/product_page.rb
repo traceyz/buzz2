@@ -22,6 +22,8 @@ BODY = <<-EOD
     %p.display-title= review.display_title
     -if review.review_from && review.review_from.phrase
       %p.review_from= "Review from: " + review.review_from.phrase
+    -if review.style
+      %p.review_style= review.style
     %p.author= "Author: " + review.author
     - if review.location
       %span.location= "From " + review.location

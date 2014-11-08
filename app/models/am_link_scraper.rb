@@ -14,15 +14,22 @@ class AmLinkScraper < ActiveRecord::Base
   end
 
   def get_links
-    get_links_from_link(LINK)
+    file = File.open("amazon_links.tsv", "w")
+    get_links_from_link(LINK, file)
     puts "\nNOW LOOKING WITHIN ELECTRONICS"
-    get_links_from_link(LINK2)
+    get_links_from_link(LINK2, file)
+    file.close
   end
 
-  def get_links_from_link(link)
+  def get_links_from_link(link, file)
     links = Set.new
     all_ready_considered = Set.new
-    doc = Nokogiri::HTML(open(link))
+    begin
+      doc = Nokogiri::HTML(open(link))
+    rescue => e
+      puts "#{link} : #{e.message}"
+      return
+    end
     doc.css('.asinReviewsSummary a').each do |href|
       href = href[:href]
       href =~ /www.amazon.com\/(.+)\Z/
@@ -37,26 +44,33 @@ class AmLinkScraper < ActiveRecord::Base
     end
 
     links.each do |_link|
-      dc = Nokogiri::HTML(open("http://www.amazon.com/#{_link}"))
+      begin
+        dc = Nokogiri::HTML(open("http://www.amazon.com/#{_link}"))
+      rescue => e
+        puts "#{_link} : #{e.message}"
+        next
+      end
       title = dc.at_css('title').to_s.chomp
       next if title =~ /AR1|Rough In Kit|Repair Kit|Foam Edge|Earbuds|Eargels|AL8|Clothing Clip|Non-Bose|Brackets|Upgrade kit|Onkyo|Travel Bag|Link A Cable|Sassy|Charger|Ear Cushion|carry bag/i
       next if title =~ /Ear Pads/i
       puts "http://www.amazon.com/#{_link}"
-      puts dc.at_css('title')
-      print "Enter product id: "
-      product_id = gets.chomp
-      unless product_id.length > 0
-        puts "Skipping #{title}"
-        next
-      else
-        build_link(product_id.to_i, title, _link)
-      end
+      title = dc.at_css('title').content
+      puts title
+      file.puts("http://www.amazon.com/#{_link}\t#{title}")
+      # print "Enter product id: "
+      # product_id = gets.chomp
+      # unless product_id.length > 0
+      #   puts "Skipping #{title}"
+      #   next
+      # else
+      #   build_link(product_id.to_i, title, _link)
+      # end
     end
     elt = doc.css('a#pagnNextLink')[0]
     return unless elt
     next_link = elt[:href]
     next_link = "http://www.amazon.com" + next_link unless next_link.start_with?('http')
-    get_links_from_link(next_link)# if next_link
+    get_links_from_link(next_link, file)# if next_link
   end
 
 def build_link(product_id, title, link)

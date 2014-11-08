@@ -11,7 +11,10 @@ class BestBuyScraper < Scraper
 
     def url_from_link(link_url, idx=1)
       raise "#{link_url.link} FAILS" unless link_url.link =~ /skuId=(\d+)/
+      # file = File.open("bb_sku_ids.txt", "a")
       key = $1
+      # file.puts key
+      # file.close
       root = 'http://bestbuy.ugc.bazaarvoice.com/3545w/'
       tail = '/reviews.djs?format=embeddedhtml&page='
       final = '&scrollToTop=true%20HTTP/1.1'

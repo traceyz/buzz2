@@ -129,6 +129,19 @@ BODY = <<-EOD
       %td.count= cat.new_count(:report_date => date, :recent_date => recent)
       %td.count= cat.report_count(date)
 
+    -cat = cats[11]
+    %tr
+      %td{:colspan => 4}
+        %h2 Pro Speakers
+    %tr
+      %td
+        %img{:src => root + "images/" + cat.image_name}
+      %td
+        %a{:href => root + "c_pages/" + cat.page_name}
+          = cat.name
+      %td.count= cat.new_count(:report_date => date, :recent_date => recent)
+      %td.count= cat.report_count(date)
+
 
 EOD
 
@@ -169,13 +182,13 @@ EOD
     Spreadsheet.client_encoding = 'UTF-8'
     book = Spreadsheet::Workbook.new
     all_reviews_sheet = book.create_worksheet :name => "All Reviews"
-    all_reviews_sheet.row(0).concat %w(Name ReviewFrom Forum Date Author Location Rating Headline Content)
+    all_reviews_sheet.row(0).concat %w(Name ReviewFrom Forum Date Author Location Rating Headline Content Style Key)
     all_reviews_idx = 1
     args = { :recent_date => recent, :report_date => report_date }
     Category.order('position ASC, name ASC').each do |category|
       next unless category.products.first
       sheet = book.create_worksheet :name => category.name
-      sheet.row(0).concat %w(Name ReviewFrom Forum Date Author Location Rating Headline Content)
+      sheet.row(0).concat %w(Name ReviewFrom Forum Date Author Location Rating Headline Content Style Key)
       idx = 1
       category.products.each do |product|
         reviews = product.new_reviews(args)
@@ -198,6 +211,8 @@ EOD
           data << review.rating
           data << review.headline
           data << review.body
+          data << review.style || ""
+          data << review.unique_key
           row.concat(data)
           all_reviews_row.concat(data)
           idx += 1

@@ -199,6 +199,15 @@ class DataLoader < ActiveRecord::Base
     nil
   end
 
+  def self.build_az_link_with_ids(link, title, product_id)
+    forum = Forum.find(1)
+    args = {:product_id => product_id, :active => true}
+    product_link = forum.product_links.where(args).first ||
+                            forum.product_links.create!(:product_id => product_id, :active => true)
+    product_link.link_urls.create!(:link => link, :title => title, :current => true)
+    nil
+  end
+
   def self.am_oct_26
     c = Category.where(:name => "Wi-Fi Music Systems").first
     stp = c.products.create!(:name => "SoundTouch Portable")
@@ -413,7 +422,7 @@ class DataLoader < ActiveRecord::Base
     raise "NO PRODUCT FOR **#{name}**" unless product
     build_link(A, product, title, link)
   end
-  
+
   def self.build_bb_link(name, title, link)
     product = Product.where(:name => name).first
     raise "NO PRODUCT FOR **#{name}**" unless product
@@ -849,6 +858,147 @@ class DataLoader < ActiveRecord::Base
 
   end
 
+  def self.am_review_froms_12_9
+    data = [
+        ["AE2i Audio Headphones, Black",65],
+        ["AE2 Around-Ear Audio Headphones, Black",65],
+        ["MIE2i 326223-0080 Mobile Headset for Select Apple Products",73],
+        ["LS12IIBLK Lifestyle 12 Series II Home Theater System",1],
+        ["Lifestyle 18 Series III w/ wireless surround link",2],
+        ["Premium Jewel Cube Speaker -Pair-",26],
+        ["5.0 Premium Jewel Cube Speaker Package",26],
+        ["CineMate Digital 2.1 Channel Home Theater Speaker System",24],
+        ["SoundLink Around-Ear Bluetooth Headphones",153],
+        ["OE2 Audio Headphones  White",76],
+        ["OE2 audio headphones  Black",76],
+        ["360778-0040 Soft Cover for SoundLink Mini",90],
+        ["In-Ear Adjustable Earbud Headphones",72],
+        ["SoundTouch 30 Series II Wireless Music System",143],
+        ["SoundTouch 20 Series II Wireless Music System",144],
+        ["SoundTouch Portable Series II Wireless Music System",145]
+    ]
+    data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
+  end
+
+  def self.am_review_froms_1_1_15
+    data = [
+        ["IE2 audio headphones", 72],
+        ["SoundTrue In-Ear Headphones, White", 141]
+    ]
+    data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
+  end
+
+  def self.am_review_froms_1_2_15
+    data = [
+        ["SoundDock XT Speaker", 140],
+        ["369946-1010 New NFL Collection SoundLink Bluetooth Speaker", 127]
+    ]
+    data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
+  end
+
+  def self.am_review_froms_1_17_15
+    # [phrase, product_id]
+    data = [
+        ['Wave Radio III -Platinum White' , 62 ],
+        [ 'SoundLink III Bluetooth Speaker with Soft Cover Bundle',127 ],
+        [ 'Limited Edition SoundLink Bluetooth Speaker III',127 ]
+    ]
+    data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
+    nil
+  end
+
+  def self.am_review_froms_1_31_15
+    # [phrase, product_id]
+    data = [
+        ['Acoustimass 10 Series IV Home Entertainment Speaker System' , 18 ]
+    ]
+    data.each{ |d| ReviewFrom.create!(:phrase => d[0], :product_id => d[1]) }
+    nil
+  end
+
+  def self.am_links_1_2_15
+    # ['link','title',product_id]
+    data = [
+        ['Bose-Freestyle-Earbuds-Ice-Blue/dp/B00ISIG6PY','Bose Freestyle Earbuds, Ice Blue', 133],
+        ['Bose-625946-0020-Freestyle-Earbuds-Indigo/dp/B00ISIG690','Bose Freestyle Earbuds, Indigo', 133],
+        ['Bose-SoundLink-Color-Bluetooth-Wireless/dp/B00NY5U6GQ','Bose SoundLink Color Bluetooth Wireless Speaker - BLACK & Bose Carry Case - Bundle', 138],
+        ['Wave%C2%AE-Music-System-Multi-CD-Changer/dp/B007ZFP3MS','Wave Music System III with Multi-CD Changer - Titanium Silver', 64],
+        ['Bose-SoundLink-Color-Bluetooth-Wireless/dp/B00NY4F4KU','Bose SoundLink Color Bluetooth Wireless Speaker - BLUE & Bose Carry Case - Bundle', 138],
+        ['Bose-SoundLink-Color-Bluetooth-Wireless/dp/B00NY6FBGU','Bose SoundLink Color Bluetooth Wireless Speaker - MINT & Bose Carry Case - Bundle', 138],
+        ['Bose-SoundLink-Color-Bluetooth-Wireless/dp/B00NY5A116','Bose SoundLink Color Bluetooth Wireless Speaker - RED & Bose Carry Case - Bundle', 138],
+        ['Bose-SoundLink%C2%AE-Color-Bluetooth-Speaker/dp/B00O8G1EKW','Bose SoundLink Color Bluetooth Speaker - Mint Green - Bundle With SoundLink Color Carry Case', 138],
+        ['Bose%C2%AE-SoundLink-III-Portable-Bluetooth/dp/B00OD5BMM8','Bose SoundLink III Portable Bluetooth Speaker and Charger Bundle', 127],
+        ['Bose-SoundLink%C2%AE-Bluetooth%C2%AE-Speaker-Charger/dp/B00ID97DVY','Bose SoundLink Bluetooth Mobile Speaker III & Car Charger - Bundle', 127],
+        ['Bose-Bluetooth%C2%AE-adapter--Titanium-Silver/dp/B00FLX5EGQ','Bose Wave radio III with Bluetooth music adapter- Titanium Silver', 62],
+        ['Bose-CineMate-Home-Theater-System/dp/B00NJTX6ZU','Bose CineMate 130 Home Theater System', 149],
+        ['Bose-SoundDock-30-Pin-Bluetooth-Adapter/dp/B002RJLL6O','Bose SoundDock 10 30-Pin iPod/iPhone Bluetooth Adapter', 36],
+        ['Bose-one-speaker-system-SOLO/dp/B001H4XO38','Bose TV for one speaker system SOLO TV', 28],
+        ['Bose-Lifestyle-Series-Entertainment-System/dp/B00NJTX70E','Bose Lifestyle 535 Series III Home Entertainment System (Black)', 147],
+        ['Bose-SoundLink-Color-Bluetooth-Wireless/dp/B00NY749US','Bose SoundLink Color Bluetooth Wireless Speaker - WHITE & Bose Carry Case - Bundle', 138],
+        ['Bose-SoundLink-Bluetooth-Speaker-Wireless/dp/B00FLGMVMS','Bose SoundLink Mini Bluetooth Speaker', 88],
+        ['Bose-720875-0020-Comfort-headphones-Inline/dp/B00OGA2QZC','Bose 720875-0020 Quiet Comfort 25 headphones with Inline Mic/Remote Cable (Blue)', 135],
+        ['Wave%C2%AE-Radio-III-Titanium-Silver/dp/B00OKZSMDS','Wave Radio III - Titanium Silver', 62],
+        ['Bose-720875-0010-Comfort-Headphones-Inline/dp/B00OGA2R7Y','Bose 720875-0010 Quiet Comfort 25 Headphones Inline Mic/Remote Cable, Black', 135],
+        ['Bose-724271-0010-On-Ear-Bluetooth-Headphones/dp/B00Q784UVO','Bose 724271-0010 Sound Link On-Ear Bluetooth Headphones Carry Case, Black', 136],
+        ['Bose-SoundLink-Bluetooth-Speaker-Cover/dp/B00IAEY8FG','Bose SoundLink Bluetooth Speaker III with Gray Cover', 127]
+    ]
+    data.each do |link, title, product_id|
+        build_az_link_with_ids(link, title, product_id)
+    end
+    nil
+  end
+
+  def self.am_links_1_17_15
+    # ['link','title',product_id]
+    data = [
+        ['Bose-Corporation-SoundTouch-Controller/dp/B00R4VJMMU','SoundTouch Controller',110],
+        ['Bose-Lifestyle-Surround-Theater-Entertainment/dp/B00P32RO90','Bose Lifestyle 535 Series III System | 5.1 Surround Home Theater Entertainment System', 147],
+        ['Bose-SoundLink-Mini-Bluetooth-Wireless/dp/B00EOI7MZ0','Bose SoundLink Mini Bluetooth Speaker Bundle',88],
+        ['Bose-SoundDock-Series-Digital-System/dp/B001IO6R4U','Bose SoundDock Series II Digital Music System',35],
+        ['Bose-Marine-Speakers-Mounted-Ourdoor/dp/B00OMG9Y1O','Bose 131 Marine Speakers | Flush Mounted Ourdoor Speakers Pair',57],
+        ['Bose-SoundLink-Bluetooth-Speaker-Freestyle/dp/B00K09A47K','Bose SoundLink Mini Bluetooth Speaker Blue & Freestyle In Ear Earbuds Ice Blue - Bundle',127],
+        ['Bose-SoundLink-Bluetooth-Speaker-Freestyle/dp/B00K23HH6U','Bose SoundLink Mini Bluetooth Speaker Mint & Freestyle In Ear Earbuds Indigo - Bundle',127],
+        ['Bose-SoundLink-Bluetooth-Speaker-Headphones/dp/B00JWZ631O','Bose SoundLink Mini Bluetooth Speaker Blue & SIE2i Sport In Ear Headphones Blue - Bundle',127],
+        ['Bose-Bluetooth-Headset-Series-Charger/dp/B006MPQFHO','Bose Bluetooth Headset Series 2, Left Ear and Bose Bluetooth Car Charger - Bundle',68],
+        ['Bose-Mobile-In-Ear-Headphones-Black/dp/B00OBOQ6XG','Bose Mobile In-Ear Headphones Black',74],
+        ['Bose-Companion-multimedia-speaker-system/dp/B009DHHU5O','Bose Companion 20 multimedia speaker system',30],
+        ['Bose-SoundLink-Bluetooth-Speaker-Edition/dp/B009HM5RAA','Bose SoundLink Bluetooth Mobile Speaker II Leather Edition',40],
+        ['Bose-SoundLink-Mini-Travel-Bag/dp/B00HQ2CR3S','Bose SoundLink Mini Bluetooth Wireless Speaker w/ Travel Bag and Car Charger',88],
+        ['Bose-Bluetooth-Headset-Series-Charger/dp/B006MPA1T2','Bose Bluetooth Headset Series 2 - Right Ear & Bose Bluetooth Car Charger (Bundle)',68]
+    ]
+    data.each do |link, title, product_id|
+        begin
+            build_az_link_with_ids(link, title, product_id)
+        rescue => e
+            puts e.message
+        end
+    end
+    nil
+  end
+
+   def self.am_links_1_31_15
+    # ['link','title',product_id]
+    data = [
+        [ "Bose-SoundDock-Digital-Lightning-Connector/dp/B00ALWIV12",
+        "Bose SoundDock Series III Digital Music System with Lightning Connector",37
+        ],
+        [ 'Bose-Quietcomfort-Acoustic-Cancelling-Headphones/dp/B00P0SBJEI',
+        'Bose Quietcomfort 20 Acoustic Noise Cancelling Headphones',89
+        ],
+        ['Bose-SoundLink-Mini-Bluetooth-Wireless/dp/B00FXHY8Z8',
+        'Bose SoundLink Mini Bluetooth Speaker, Bundle - with SoundLink Mini Car Charger' ,88
+        ]
+    ]
+    data.each do |link, title, product_id|
+        begin
+            build_az_link_with_ids(link, title, product_id)
+        rescue => e
+            puts e.message
+        end
+    end
+    nil
+  end
+
   def self.bose_products_10_14
     name = "SoundTrue IE"
     title = "SoundTrue in-ear"
@@ -887,7 +1037,24 @@ class DataLoader < ActiveRecord::Base
         link = "wifi_music_systems/soundtouch_music/soundtouch_30/index.jsp#series_ii"
         build_bose_link(name, title, link) # 1160
   end
-  
+
+  def self.new_bose_links_1_3_15
+    name = "CineMate 120"
+    title = "Bose CineMate 120 Home Theater System"
+    link = "home_theater/soundbars/cinemate_120/index.jsp"
+    build_bose_link(name, title, link) # 1413
+
+    name = "CineMate 130"
+    title = "Bose CineMate 130 Home Theater System"
+    link = "home_theater/soundbars/cinemate_130/index.jsp"
+    build_bose_link(name, title, link) # 1414
+
+    name = "CineMate 520"
+    title = "Bose CineMate 520 Home Theater System"
+    link = "home_theater/surround_sound_systems/cinemate_520/index.jsp"
+    build_bose_link(name, title, link)
+  end
+
   def self.new_bb_links
     require 'csv'
     require 'open-uri'
@@ -911,7 +1078,7 @@ class DataLoader < ActiveRecord::Base
       build_bb_link(name, title, link)
     end
   end
-  
+
   def self.new_az_links
     require 'csv'
     require 'open-uri'
@@ -941,7 +1108,19 @@ class DataLoader < ActiveRecord::Base
         puts "#{e.message} #{link}"
       end
     end;1
-    
+
+  end
+
+  def self.az_deny_codes_1_2_15
+        codes = %w(B00ALWIV12 B00GHUHMUS B00NTUEDMY B00GU684QU B00NZ1E3RW B008VMT2HQ B00AFJWADQ
+        B00P0SIXWO B00ODYZQ0S B00MH8CIS0 B00NSHDRSO B00CEO7HHE B007136E0O B00GZAEVL8 B00O9JLAX4 B00GGZ14O4
+        B00005T3N3 B00915OV1E B00IKPYKWG B00GMPBLIW B000065BPB B009F1LDAG B00GZPILVE B00I15SB16
+        B0041OO44E B004LTEUDO B007SY4QTW B004XMMSZG B00OA3INTI B00HLLIY4U
+        B0028SPFFC B000HMTPYI  B00OCL61VK B00004TQOW B00PYUV7JY)
+
+        forum = Forum.find(1)
+        codes.each{ |code| forum.denied_codes.create!(:code => code) }
+
   end
 
 end

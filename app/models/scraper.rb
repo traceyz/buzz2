@@ -108,10 +108,15 @@ class Scraper < ActiveRecord::Base
       puts "PAGE FOR #{link_url.product.name}"
       count = 0
       review_class = Object.const_get(klass)
+
       page_reviews(doc).each do |review|
-        year = get_date(review)
-        unless year >= TOO_OLD
-          #puts "#{year} TOO OLD"
+        year, month, day = get_date(review)
+        unless year
+          puts "NO REVIEW FOR #{review.to_s}"
+          next
+        end
+        unless year == 2015 #|| (year == 2014 && month > 11)
+          puts "#{year}-#{month} TOO OLD"
           next
         end
         next unless (key = get_unique_key(review))
@@ -121,9 +126,10 @@ class Scraper < ActiveRecord::Base
           puts "GOT #{count} REVIEWS ON THIS PAGE #{url}"
           return nil
         end
+        # puts "NEW REVIEW #{year} #{month} #{day}"
         args = { unique_key: key, link_url_id: link_url.id }
         begin
-          next unless (add_args = args_from_review(review, link_url))
+          next unless (add_args = args_from_review(review, link_url, day, month, year))
         rescue => e
           puts "ERROR #{e.message}"
           return
@@ -131,8 +137,11 @@ class Scraper < ActiveRecord::Base
         args.update(unescape(add_args))
         begin
           the_review = review_class.create!(args)
-          raise unless the_review.review_from_id
-          puts "REVIEW FROM ID #{the_review.review_from_id}"
+          unless the_review.review_from_id
+            "NO REVIEW FROM ID FOR #{args.inspect}"
+          else
+            puts "REVIEW FROM ID #{the_review.review_from_id}"
+          end
           count += 1
         rescue => e
           puts e.message

@@ -24,12 +24,11 @@ class BestBuyScraper < Scraper
     def doc_from_url(url)
       p = open(url)
       p.read =~ /var materials=({.+}),\s*initializers=/m
-      json = JSON.parse($1)
-      Nokogiri::HTML(json['BVRRSourceID'])
+      JSON.parse($1)["BVRRSourceID"]
     end
 
     def page_reviews(doc)
-      doc.css('div.BVRRContentReview')
+      Nokogiri::HTML(doc).css('div.BVRRContentReview')
     end
 
     def next_link(doc,link_url,previous_url,klass)
@@ -44,7 +43,7 @@ class BestBuyScraper < Scraper
       review.attr("id").split("_")[1]
     end
 
-    def args_from_review(review, link_url)
+    def args_from_review(review, link_url, day, month, year)
       date_str = review.css('span.BVRRReviewDate').text.strip
       {
         headline: review.css('span.BVRRReviewTitle').text.strip,
@@ -60,6 +59,11 @@ class BestBuyScraper < Scraper
       path = "#{Rails.root}/#{file}"
       doc = Nokogiri::HTML(File.open(path))
       build_reviews_from_doc(doc, nil, nil, "BestBuyReview", true, true)
+    end
+
+    def get_date(review)
+      mo, da, yr = review.at_css('span.BVRRReviewDate').text.split('/')
+      [yr.to_i, mo.to_i, da.to_i]
     end
 
   end

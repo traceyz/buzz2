@@ -24,3 +24,9 @@ exercise_files
 missing_rfs*
 errors.txt
 new_amazon_links*
+allBuzz*
+app/models/apple_files/
+app/models/bose_files/
+app/models/future_shop_files/
+app/models/az_files/
+

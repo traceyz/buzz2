@@ -1,6 +1,7 @@
 class Forum < ActiveRecord::Base
 
   has_many :product_links
+  has_many :denied_codes
 
   validates :name, :image, :root, presence: true
 
@@ -27,6 +28,14 @@ class Forum < ActiveRecord::Base
   def link_from_url(url)
     url =~ /amazon.com\/(.+)\z/
     $1
+  end
+
+  # over-ridden by a forum that actually has and uses product codes
+  # the specific id in the link
+  # for eaxmple - in Amazon, a link is Bose-727012-1300-Bluetooth-Audio-Adapter/dp/B00NTUEDMY
+  # the product code is B00NTUEDMY - what follows the last forward slash
+  def product_codes
+    []
   end
 
 end

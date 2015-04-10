@@ -12,6 +12,11 @@ class Product < ActiveRecord::Base
 
   validates :name,  presence: true, uniqueness: true
 
+  def self.list_products
+    Product.order(:name).each{ |p| puts "#{p.id}\t#{p.name}" }
+    nil
+  end
+
   def report_reviews(report_date)
     reviews.where(['review_date <= ?', report_date]).order('review_date DESC').limit(Review::MAX_REVIEWS)
     # product_links.includes(:link_urls).map{ |pl| pl.report_reviews(report_date) }.flatten.sort_by(&:review_date).reverse[0..Review::MAX_REVIEWS]

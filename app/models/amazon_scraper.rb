@@ -19,8 +19,9 @@ class AmazonScraper < Scraper
     # from Amazon each time
 
     def page_reviews(doc)
-      reviews = doc.css("table#productReviews tr td >  div")
-      puts "THERE ARE #{reviews.count} REVIEWS ONTHIS PAGE"
+      # reviews = doc.css("table#productReviews tr td >  div")
+      reviews = doc.css('.review')
+      puts "THERE ARE #{reviews.count} REVIEWS ON THIS PAGE"
       reviews
     end
 
@@ -39,51 +40,9 @@ class AmazonScraper < Scraper
         puts "MATCH 29"
         page = $2.to_i+1
         "#{$1}top_link_#{page}?ie=UTF8&pageNumber=#{page}&showViewpoints=0"
-      # elsif url =~ /(.+)top_recent_(.+)UTF8(.+)/
-      #   puts "Match 25"
-      #   "#{$1}next_2#{$2}UTF8&page_number=2" ##{$3}"
-      # elsif url =~ /(.+)top_link_1/
-      #   puts "Match 28"
-      #   "#{$1}top_link_2?ie=UTF8&pageNumber=2" #&showViewpoints=0&sortBy=bySubmissionDateDescending"
-      # elsif url =~ /(.+)top_link_(\d+)/
-      #   puts "Match 30"
-      #   page = $2.to_i + 1
-      #   "#{$1}top_link_#{page}?ie=UTF8&pageNumber=#{page}" #&showViewpoints=0&sortBy=bySubmissionDateDescending"
-      # elsif url =~ /(.+)next_(\d+)(.+)page_number=(\d+)(.+)/
-      #   puts "Match 35"
-      #   page = $2.to_i + 1
-      #   "#{$1}next_#{page}#{$3}pageNumber=#{page}"##{$5}"
-      # elsif url =~ /(.+)next_(\d+)(.+)pageNumber=(\d+)(.+)/
-      #   puts "Match 39"
-      #   page = $2.to_i + 1
-      #   "#{$1}next_#{page}#{$3}pageNumber=#{page}"##{$5}"
       else
         puts "NO MATCH FOR #{url}"
       end
-      # begin
-      #   # doc.css('span.paging')[0].css('a').select{|a| a.text =~ /Next/}.first[:href]
-      #   # next_link = doc.css('ul.a-pagination > li.a-last a')[0][:href]#.select{|a| a.text =~ /Next/}.first[:href]
-      #   # p link_url
-      #   # next_number = 2
-      #   # if link_url =~ /pageNumber=(\d)/
-      #   #   next_number = $1
-      #   # end
-      #   # puts url
-      #   # puts "#{url}&pageNumber=#{next_number}"
-      #   #doc.css('.CMpaginate a').each{ |a| puts a[:href] }
-      #   #puts doc.css('span.paging').to_s
-      #   #puts doc.css('.CMpaginate span.paging').to_s
-      #   next_link = doc.css('.CMpaginate span.paging').to_s =~ /href="([^>]+)">Next/ ? $1 : nil
-      #   next_link << "&sortBy=bySubmissionDateDescending" unless next_link =~ /bySubmissionDateDescending/
-      #   # unless next_link =~ /bySubmissionDateDescending/
-      #   #   nextLink << "&sortBy=bySubmissionDateDescending"
-      #   # end
-      #   # next_link = doc.css('.paging a').select{|a| a.text =~ /Next/}.first[:href]
-      #   puts "NEXT LINK IS #{next_link}"
-      #   next_link
-      # rescue
-      #   puts "NO NEXT LINK"
-      # end
     end
 
     def url_from_link(link_url)
@@ -94,78 +53,106 @@ class AmazonScraper < Scraper
 
     def get_unique_key(review)
       begin
-        review.css("a[name]")[0][:name].split(".")[0]
+        #review.css("a[name]")[0][:name].split(".")[0]
+        review.attributes['id'].value
       rescue
         puts "NO UNIQUE KEY"
       end
     end
 
     def get_date(review)
-      text = review.to_s
-      text =~ /<nobr>[A-z]+ \d{1,2}, (\d{4})/
-      $1.to_i
+      date_str = review.at_css('.review-date').content
+      if date_str =~ /on ([A-z]+) (\d+), (\d+)/
+        # puts "#{$1} #{$2}, #{$3}"
+        month = MONTHS[$1[0..2]]
+        day = $2.to_i
+        year = $3.to_i
+        #puts "#{month} #{day} #{year}"
+      else
+        puts "NO DATE FOR #{date_str}"
+      end
+      [year, month, day]
     end
 
-    def args_from_review(review, link_url)
+    def args_from_review(review, link_url, day, month, year)
       # for some reason, these are slipping into the scraper
-      retun nil if link_url.link.start_with?('Cosmos-Pattern-Protection')
-      text = review.to_s
-      date = text =~ /<nobr>([A-z]+ \d{1,2}, \d{4})/ ? $1 : "FAILS"
-      if date.eql?("FAILS")
-        puts "DATE FAILS"
-        return nil
-      end
-      #body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
-      body = review.at_css('div.reviewText').text
-      # puts
-      # puts "#" * 50
-      # puts body
-      raise "EMPTY AMAZON BODY" unless body.length > 0
-      # body.gsub!(/<[^b][^>]+>/m,"")
-      # body ||= "EMPTY"
-      #body = body.gsub(/<[^>]+>/,"").strip!
-      location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : ""
-      location = location_str.gsub(/[()]/,"").strip
-      #review_from = text =~ /This review is from: <\/span>[^>]+>Bose ([^>]+)<\/a/m ? $1 : nil
-      review_from = text =~ /(This review is from:.+?)<\/b/m ? $1 : nil
-      rf = nil
-      if review_from
-        #puts "REVIEW FROM ***#{review_from}***"
-        cleaned = ReviewFrom.clean(review_from)
-        rf = ReviewFrom.where(:phrase => cleaned).first
-        unless rf
-          File.open("#{Rails.root}/missing_rfs_#{Date.today}.txt", 'a') do |f|
-            f.puts "\nNO REVIEW FROM FOR: #{cleaned}"
-            f.puts "LinkUrl id: #{link_url.id}"
-            f.puts "Link: #{link_url.link}"
-            f.puts "Titile: #{link_url.title}"
-          end
-          return nil
-          # puts "NO REVIEW FROM FOR **#{cleaned}**"
-          # print "Enter product id: "
-          # product_id = gets.chomp
-          # unless product_id && product_id.length > 0
-          #   puts "Skipping #{cleaned}"
-          #   return nil
-          # else
-          #   rf = Product.find(product_id.to_i).review_froms.create!(:phrase => cleaned)
-          # end
+      product_id = link_url.product.id
+      puts "IN ARGS FROM REVIEW"
+      rating = review.at_css('span.a-icon-alt').content
+      puts "RATING #{rating}"
+      headline = review.at_css('a.review-title').content
+      puts "HEADLINE #{headline}"
+      author = review.at_css('a.author').content
+      puts "AUTHOR #{author}"
+      body = review.at_css('span.review-text').content
+      puts "BODY #{body}"
+      review_date = "#{year}-#{month}-#{day}"
+      review.css('span.a-color-secondary').each do |stub|
+        if stub.content =~ /Style Name: Bose (.+)/
+          puts "STUB CONTENT #{stub.content}"
+          puts STYLE_PRODUCTS[$1]
+          product_id = STYLE_PRODUCTS[$1]
         end
-      else
-        puts "NO REVIEW FROM"
       end
-      rf_id = rf ? rf.id : nil
-     args =  {
-        review_date: build_date(date),
-        rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
-        body: body, #.gsub(/<[^>]+>/,"").strip!,
-        headline: text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
-        author: text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
-        location: location.length > 0 ? location : nil,
-        review_from_id: rf_id
+      return {
+        :rating => rating,
+        :headline => headline,
+        :author => author,
+        :body => body,
+        :review_date => review_date,
+        :product_id => product_id
       }
-      p args
-      args
+     #  if link_url.link.start_with?('Cosmos-Pattern-Protection')
+     #    puts "COSMOS LINK :-("
+     #    return nil
+     #  end
+     #  text = review.to_s
+     #  puts "HAVE TEXT FOR ARGS FROM REVIEW"
+     #  # date = text =~ /<nobr>([A-z]+ \d{1,2}, \d{4})/ ? $1 : "FAILS"
+     #  # if date.eql?("FAILS")
+     #  #   puts "DATE FAILS"
+     #  #   return nil
+     #  # end
+     #  #body = text.gsub(/<div[^>]+>.+?<\/div>/m,"")
+     #  body_elt = review.at_css('div.reviewText')
+     #  unless body_elt
+     #    puts "NO BODY"
+     #    return {}
+     #  end
+     #  body = body_elt.text
+     #  raise "EMPTY AMAZON BODY" unless body.length > 0
+     #  location_str = text =~ /By&nbsp\;.+?>[^<]+<\/span><\/a>\s(\([^)]+\))/m ? $1 : ""
+     #  location = location_str.gsub(/[()]/,"").strip
+     #  review_from = text =~ /(This review is from:.+?)<\/b/m ? $1 : nil
+     #  rf = nil
+     #  if review_from
+     #    #puts "REVIEW FROM ***#{review_from}***"
+     #    cleaned = ReviewFrom.clean(review_from)
+     #    rf = ReviewFrom.where(:phrase => cleaned).first
+     #    unless rf
+     #      puts "NO RF RECORD FOR #{cleaned}"
+     #      File.open("#{Rails.root}/missing_rfs_#{Date.today}.txt", 'a') do |f|
+     #        f.puts "\nNO REVIEW FROM FOR: #{cleaned}"
+     #        f.puts "LinkUrl id: #{link_url.id}"
+     #        f.puts "Link: #{link_url.link}"
+     #        f.puts "Title: #{link_url.title}"
+     #      end
+     #      return nil
+     #    end
+     #  else
+     #    puts "NO REVIEW FROM PHRASE"
+     #  end
+     #  rf_id = rf ? rf.id : nil
+     #  #month = MONTHS[month[0..2]]
+     # {
+     #    review_date: "#{year}-#{month}-#{day}",
+     #    rating: review.at_css(".swSprite").content.scan(/^\d/)[0].to_i,
+     #    body: body, #.gsub(/<[^>]+>/,"").strip!,
+     #    headline: text =~ /<b>([^<]+)<\/b>/ ? $1 : "EMPTY",
+     #    author: text =~ /By&nbsp\;.+?>([^<]+)<\/span/m ? $1 : "EMPTY",
+     #    location: location.length > 0 ? location : nil,
+     #    review_from_id: rf_id
+     #  }
     end
 
     def update_product_ids
@@ -179,39 +166,6 @@ class AmazonScraper < Scraper
       end
     end
 
-    def exercise
-      product = Product.find_by_name("QC 15")
-      link_url = forum \
-        .product_links.where(:product_id => product.id).first.link_urls.first
-      path = "#{Rails.root}/exercise_files/amazon.html"
-      doc = Nokogiri::HTML(open(path))
-      reviews = reviews_from_page(doc, product,"Amazon")
-      raise "Count" unless reviews.count == 10
-      raise "Rating" unless reviews.map(&:rating).eql?([5, 5, 5, 4, 4, 5, 4, 5, 4, 5])
-      keys = reviews.map(&:unique_key)
-      raise "Key" unless reviews.map(&:unique_key).eql?(%w(R1L8GF5OCSIFZ3 R3V001MH2EFO3Y
-        R3ICSEC83QTK6C R2YPI6BRBIWJU4 R1IW7Q0Q70OCQ RV9KHTDCYASZL RUA2XXC5A8DQL
-        RIZDMNCS03J84 RVTAUECEAUCYD R3TTPNZZCD0IEW))
-      raise "Date" unless reviews.map(&:review_date).eql?(%w(2013-05-13 2013-05-12 2013-05-12
-        2013-05-12 2013-05-11 2013-05-11 2013-05-11 2013-05-11 2013-05-09 2013-05-09
-        ).map{ |d| Date.strptime(d, "%Y-%m-%d") })
-      raise "Author" unless reviews.map(&:author).eql?(["Chacharice", "Hayhoitsofftoworkwego", "Toni",
-        "evilmaniac", "Paul", "Valdemar M Fracz", "Gunter Van Deun", "Uncle Jams", "S. Power", "Sister T. Considine"])
-      raise "Headline" unless reviews.map(&:headline).eql?(["fantastic",
-        "Excellent Bose Quiet Comfort 15 Acoustic Noise Cancelling headphones", "Wonderful", "Better than before",
-        "really good headphone", "Impressive", "Glad I purchased it !", "These cans are amazing!",
-        "There is still room for improvement, but compared to previous models and competitors they are great",
-        "Great for a good night's sleep"])
-      raise "Location" unless reviews.map(&:location).eql?(["NA", "NA", "GA", "NA", "NA", "NA", "NA", "NA",
-        "Austin, Texas, United States", "Atherton, CA United States"])
-      raise "Body length" unless reviews.map{ |r| r.body.length }.eql?([298, 400, 256, 356, 205, 149, 636, 439, 1370, 175])
-      raise "First body" unless reviews.first.body.eql?("I don't know too much about headphones, " +
-      "but going from my regular earbuds to these headphones have significantly improved my listening " +
-      "experience and focus at work. I share an office with a tech gal who often has visitors and meetings, " +
-      "so the headphones have helped me focus and get some work done.")
-      nil
-    end
-
     def find_body
       path = "#{Rails.root}/exercise_files/amazon_body.html"
       doc = Nokogiri::HTML(open(path))
@@ -222,9 +176,14 @@ class AmazonScraper < Scraper
     end
 
 
-    def reviews_from_file(link_url_id)
-      path = "#{Rails.root}/app/models/az_files/index"
+    def chrome_reviews_from_file(link_url_id)
+      path = "#{Rails.root}/app/models/az_files/index.html"
       doc = Nokogiri::HTML(open(path))
+      # doc.css('span.a-color-secondary').each do |stub|
+      #   if stub.content =~ /Style Name: Bose (.+)/
+      #     puts STYLE_PRODUCTS[$1]
+      #   end
+      # end
       link_url = LinkUrl.find(link_url_id)
       build_reviews_from_doc(doc, link_url, "", "AmazonReview", true)
     end
@@ -270,21 +229,89 @@ class AmazonScraper < Scraper
       nil
     end
 
+    def normal_page_reviews
+      existing_keys = Set.new(AmazonReview.where("review_date >= '2014-12-01'").map(&:unique_key))
+      Forum.find(1).product_links.each do |pl|
+        pl.link_urls.each do |lu|
+          get_reviews_from_page(lu, 1, existing_keys)
+        end
+      end
+      nil
+    end
+
+    def get_reviews_from_page(lu, page_number, existing_keys)
+      # for the first page, frequently get 503 if pageNumber=1
+      # better to only put in pageNumber after the first page
+      url = "http://www.amazon.com/#{lu.link}"
+      url << "?pageNumber=#{page_number}" if page_number > 1
+      begin
+          doc = Nokogiri::HTML(open(url))
+        rescue => e
+          puts "#{e.message} FOR #{url}" if page_number > 1
+        end
+        return unless doc
+        #reviews = doc.css("table#productReviews tr td >  div")
+        reviews = doc.css('.review')
+        puts "THERE ARE #{reviews.count} REVIEWS ON #{url}"
+        return existing_keys
+        if reviews.count > 0
+            reviews.each do |review|
+              text = review.to_s
+              if text =~ /<nobr>([A-z]+) (\d{1,2}), (\d{4})/
+                month = MONTHS[$1[0..2]]
+                day = $2
+                day = "0#{day}" if day.length == 1
+                year = $3
+                next unless year == '2014' && month > 6
+              else
+                puts "DATE FAILS"; next
+              end
+              anchor = review.at('a.yesButton')
+              if anchor && anchor["href"] =~ /AnchorName=([A-z0-9]+)/
+                key = $1
+                print '.'
+              else
+                puts "NO KEY"
+              end
+              next unless key
+              next unless existing_keys.add?(key)
+              puts "NEW REVIEW #{key}"
+              args = args_from_review(review, lu, day, month, year)
+              unless args
+                puts "NO ARGS"
+                next
+              end
+              args[:unique_key] = key
+              args[:link_url_id] = lu.id
+              az = AmazonReview.new(args)
+              puts args.inspect
+              puts "REVIEW IS VALID #{az.valid?}"
+              az.save! if az.valid?
+            end
+          end
+        if doc.to_s =~ /href=([^>]+)>Next/
+          puts "GETTING NEXT PAGE"
+          existing_keys = get_reviews_from_page(lu, page_number+1, existing_keys)
+        end
+        existing_keys
+    end
 
     def process_response(doc, http, request, form_data, prior_keys, file, link_url)
+
+      #puts doc.to_s
 
       styles = Set.new
       processed_keys = Set.new(prior_keys)
       reviews = doc.css('.review')
-      #puts "REVIEW COUNT #{reviews.count}"
+      puts "REVIEW COUNT #{reviews.count}"
       reviews.each do |review|
         rows = review.css('.a-row')
         author_date =  rows[2].content # author and date
-        unless author_date =~ /UTC 2014/
+        unless author_date =~ /UTC 2014|UTC 2015/
           return processed_keys
         end
 
-        puts author_date
+        puts "AUTHOR DATE #{author_date}"
 
         unique_key =  review.attributes['id'].value
         unless processed_keys.add?(unique_key)
@@ -294,6 +321,15 @@ class AmazonScraper < Scraper
         end
         puts "UNIQUE KEY #{unique_key}"
 
+        # puts "HERE ARE THE ROWS"
+        # rows.each{ |row| puts row.to_s; puts }
+
+        # puts "IS THIS THE HEADLINE?"
+        # puts review.css('a.review-title').text
+
+        # puts "IS THIS THE BODY?"
+        # puts review.css('span.review-text').text
+
         rating_str = rows[1].to_s.scan(/a-star-\d/)[0] # rating
         if (rating_str =~ /a-star-(\d)/)
           rating = $1.to_i
@@ -302,11 +338,12 @@ class AmazonScraper < Scraper
           next
         end
         puts "\nRATING #{rating}"
-        headline =  rows[1].content # headline
+        headline =  review.css('a.review-title').text #  rows[1].content # headline
+        raise "EMPTY HEADLINE" unless headline.length > 0
         puts "HEADLINE #{headline}"
         puts "AUTHOR / DATE  #{author_date}"
-        if author_date =~ /By.(.+)on (Mon|Tue|Wed|Thu|Fri|Sat|Sun) (\w\w\w) (\d\d) .+ UTC (\d\d\d\d)/
-          author = $1
+        if author_date =~ /By(.+)on (Mon|Tue|Wed|Thu|Fri|Sat|Sun) (\w\w\w) (\d\d) .+ UTC (\d\d\d\d)/
+          author = $1.strip
           month = $3
           day = $4
           year = $5
@@ -327,11 +364,14 @@ class AmazonScraper < Scraper
             end
           end
         end
-        body = rows[3].css('.a-section').map{|s| s.content.strip}.join(' ') # review
+        body = review.css('span.review-text').text
+        raise "EMPTY BODY" unless body.length > 0
+        #body = rows[3].css('.a-section').map{|s| s.content.strip}.join(' ') # review
         args = {
           unique_key: unique_key,
           review_date: review_date,
           rating: rating,
+          headline: headline,
           body: body,
           rating: rating,
           author: author,
@@ -344,21 +384,21 @@ class AmazonScraper < Scraper
         valid = r.valid?
         puts "REVIEW VALID: #{valid}"
         r.errors.each{|e| puts e.to_s}#  unless valid
-        p args
+        # p args
         r.save! if valid
 
       end
-      more = more_reviews(doc)
-      #more = 0 # hack for now :-(
-      if (more > 0)
-        puts "#{more} reviews left"
-        form_data['offset'] += 10
-        response = next_ajax_response(http, request, form_data)
-        doc = Nokogiri::HTML(response.body)
-        puts doc.to_s
-        raise
-        processed_keys = process_response(doc, http, request, form_data, processed_keys, file, link_url)
-      end
+      # more = more_reviews(doc)
+      # more = 0 # hack for now :-(
+      # if (more > 0)
+      #   puts "#{more} reviews left"
+      #   form_data['offset'] += 10
+      #   response = next_ajax_response(http, request, form_data)
+      #   doc = Nokogiri::HTML(response.body)
+      #   puts doc.to_s
+      #   raise
+      #   processed_keys = process_response(doc, http, request, form_data, processed_keys, file, link_url)
+      # end
       styles.to_a.uniq.each{ |s| file.puts s}
       processed_keys
     end
@@ -386,6 +426,9 @@ class AmazonScraper < Scraper
 
     def next_ajax_response(http, request, form_data)
       #form_data["offset"] = form_data["offset"] + 10
+      # p http
+      # p request
+      # p form_data
       request.set_form_data(form_data)
       http.request(request)
     end
@@ -426,9 +469,37 @@ class AmazonScraper < Scraper
       nil
     end
 
+    def az_experiment
+      #url = "http://www.amazon.com/321-Series-Home-Entertainment-System/product-reviews/B001DOHYS8/ref=cm_cr_pr_top_recent/178-0894090-1477506?ie=UTF8&pageNumber=1&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      url = "http://www.amazon.com/321-Series-Home-Entertainment-System/product-reviews/B001DOHYS8/ref=cm_cr_pr_top_recent?ie=UTF8&showViewpoints=0&sortBy=bySubmissionDateDescending"
+      doc = Nokogiri::HTML(open(url))
+      puts doc.to_s
+    end
+
+
+
+    def count_reviews_by_link
+      ActiveRecord::Base.logger.level = 1
+      counts = Hash.new(0)
+      Forum.find(1).product_links.each do |pl|
+        pl.link_urls.each do |lu|
+          count =  lu.reviews.where("review_date > '2014-01-01'").count
+          name = lu.product_link.product.name
+          puts "#{count} #{lu.product_link.product.name}" if count < 10
+          counts[name] += count
+        end
+
+      end
+      counts.sort_by{ |k,v| -v}.each{ |name, count| puts "#{name} => #{count}" }
+      nil
+    end
+
   end # self
+
 end
 
 
-
+# http://www.amazon.com/Bose-SoundTouch-Series-Wireless-System/product-reviews/B00NGK897M/ref=cm_cr_pr_btm_link_1?ie=UTF8&showViewpoints=1&sortBy=recent&reviewerType=all_reviews&formatType=all_formats&filterByStar=all_stars&pageNumber=1
+# http://www.amazon.com/Bose-SoundTouch-Series-Wireless-System/product-reviews/B00NGK897M/ref=cm_cr_pr_btm_link_next_2?ie=UTF8&showViewpoints=1&sortBy=recent&reviewerType=all_reviews&formatType=all_formats&filterByStar=all_stars&pageNumber=2
+# http://www.amazon.com/Bose-SoundTouch-Series-Wireless-System/product-reviews/B00NGK897M/ref=cm_cr_pr_btm_link_next_3?ie=UTF8&showViewpoints=1&sortBy=recent&reviewerType=all_reviews&formatType=all_formats&filterByStar=all_stars&pageNumber=3
 # first 20 codes ["B001DOHYS8", "B00356PVLE", "B001DE4D5U", "B001DP9002", "B001DPB1XG", "B000GFPTQY", "B00022RV6C", "B008RQG1BG", "B00006WNKQ", "B00006J054", "B00GQ0R64Q", "B00006J055", "B00006L7RT", "B00006L7RV", "B00006L7RW", "B000A0HFKI", "B00011CNWG", "B000HWV8QG", "B0091EBU28", "B007ZDEAT2", "B00478O0JI"]
